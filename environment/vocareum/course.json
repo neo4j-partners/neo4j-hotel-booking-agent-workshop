@@ -7,7 +7,7 @@
     "notebook": ""
   },
   "startercode": {
-    "repository": "https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop.git",
+    "repository": "https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop.git",
     "commit": "190b735de743c6bbb5484d10ca8ab4fe04b94ba2",
     "source": "../..",
     "paths": [

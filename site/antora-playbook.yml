@@ -1,7 +1,7 @@
 site:
   title: 'Grounded AI Agents with Neo4j and AWS'
-  url: https://neo4j-partners.github.io/neo4j-aws-graphrag-workshop
-  start_page: neo4j-aws-graphrag-workshop::index.adoc
+  url: https://neo4j-partners.github.io/neo4j-hotel-booking-agent-workshop
+  start_page: neo4j-hotel-booking-agent-workshop::index.adoc
 
 content:
   sources:

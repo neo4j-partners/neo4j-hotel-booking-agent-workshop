@@ -29,7 +29,7 @@ Parameters:
   RepoUrl:
     Description: Remote repo URL to clone (https, git SSH, or codecommit::). The literal placeholder {.Region} is replaced with the stack's region at bootstrap time.
     Type: String
-    Default: https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop.git
+    Default: https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop.git
     AllowedPattern: ^$|^[A-Za-z0-9:/@._~+%{}-]+$
     ConstraintDescription: Must be a valid repo URL containing only letters, digits, and the characters :/@._~+%{}- (shell metacharacters are rejected)
   RepoBranch:

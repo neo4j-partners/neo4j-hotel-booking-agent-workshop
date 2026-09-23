@@ -40,8 +40,8 @@ If you have not done it already, follow [Neo4j AuraDB Free Setup](../aura-free-s
 ## Step 3: Clone the Repository and Fill In CONFIG.txt
 
 :::code{language=bash showCopyAction=true}
-git clone https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop.git
-cd neo4j-aws-graphrag-workshop
+git clone https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop.git
+cd neo4j-hotel-booking-agent-workshop
 :::
 
 `CONFIG.txt` at the repository root holds every setting the notebooks read. Replace the placeholder URI and password with the ones from your Aura instance\:

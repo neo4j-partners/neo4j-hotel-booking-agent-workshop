@@ -21,7 +21,7 @@ guides to [AWS GenAI Services](./aws-services/) and the
 [Graph Intelligence Platform](./neo4j-platform/), then into the GraphRAG
 concepts in [Foundations](./foundations/).
 
-**Source code:** :link[Open the workshop repository on GitHub]{href="https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop" external=true}.
+**Source code:** :link[Open the workshop repository on GitHub]{href="https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop" external=true}.
 
 ## Why Grounding Matters
 

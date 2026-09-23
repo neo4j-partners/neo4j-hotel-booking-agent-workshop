@@ -6,7 +6,7 @@ You will use these two resources side by side during the live workshop. Keep bot
 
 | Primary resource | Use it for |
 |---|---|
-| **1. [Workshop microsite](https://neo4j-partners.github.io/neo4j-aws-graphrag-workshop/)** | Read the setup instructions, module explanations, diagrams, and exercises. |
+| **1. [Workshop microsite](https://neo4j-partners.github.io/neo4j-hotel-booking-agent-workshop/)** | Read the setup instructions, module explanations, diagrams, and exercises. |
 | **2. Vocareum Workshop Lab** | Run the notebooks and use the provided AWS lab account. Open it from the link in your event invitation. |
 
 Running the workshop on your own? Follow the [self-paced AWS account instructions](environment/own-account/README.md).
@@ -27,12 +27,12 @@ A hands-on workshop in six modules. You build a hotel knowledge graph, compare s
 
 | Module | Notebooks | What You Build |
 |--------|-----------|----------------|
-| [01: Build the Graph](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/01-build-graph) | `1.1_build_graph.ipynb` | Live extraction of five held-out hotels, deterministic amenities, both retrieval indexes |
-| [02: From Similarity Search to Connected Context](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/02-connected-context) | `2.1_connected_context.ipynb` | Semantic, exact-term, graph-enriched, and structured retrieval evidence |
-| [03: Build the Grounded Booking Agent](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/03-grounded-booking-agent) | `3.1_grounded_booking_agent.ipynb` | Grounded answers, abstention, and a protected reservation command |
-| [04: Production Agent with AgentCore](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/04-production-agent) | `4.1_agentcore_gateway.ipynb` | Gateway Lambda tools, IAM-authenticated MCP, and a Strands agent over the Gateway |
-| [05: Deploy to AgentCore Runtime](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/05-agentcore-deploy) | `5.1_deploy.ipynb` | Containerized agent on AgentCore Runtime, one request correlated end to end |
-| [06: Inspectable Neo4j Memory](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/06-neo4j-memory) | `6.1_neo4j_memory.ipynb` | Cross-session graph memory with actor-scoped recall and full provenance tracing |
+| [01: Build the Graph](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/01-build-graph) | `1.1_build_graph.ipynb` | Live extraction of five held-out hotels, deterministic amenities, both retrieval indexes |
+| [02: From Similarity Search to Connected Context](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/02-connected-context) | `2.1_connected_context.ipynb` | Semantic, exact-term, graph-enriched, and structured retrieval evidence |
+| [03: Build the Grounded Booking Agent](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/03-grounded-booking-agent) | `3.1_grounded_booking_agent.ipynb` | Grounded answers, abstention, and a protected reservation command |
+| [04: Production Agent with AgentCore](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/04-production-agent) | `4.1_agentcore_gateway.ipynb` | Gateway Lambda tools, IAM-authenticated MCP, and a Strands agent over the Gateway |
+| [05: Deploy to AgentCore Runtime](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/05-agentcore-deploy) | `5.1_deploy.ipynb` | Containerized agent on AgentCore Runtime, one request correlated end to end |
+| [06: Inspectable Neo4j Memory](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/06-neo4j-memory) | `6.1_neo4j_memory.ipynb` | Cross-session graph memory with actor-scoped recall and full provenance tracing |
 
 Each module folder under `notebooks/` has a short `README.md` that says what the module is, which notebook or notebooks to run, and where to find the full lesson on the workshop site.
 
@@ -98,7 +98,7 @@ Wait for the instance card to report **RUNNING**. A restore into an instance tha
 The hotel graph ships as a Neo4j database dump. Download it to the machine your browser is running on, not to the Vocareum environment, because the Aura console uploads it from that browser:
 
 ```
-https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/raw/main/graph/neo4j-hotel-graph.dump
+https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/raw/main/graph/neo4j-hotel-graph.dump
 ```
 
 #### Step 3: Restore the dump
@@ -234,7 +234,7 @@ uv run jupyter lab
 # Open 01-build-graph/1.1_build_graph.ipynb first
 ```
 
-Prerequisites for this path are Python 3.10+, [`uv`](https://docs.astral.sh/uv/), an AWS account with Amazon Bedrock model access enabled in `us-east-1`, and a reachable Neo4j instance. A [Neo4j AuraDB Free](https://console.neo4j.io/) database is what the workshop targets. The full walkthrough is on the [Own Account Setup](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/tree/main/site/content/setup/own-account-setup) page.
+Prerequisites for this path are Python 3.10+, [`uv`](https://docs.astral.sh/uv/), an AWS account with Amazon Bedrock model access enabled in `us-east-1`, and a reachable Neo4j instance. A [Neo4j AuraDB Free](https://console.neo4j.io/) database is what the workshop targets. The full walkthrough is on the [Own Account Setup](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/setup/own-account-setup) page.
 
 `prepare_graph.py` wipes and rebuilds. Module 1's notebook uses the additive path instead, so it extends a restored graph without deleting anything a participant has already built.
 
@@ -262,7 +262,7 @@ As a participant you need three things: this README, `CONFIG.txt`, and `notebook
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/blob/main/CONTRIBUTING.md) for more information.
+Contributions are welcome! See [CONTRIBUTING](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/blob/main/CONTRIBUTING.md) for more information.
 
 ---
 
@@ -274,13 +274,13 @@ If you discover a potential security issue in this project, notify AWS/Amazon Se
 
 ## License
 
-This library is licensed under the MIT-0 License. See the [LICENSE](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/blob/main/LICENSE) file for details.
+This library is licensed under the MIT-0 License. See the [LICENSE](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/blob/main/LICENSE) file for details.
 
 ---
 
 ## Updating and Maintaining the Workshop Site
 
-The published workshop site is available at [neo4j-partners.github.io/neo4j-aws-graphrag-workshop](https://neo4j-partners.github.io/neo4j-aws-graphrag-workshop/). Its source content lives in `site/content/`; do not edit the generated files under `site/modules/` or `site/build/`.
+The published workshop site is available at [neo4j-partners.github.io/neo4j-hotel-booking-agent-workshop](https://neo4j-partners.github.io/neo4j-hotel-booking-agent-workshop/). Its source content lives in `site/content/`; do not edit the generated files under `site/modules/` or `site/build/`.
 
 To update a lesson, edit the relevant page in `site/content/`. Add or replace diagrams in `site/images/`, then reference them from the page using the existing `:image[...]` directive. The site build converts this Markdown and its workshop directives into the published Antora site.
 
@@ -295,4 +295,4 @@ npm run serve
 
 This requires Node.js and [Pandoc](https://pandoc.org/). Open http://localhost:8080 and check the edited page, navigation, links, and images. `npm run build` regenerates the ignored `site/modules/` directory and writes the static output to the ignored `site/build/` directory.
 
-Pushing changes to `main` that affect `site/` or `.github/workflows/deploy-site.yml` automatically deploys the site through GitHub Pages. Check deployment progress in the [Deploy workshop site workflow](https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/actions/workflows/deploy-site.yml).
+Pushing changes to `main` that affect `site/` or `.github/workflows/deploy-site.yml` automatically deploys the site through GitHub Pages. Check deployment progress in the [Deploy workshop site workflow](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/actions/workflows/deploy-site.yml).

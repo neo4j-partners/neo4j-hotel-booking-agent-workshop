@@ -1,4 +1,4 @@
-name: neo4j-aws-graphrag-workshop
+name: neo4j-hotel-booking-agent-workshop
 title: 'Grounded AI Agents with Neo4j and AWS'
 version: '1.0'
 start_page: ROOT:index.adoc

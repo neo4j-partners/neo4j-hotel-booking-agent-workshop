@@ -51,7 +51,7 @@ touch them.
 ### 1. Commit your content edits
 
 ```bash
-cd /Users/ryanknight/projects/aws/neo4j-aws-graphrag-workshop
+cd /Users/ryanknight/projects/aws/neo4j-hotel-booking-agent-workshop
 git status --porcelain      # must be empty before the bump
 git add -A && git commit -m "..."
 git push
@@ -168,7 +168,7 @@ content has passed a live student run.
 Content changed, and you already trust it:
 
 ```bash
-cd /Users/ryanknight/projects/aws/neo4j-aws-graphrag-workshop
+cd /Users/ryanknight/projects/aws/neo4j-hotel-booking-agent-workshop
 git add -A && git commit -m "..."
 uv run environment/vocareum/bump_pin.py
 git add environment/vocareum/course.json environment/vocareum/lab.template

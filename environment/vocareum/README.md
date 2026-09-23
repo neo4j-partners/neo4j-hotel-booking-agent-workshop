@@ -21,7 +21,7 @@ The tooling lives in a separate private repository, `aws-vocareum`. That
 repository holds one line naming this directory:
 
 ```
-COURSE_ASSET_DIR=../neo4j-aws-graphrag-workshop/vocareum
+COURSE_ASSET_DIR=../neo4j-hotel-booking-agent-workshop/vocareum
 ```
 
 The dependency runs one way. `aws-vocareum` reads this repository, and this

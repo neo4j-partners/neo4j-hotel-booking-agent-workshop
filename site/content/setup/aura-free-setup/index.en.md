@@ -39,7 +39,7 @@ Wait for the instance card to report **RUNNING**. A restore into an instance tha
 ## Step 2: Download the Workshop Graph
 
 :::alert{type="warning" header="This is the step most participants miss"}
-The hotel graph ships as a Neo4j database dump. Download :link[neo4j-hotel-graph.dump]{href="https://github.com/neo4j-partners/neo4j-aws-graphrag-workshop/raw/main/graph/neo4j-hotel-graph.dump" external=true} to the machine your browser is running on, not to the workshop compute environment, because the Aura console uploads it from that browser. It is a few megabytes, and also in this repository at `graph/neo4j-hotel-graph.dump` if you have already cloned it locally.
+The hotel graph ships as a Neo4j database dump. Download :link[neo4j-hotel-graph.dump]{href="https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/raw/main/graph/neo4j-hotel-graph.dump" external=true} to the machine your browser is running on, not to the workshop compute environment, because the Aura console uploads it from that browser. It is a few megabytes, and also in this repository at `graph/neo4j-hotel-graph.dump` if you have already cloned it locally.
 :::
 
 ---

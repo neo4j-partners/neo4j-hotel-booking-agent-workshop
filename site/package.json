@@ -1,5 +1,5 @@
 {
-  "name": "neo4j-aws-graphrag-workshop-site",
+  "name": "neo4j-hotel-booking-agent-workshop-site",
   "private": true,
   "version": "1.0.0",
   "description": "Published workshop guide for Grounded AI Agents with Neo4j and AWS",
