@@ -18,15 +18,15 @@
     ]
   },
   "vocareum": {
-    "course_name": "Neo4j + AWS GraphRAG Workshop",
-    "assignment_name": "Neo4j + AWS GraphRAG Workshop",
-    "part_name": "Part 1",
-    "lab_type": "Vocareum Notebook",
-    "session_length": "240",
+    "course_name": "GraphRAG with Neo4j + AWS Workshop - 2",
+    "assignment_name": "GraphRAG with Neo4j + AWS Workshop",
+    "part_name": "WorkshopPart",
+    "lab_type": "Visual Studio Code",
+    "session_length": "360",
     "cloud_labs": true,
     "budget": {
-      "total_dollar": "200",
-      "monthly_dollar": "100",
+      "total_dollar": "20",
+      "monthly_dollar": "20",
       "total_time": "0",
       "monthly_time": "0"
     }
