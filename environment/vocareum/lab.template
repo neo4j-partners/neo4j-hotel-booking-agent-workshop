@@ -3,7 +3,7 @@ Description: GraphRAG uses Vocareum Notebook with required Bedrock access
 
 Metadata:
   SourceRepository: https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop.git
-  SourceCommit: 190b735de743c6bbb5484d10ca8ab4fe04b94ba2
+  SourceCommit: 7fa713f9a6d76e183eb23946f0e3b4e24ca9c70f
 
 Resources:
   LaunchSentinel:
