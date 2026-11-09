@@ -1,5 +1,5 @@
 ---
-title: "Module 2: Compare GraphRAG Retrieval Paths"
+title: "Module 2: From Vector Search to Graph-Enriched Retrieval"
 weight: 30
 ---
 
@@ -18,7 +18,7 @@ full-text search, hybrid search, and structured queries.
 
 Take the question "Which Chicago hotels offer both a spa and a swimming pool?" A similarity search ranks passages by how closely they match the question's meaning. It cannot guarantee that two amenity conditions apply to the same `Hotel` node. A Cypher query can test both relationships as exact conditions.
 
-**Pattern reference**
+The module covers eight retrieval patterns in this order\:
 
 | Order | Name | Type | Best for |
 |-------|------|------|----------|
@@ -29,9 +29,9 @@ Take the question "Which Chicago hotels offer both a spa and a swimming pool?" A
 | 5 | `HybridRetriever` | neo4j-graphrag retriever | Questions that need both meaning and an exact term |
 | 6 | `HybridCypherRetriever` | neo4j-graphrag retriever | Hybrid matches that need connected graph facts |
 | 7 | Cypher Templates | GraphRAG pattern | Known structured conditions |
-| 8 | `Text2CypherRetriever` (optional) | neo4j-graphrag retriever | Flexible structured questions with no predefined query |
+| 8 | `Text2CypherRetriever` | neo4j-graphrag retriever | Flexible structured questions with no predefined query |
 
-Vector, full-text, and hybrid describe how a matching `Chunk` is found. A Cypher traversal describes what happens after that match. Cypher Templates and Text2Cypher take a different path: they query the domain graph directly instead of starting with chunk similarity.
+Vector, full-text, and hybrid describe how a matching `Chunk` is found. A Cypher traversal describes what happens after that match. Cypher Templates and Text2Cypher take a different path. They query the domain graph directly instead of starting with chunk similarity.
 
 ## The Lexical Graph and the Domain Graph
 
@@ -77,9 +77,9 @@ For each index-backed retriever, `search()` performs the applicable steps\:
 3. Run the supplied `retrieval_query` for each matched chunk when using a Cypher retriever.
 4. Map each record to a `RetrieverResultItem`.
 
-* **`content`:** Holds the chunk text. The LLM reads this as context.
-* **`metadata`:** Holds hotel properties for application checks, such as `metadata['hotel_id']`.
-* **`result_formatter`:** Maps each query record into the `content` and `metadata` fields.
+* **`content`:** This field holds the chunk text. The LLM reads this as context.
+* **`metadata`:** This field holds hotel properties for application checks, such as `metadata['hotel_id']`.
+* **`result_formatter`:** This function maps each query record into the `content` and `metadata` fields.
 
 `Text2CypherRetriever` also exposes `search()` and returns `RetrieverResultItem` records, but it does not use a vector or full-text index. It asks a model to write Cypher from the graph schema.
 
@@ -89,10 +89,10 @@ Module 4 places the application retrievers' `search()` calls inside Lambda funct
 
 `VectorRetriever` turns text into numbers and compares those numbers.
 
-* **Chunk:** A searchable slice of source text. The 12000-character setting is larger than the biggest 7,442-byte document, so each hotel FAQ becomes one chunk.
-* **Embedding:** A numeric representation of meaning. Amazon Nova model `amazon.nova-2-multimodal-embeddings-v1:0` creates 1024 floats for each chunk.
-* **Vector search:** Embeds the question and uses cosine similarity to find the closest vectors in `hotel_chunk_embeddings`.
-* **`top_k`:** Sets the number of chunks returned. The notebook uses 3 for the arrival question and 5 for the vector and hybrid postal-code comparison.
+* **Chunk:** A chunk is a searchable slice of source text. The 12000-character setting is larger than the biggest 7,442-byte document, so each hotel FAQ becomes one chunk.
+* **Embedding:** An embedding is a numeric representation of meaning. Amazon Nova model `amazon.nova-2-multimodal-embeddings-v1:0` creates 1024 floats for each chunk.
+* **Vector search:** Vector search embeds the question and uses cosine similarity to find the closest vectors in `hotel_chunk_embeddings`.
+* **`top_k`:** This parameter sets the number of chunks returned. The notebook uses 3 for the arrival question and 5 for the vector and hybrid postal-code comparison.
 
 A large chunk keeps the complete hotel in a single extraction prompt, but it also returns a whole document during search. `workshop/hybrid_retrieval.py` bounds returned chunk text at 8,000 characters, enough to preserve every current hotel document and its full policy sections. A production design can use large extraction chunks and smaller retrieval chunks.
 
@@ -102,7 +102,7 @@ The query embedder must match the build settings: the same model, 1024 dimension
 
 ## 2. Graph-Enhanced Vector Search with VectorCypherRetriever
 
-`VectorCypherRetriever` runs vector search first, then runs a reviewed `retrieval_query` for every matched chunk. Neo4j calls this GraphRAG pattern **Graph-Enhanced Vector Search**. The notebook uses this core query\:
+`VectorCypherRetriever` runs vector search first, then runs a reviewed `retrieval_query` for every matched chunk. Neo4j calls this GraphRAG retrieval pattern **Graph-Enhanced Vector Search**. The query below is a simplified version of the notebook's `VECTOR_CYPHER_QUERY`. The notebook version also returns `relationship_types` and a provenance path for every returned field\:
 
 :::code{language=cypher}
 MATCH (node)-[:FROM_DOCUMENT]->(document:Document)
@@ -125,14 +125,24 @@ ORDER BY semantic_score DESC, CASE WHEN hotel_id IS NULL THEN 1 ELSE 0 END, hote
 
 The retriever puts `node` and `score` in scope before the retrieval query runs. `node` is the matched chunk, and `score` is its vector score.
 
-* **`OPTIONAL MATCH`:** Keeps a strong chunk even when hotel extraction failed. `graph_enrichment_status` then reports the missing hotel.
-* **`field_provenance`:** Maps each returned field to its graph path. For example, `amenities` comes from `(:Hotel)-[:OFFERS_AMENITY]->(:Amenity)`.
-* **`source_filename`:** Names the source document so a reviewer can check an extracted value against the authored text.
+* **`OPTIONAL MATCH`:** This clause keeps a strong chunk even when hotel extraction failed. `graph_enrichment_status` then reports the missing hotel.
+* **`field_provenance`:** This map links each returned field to its graph path. For example, `amenities` comes from `(:Hotel)-[:OFFERS_AMENITY]->(:Amenity)`.
+* **`source_filename`:** This field names the source document so a reviewer can check an extracted value against the authored text.
 
-A single top-level pattern cannot hold a one-to-many relationship safely: matching a hotel's amenities directly in the main pattern would return one row per amenity instead of one row per matched chunk. The shipped query avoids this by collecting the amenity list inside its own subquery\:
+A single top-level pattern cannot hold a one-to-many relationship safely. Matching a hotel's amenities directly in the main pattern would return one row per amenity instead of one row per matched chunk. The shipped `RETRIEVAL_QUERY` in `notebooks/workshop/hybrid_retrieval.py` avoids this by collecting the amenity list inside its own subquery. Module 3's passage tool runs this query through `HybridCypherRetriever`\:
 
 :::code{language=cypher}
+// Enrich each Chunk returned by hybrid search with its source Hotel.
+OPTIONAL MATCH (node:Chunk)<-[:FROM_CHUNK]-(candidate:Hotel)
+WITH node, score, candidate
+WHERE score IS NOT NULL
+// Select one Hotel deterministically if malformed data supplies candidates.
+ORDER BY score DESC,
+         coalesce(candidate.hotel_id, '￿'),
+         coalesce(candidate.name, '￿')
+WITH node, score, head(collect(candidate)) AS hotel
 CALL (hotel) {
+    // Collect a stable, bounded list of the Hotel's named amenities.
     MATCH (hotel)-[:OFFERS_AMENITY]->(amenity:Amenity)
     WHERE amenity.name IS NOT NULL
     WITH DISTINCT amenity.name AS amenity_name
@@ -140,9 +150,20 @@ CALL (hotel) {
     LIMIT 12
     RETURN collect(amenity_name) AS amenities
 }
+// Return bounded source text, the hybrid score, and graph-enriched Hotel data.
+RETURN left(coalesce(node.text, ''), 8000) AS chunk_text,
+       score AS combined_score,
+       hotel.hotel_id AS hotel_id,
+       hotel.name AS hotel_name,
+       hotel.address AS address,
+       hotel.guest_rating AS guest_rating,
+       amenities
+ORDER BY combined_score DESC,
+         coalesce(hotel_id, '￿'),
+         coalesce(hotel_name, '￿')
 :::
 
-The subquery returns one amenity list per hotel, so the traversal returns exactly one row per matched chunk no matter how many amenities the hotel has. A limit caps the list at 12 items (`contracts.MAX_AMENITIES` in `hybrid_retrieval.py`). Ordered tie-breaking and `head(collect(candidate))` select one hotel per chunk deterministically.
+The subquery returns one amenity list per hotel, so the traversal returns exactly one row per matched chunk no matter how many amenities the hotel has. A limit caps the list at 12 items. The file fills in that limit from `contracts.MAX_AMENITIES` and the 8000-character text bound from `MAX_CONTEXT_CHARS`. Ordered tie-breaking and `head(collect(candidate))` select one hotel per chunk deterministically.
 
 The comparison tests five hotel properties. `VectorRetriever` returns only chunk text. `VectorCypherRetriever` returns all five fields because it follows `FROM_CHUNK` to the `Hotel` node, where `hotel_id` exists as a graph property.
 
@@ -217,16 +238,16 @@ hybrid_identifier_result = hybrid_retriever.search(
 )
 :::
 
-* **`query_text`:** Sends only `60611` to the full-text arm. This creates a focused exact-term match.
-* **`query_vector`:** Reuses the vector already computed for the full question. This avoids a second Bedrock call and keeps the vector comparison identical.
+* **`query_text`:** This argument sends only `60611` to the full-text arm. This creates a focused exact-term match.
+* **`query_vector`:** This argument reuses the vector already computed for the full question. This avoids a second Bedrock call and keeps the vector comparison identical.
 
 ### Hybrid Fusion: Normalization, Rankers, and Alpha
 
 Cosine similarity scores range from roughly 0 to 1. Lucene relevance scores use a different scale. The library normalizes both result sets before it merges them: it divides every score by the highest score from the same index, so each arm's best result becomes 1.0.
 
-* **`HybridSearchRanker.NAIVE`:** Uses the larger normalized score for each chunk. This is the library default.
-* **`HybridSearchRanker.LINEAR`:** Calculates `alpha * vector + (1 - alpha) * fulltext` for each chunk.
-* **`alpha`:** Sets the vector weight from 0 to 1. The full-text weight is `1 - alpha`.
+* **`HybridSearchRanker.NAIVE`:** This ranker uses the larger normalized score for each chunk. This is the library default.
+* **`HybridSearchRanker.LINEAR`:** This ranker calculates `alpha * vector + (1 - alpha) * fulltext` for each chunk.
+* **`alpha`:** This parameter sets the vector weight from 0 to 1. The full-text weight is `1 - alpha`.
 
 The notebook sets `ranker='linear'` and `alpha=0.2` for the postal-code question. This gives the full-text arm 80 percent of the weight because `60611` identifies the hotel more clearly than the surrounding prose. The result finds Windward Mile Tower and its 24-hour cancellation policy.
 
@@ -250,7 +271,7 @@ The function accepts only query text. It fixes the index names, the `NAIVE` rank
 
 ## 7. Cypher Templates for Structured Filtering
 
-Neo4j's **Cypher Templates** pattern uses reviewed, parameterized queries for known question shapes. It does not start with a similarity or full-text search. The database evaluates conditions directly against the domain graph.
+Neo4j's **Cypher Templates** retrieval pattern uses reviewed, parameterized queries for known question shapes. It does not start with a similarity or full-text search. The database evaluates conditions directly against the domain graph.
 
 The Chicago question requires two relationships on the same hotel and a city condition on `address`. This Cypher template tests all three conditions\:
 
@@ -270,17 +291,17 @@ ORDER BY hotel_name
 
 The notebook returns three result groups\:
 
-* **Candidates:** Lists both Chicago hotels considered by the query.
-* **Qualifiers:** Lists Lakeview Horizon Suites because it has both amenities.
-* **Exclusions:** Lists Windward Mile Tower and names its missing spa and swimming pool.
+* **Candidates:** This group lists both Chicago hotels considered by the query.
+* **Qualifiers:** This group lists Lakeview Horizon Suites because it has both amenities.
+* **Exclusions:** This group lists Windward Mile Tower and names its missing spa and swimming pool.
 
-This result shape records why each hotel passed or failed. "Reviewed fixed Cypher" describes this workshop's implementation; **Cypher Templates** is the Neo4j GraphRAG pattern name.
+This result shape records why each hotel passed or failed. "Reviewed fixed Cypher" describes this workshop's implementation. **Cypher Templates** is the Neo4j GraphRAG retrieval pattern name.
 
 ## 8. Text2Cypher with Text2CypherRetriever
 
 `Text2CypherRetriever` asks a model to write a query from the extraction schema.
 The optional Module 2 notebook cell demonstrates the flow explicitly so each
-validation step remains visible. Module 3 uses this pattern in its structured
+validation step remains visible. Module 3 uses this retrieval pattern in its structured
 record tool\:
 
 1. Add the schema and three examples to the prompt.
@@ -298,7 +319,7 @@ The prompt asks for read-only Cypher. The application checks the planned query t
 
 :image[Decision guide for choosing among vector, full-text, hybrid, Cypher traversal, Cypher Templates, and Text2Cypher retrieval]{src="../../images/02-select-retriever.svg" width=800}
 
-| Order | Pattern or retriever | How it works | Best for | What it returns |
+| Order | Retrieval pattern or retriever | How it works | Best for | What it returns |
 |-------|----------------------|--------------|----------|-----------------|
 | 1 | `VectorRetriever` | Finds the nearest `Chunk` nodes by vector similarity | Paraphrased questions | Ranked chunk text and a similarity score |
 | 2 | `VectorCypherRetriever` | Runs a reviewed traversal from each vector match | Semantic entry that needs hotel properties | Chunk text, graph properties, and provenance |
@@ -309,42 +330,59 @@ The prompt asks for read-only Cypher. The application checks the planned query t
 | 7 | Cypher Templates | Executes a reviewed parameterized query | Known structured conditions | Candidate, qualifier, and exclusion records |
 | 8 | `Text2CypherRetriever` | Generates Cypher from the question and schema | Flexible structured questions | Generated Cypher and database records |
 
-The booking application keeps two complementary patterns. `HybridCypherRetriever`
+The booking application keeps two complementary retrieval patterns. `HybridCypherRetriever`
 supports source passages and connected hotel facts. `Text2CypherRetriever`
 supports counts, averages, rankings, filters, and relationship questions across
 many records.
 
 ## Who Decides What to Retrieve
 
-| Stage | Pattern | Who decides what to retrieve |
-|-------|---------|------------------------------|
+| Stage | Retrieval interface | Who decides what to retrieve |
+|-------|---------------------|------------------------------|
 | Module 2 notebook | Direct retrieval calls, one per exercise | You do, by choosing the cell |
 | Module 3 | `search_hotel_passages` and `query_hotel_records` | The model chooses from two tool specifications |
-| Module 4 | Two retrieval functions behind Lambda and AgentCore Gateway | The model chooses remote MCP tools |
+| Module 4 | The two read tools as Lambda functions behind AgentCore Gateway | The model chooses remote MCP tools |
 | Module 5 | A deployment-oriented agent on AgentCore Runtime | The model chooses from the packaged tool set |
 
 The passage configuration and the structured query guard stay in application
 code. The tool set and transport differ across modules.
 
-## Pattern Reference
+## Retrieval Pattern Reference
 
-This module uses three named patterns from Neo4j's :link[GraphRAG Pattern Catalog]{href="https://graphrag.com/reference/" external=true}\:
+This module uses three named retrieval patterns from Neo4j's :link[GraphRAG Pattern Catalog]{href="https://graphrag.com/reference/" external=true}\:
 
-* **Graph-Enhanced Vector Search:** Finds a chunk through vector similarity and follows a reviewed graph traversal. `VectorCypherRetriever` implements this pattern directly. Full-text and hybrid retrieval can use the same graph-enrichment structure with different entry searches.
-* **Cypher Templates:** Runs reviewed, parameterized Cypher for known structured question shapes.
-* **Text2Cypher:** Asks a model to create Cypher at request time. Its Module 2
-  teaching cell is optional; Module 3 uses the guarded implementation for its
+* **Graph-Enhanced Vector Search:** This retrieval pattern finds a chunk through vector similarity and follows a reviewed graph traversal. `VectorCypherRetriever` implements this retrieval pattern directly. Full-text and hybrid retrieval can use the same graph-enrichment structure with different entry searches.
+* **Cypher Templates:** This retrieval pattern runs reviewed, parameterized Cypher for known structured question shapes.
+* **Text2Cypher:** This retrieval pattern asks a model to create Cypher at request time. Its Module 2
+  teaching cell is optional. Module 3 uses the guarded implementation for its
   structured record tool.
 
 ## Run It
 
-Open `notebooks/02-connected-context/2.1_connected_context.ipynb` and run the cells in order. The **Verify the prepared graph** cell checks the Module 1 fixtures and both indexes before it creates a retriever. The notebook runs the core vector, hybrid, vector-Cypher, Cypher Template, and optional Text2Cypher exercises. The page also explains standalone full-text retrieval and full-text retrieval with Cypher traversal. Module 3 turns Hybrid Cypher and Text2Cypher into its two read tools.
+Open `notebooks/02-connected-context/2.1_connected_context.ipynb` and run the cells in order. The **Check that the graph has the required data** cell checks the Module 1 fixtures and both indexes before it creates a retriever. The notebook runs the core vector, hybrid, vector-Cypher, Cypher Template, and optional Text2Cypher exercises. The page also explains standalone full-text retrieval and full-text retrieval with Cypher traversal. Module 3 turns Hybrid Cypher and Text2Cypher into its two read tools.
+
+The page and the notebook number their sections differently. This table shows where each page section runs in notebook 2.1\:
+
+| Page section | Notebook 2.1 section |
+|--------------|----------------------|
+| 1. Vector Search with VectorRetriever | 1. Find an arrival time with semantic search |
+| 2. Graph-Enhanced Vector Search with VectorCypherRetriever | 3. Find a source, then add related hotel facts |
+| 3. Full-Text Search for Exact Terms | No standalone cell. Section 2 runs full-text search as the exact-term arm of hybrid search. |
+| 4. Full-Text Search with Cypher Traversal | No notebook cell. The page explains this concept only. |
+| 5. Hybrid Search with HybridRetriever | 2. Find a postal code with hybrid search |
+| 6. Graph-Enriched Hybrid Search with HybridCypherRetriever | 5. Compare passage search with Text2Cypher. The passage path calls `search_hotel_knowledge`. |
+| 7. Cypher Templates for Structured Filtering | 4. Filter hotels with fixed Cypher |
+| 8. Text2Cypher with Text2CypherRetriever | 5. Compare passage search with Text2Cypher. The structured path calls `graph_query`. |
 
 If the readiness check fails, complete Module 1 and restart this notebook. Module 2 reads the graph and preserves the Module 1 data.
 
 :::alert{type="info" header="Use one Neo4j connection"}
 Configure one Neo4j connection because every module uses the same credentials. The optional Text2Cypher cell reuses that connection with a read-only session and a 15-second statement timeout.
 :::
+
+## Challenge Checkpoint
+
+The workshop challenge starts with a read question: "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" Notebook section 4 answers the first half, because its fixed Cypher filter returns Lakeview Horizon Suites. Notebook section 2 shows hybrid search retrieving a Chicago cancellation policy along with its source filename. As an optional exercise, ask the passage search for the Lakeview Horizon Suites cancellation policy and check the returned source.
 
 Slides for this module\: [GraphRAG Retrieval](../slides/overview-graphrag/)
 

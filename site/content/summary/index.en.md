@@ -35,7 +35,7 @@ and memory as separate components with clear responsibilities.
 | Flexible structured filter | Text2Cypher | Database records selected by a generated read-only query |
 
 This comparison is about retrieval quality and fit. Module 3 exposes two of
-these patterns as tools, then lets the model select a path from their
+these retrieval patterns as tools, then lets the model select a path from their
 specifications.
 
 ---
@@ -45,7 +45,7 @@ specifications.
 | Query need | Retriever | Why |
 |---|---|---|
 | Paraphrased, semantic | `VectorRetriever` | Semantic similarity is the main signal |
-| Exact name, identifier, postal code | `HybridRetriever` | Embeddings blur short exact strings; the full-text arm holds them |
+| Exact name, identifier, postal code | `HybridRetriever` | Embeddings blur short exact strings. The full-text arm holds them |
 | Semantic entry, connected answer | `VectorCypherRetriever` | The retrieval query turns matched text into connected entities and their properties |
 | Flexible structured filtering or aggregation | `Text2CypherRetriever` | The database evaluates a read-only query over matching records |
 
@@ -94,6 +94,9 @@ Three pieces of this repository can be adapted to another domain\:
 - **Grounded write:** Reuse the transaction pattern in `notebooks/03-grounded-booking-agent/reservation_command.py`. The command checks the rule and writes in the same transaction. A `request_id` makes a replay return the existing result and prevents a second booking.
 
 ## Next
+
+Production Path ends with a unified target architecture that combines the
+separate Module 4 and Module 5 deployment patterns.
 
 Head to [Production Path](../production-path/) to turn the workshop components
 into an operated system.

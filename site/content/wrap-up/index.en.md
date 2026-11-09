@@ -3,48 +3,52 @@ title: "Wrap-up"
 weight: 90
 ---
 
-This workshop built a GraphRAG system from source documents through production
-deployment and graph memory. The result can retrieve connected context, answer
-from that context, protect database writes, and preserve provenance.
+This workshop built a graph from source documents and a booking agent that
+reads from it. You ran that agent in three alternative deployment patterns.
+Pattern A ran it in the notebook. Pattern B moved the read tools behind
+AgentCore Gateway. Pattern C hosted the whole agent on AgentCore Runtime.
+Module 6 added graph memory as a separate exercise. Together, these components
+retrieve connected context, answer from that context, protect database writes,
+and preserve provenance.
 
 ## What You Accomplished
 
 ### Module 1: Built the Graph
 
-- **Source documents:** Extracted the held-out hotel documents into :link[Neo4j]{href="https://neo4j.com/" external=true}.
-- **Extraction schema:** Defined predictable node labels and relationship types before extraction.
-- **Uniqueness constraints:** Verified the constraints that prevent duplicate entities.
-- **Retrieval indexes:** Created the vector and full-text indexes used by later modules.
+- **Source documents:** You extracted the held-out hotel documents into :link[Neo4j]{href="https://neo4j.com/" external=true}.
+- **Extraction schema:** You defined predictable node labels and relationship types before extraction.
+- **Uniqueness constraints:** You verified the constraints that prevent duplicate entities.
+- **Retrieval indexes:** You created the vector and full-text indexes used by later modules.
 
 ### Module 2: Built Graph-Enriched Retrieval
 
-- **Semantic search:** Found relevant source text by meaning.
-- **Exact-term search:** Preserved names, identifiers, and postal codes.
-- **Graph expansion:** Added connected entities, their properties, and provenance to each matched chunk.
-- **Result comparison:** Compared returned context before asking a model to generate an answer.
+- **Semantic search:** You found relevant source text by meaning.
+- **Exact-term search:** You preserved names, identifiers, and postal codes.
+- **Graph expansion:** You added connected entities, their properties, and provenance to each matched chunk.
+- **Result comparison:** You compared returned context before asking a model to generate an answer.
 
 ### Module 3: Built the Grounded Booking Agent
 
-- **Automatic routing:** Let the model choose between passage search and a structured record query from their tool specifications.
-- **Inspectable evidence:** Traced the selected tools and read their bounded JSON results.
-- **Grounding verdict:** Verified that live room availability was reported as a missing fact without grading final-answer wording.
-- **Protected reservation command:** Checked booking rules and wrote the request in one transaction.
+- **Automatic routing:** You let the model choose between passage search and a structured record query from their tool specifications.
+- **Inspectable evidence:** You traced the selected tools and read their bounded JSON results.
+- **Grounding verdict:** You verified that live room availability was reported as a missing fact without grading final-answer wording.
+- **Protected reservation command:** You checked booking rules and wrote the request in one transaction.
 
 ### Modules 4 and 5: Built Production Infrastructure
 
-- **AgentCore Gateway:** Exposed Lambda retrieval tools through a managed MCP endpoint.
-- **IAM SigV4 authentication:** Signed tool calls with the caller's AWS identity.
-- **Strands over MCP:** Passed the Gateway's resolved remote tools to an agent.
-- **AgentCore Runtime:** Ran the containerized agent and correlated one request from invocation through response.
+- **AgentCore Gateway:** You exposed the Lambda read tools through a managed MCP endpoint.
+- **IAM SigV4 authentication:** You signed tool calls with the caller's AWS identity.
+- **Strands over MCP:** You passed the Gateway's resolved remote tools to an agent.
+- **AgentCore Runtime:** You ran the containerized agent and correlated one request from invocation through response.
 
 ### Module 6: Stored Memory as a Graph
 
-- **Actor-scoped recall:** Recalled a preference for the same actor in a new session while isolating a second actor.
-- **Graph memory:** Stored each preference as a graph node.
-- **Conversation entities:** Linked the source `Message` to the real `Hotel` it mentions.
-- **Full provenance:** Linked every `Preference` to its source `Message` and the same `Hotel` node.
-- **Retained history:** Replaced changed preferences by appending and superseding instead of overwriting stale text and embeddings.
-- **Memory comparison:** Compared Neo4j memory with AgentCore Memory by write timing, auditability, correction, and operational ownership.
+- **Actor-scoped recall:** You recalled a preference for the same actor in a new session while isolating a second actor.
+- **Graph memory:** You stored each preference as a graph node.
+- **Conversation entities:** You linked the source `Message` to the real `Hotel` it mentions.
+- **Full provenance:** You linked every `Preference` to its source `Message` and the same `Hotel` node.
+- **Retained history:** You replaced changed preferences by appending and superseding instead of overwriting stale text and embeddings.
+- **Memory comparison:** You compared Neo4j memory with AgentCore Memory by write timing, auditability, correction, and operational ownership.
 
 ---
 
@@ -52,17 +56,36 @@ from that context, protect database writes, and preserve provenance.
 
 - **Complementary retrieval signals:** Semantic similarity finds relevant language, exact terms protect identifiers, and graph structure adds connected entities and their properties.
 - **Structural precision:** Properties and relationships support precise queries, filters, and commands while retaining provenance.
-- **MCP tool interface:** Gateway tools enter the Strands agent through the same `tools` interface as local functions. Module 5 uses a separate pattern in which a packaged Runtime agent connects to Neo4j itself.
+- **MCP tool interface:** Gateway tools enter the Strands agent through the same `tools` interface as local functions. Module 5 uses a separate deployment pattern in which a packaged Runtime agent connects to Neo4j itself.
 - **Auditable graph memory:** Entity links capture what a turn is about, and provenance keeps durable memory tied to its evidence.
 
 ---
 
 ## Architectures You Built
 
-:image[Three architectures recapped: Module 4's Notebook Strands agent calling AgentCore Gateway and Lambda retrieval tools into Neo4j, Module 5's authorized caller invoking AgentCore Runtime with a packaged Strands agent calling both Neo4j and Bedrock, and Module 6's notebook or app writing to the Neo4j graph memory]{src="../../images/wrap-up-architectures.svg" width=800}
+:image[Three architectures recapped: Module 4's Notebook Strands agent calling AgentCore Gateway and Lambda read tools into Neo4j, Module 5's authorized caller invoking AgentCore Runtime with a packaged Strands agent calling both Neo4j and Bedrock, and Module 6's notebook or app writing to the Neo4j graph memory]{src="../../images/wrap-up-architectures.svg" width=800}
 
 Module 4 routes remote tools through Gateway. Module 5 packages an agent on
 Runtime and connects it to Neo4j. Module 6 adds the hands-on graph memory path.
+
+---
+
+## Clean Up
+
+Modules 4 and 5 create AWS resources. Module 6 writes memory records into your
+Neo4j graph.
+
+- **Vocareum lab account:** The lab account and its AWS resources are removed
+  when the lab session ends.
+- **Your own AWS account:** The workshop leaves the Module 4 and Module 5
+  resources in place. Remove them with the
+  [cleanup inventory](../setup/own-account-setup/#cleanup). The inventory lists
+  every resource name.
+- **Neo4j graph memory:** Module 6 cleanup is off by default. Set
+  `CLEAN_UP_DEMO_MEMORY` to `True` in
+  `notebooks/06-neo4j-memory/6.1_neo4j_memory.ipynb`, then run the last cell.
+  [Remove What the Module Wrote](../06-neo4j-memory/#remove-what-the-module-wrote)
+  describes what the cell deletes.
 
 ---
 

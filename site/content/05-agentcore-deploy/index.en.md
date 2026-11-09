@@ -10,33 +10,37 @@ Module 5 packages the two GraphRAG read tools and the protected reservation
 command in one Runtime container. Unlike Module 4, this deployment does not use
 Gateway. The agent calls Neo4j directly from its container.
 
-**What this module deploys**
+Module 5 is Pattern C, the hosted-agent deployment pattern. It is an
+alternative to Pattern A, the local agent in Module 3, and to Pattern B, the
+remote tools in Module 4.
 
-* **AgentCore Runtime:** Runs the packaged agent outside the notebook.
-* **Deployment package:** Reuses the Module 3 retrieval code, system prompt,
-  and reservation command.
-* **Request handling:** Reads the prompt and request ID, then returns the model
-  response and structured tool results.
-* **Warm resources:** Reuses Neo4j drivers and the retriever while the container
-  stays warm.
-* **Invocation API:** Lets authorized clients invoke the deployed agent through
-  `InvokeAgentRuntime`.
+This module deploys five pieces:
+
+* **AgentCore Runtime:** Runtime runs the packaged agent outside the notebook.
+* **Deployment package:** The package reuses the Module 3 retrieval code,
+  system prompt, and reservation command.
+* **Request handling:** The entry point reads the prompt and request ID, then
+  returns the model response and structured tool results.
+* **Warm resources:** The container reuses Neo4j drivers and the retriever
+  while it stays warm.
+* **Invocation API:** `InvokeAgentRuntime` lets authorized clients invoke the
+  deployed agent.
 
 The deployment changes where the agent runs and where its credentials live:
 
-| Module 3.1 | Module 5.1 |
+| Notebook 3.1 | Notebook 5.1 |
 |---|---|
 | Runs in your kernel | Runs in a container AgentCore starts |
 | The notebook environment holds the Neo4j password | The Runtime holds it, injected at launch |
-| Reachable only from Jupyter | Invoked through `InvokeAgentRuntime` by authorized AWS clients |
+| Reachable only from the notebook | Invoked through `InvokeAgentRuntime` by authorized AWS clients |
 | Runs in one local notebook process | Each invocation includes a caller-provided session ID |
 
 The deployed variant keeps Module 3's two read tools and reservation
 transaction. Runtime request handling changes how a caller sends a request and
-receives a result, but the model still chooses between passage and structured
-reads from the same tool specifications.
+receives a result. The model still chooses between passage and structured reads
+from the same tool specifications.
 
-Module 3.1 gives the agent two read tools and calls the reservation command as a
+Notebook 3.1 gives the agent two read tools and calls the reservation command as a
 local Python operation in the write examples. Module 5 packages both read tools
 and exposes the reservation command as a third tool. Its system prompt directs
 the model to state when Neo4j lacks the required context and requires a stable
@@ -86,7 +90,8 @@ contract, and the `bedrock-agentcore` SDK implements most of it.
   in CodeBuild.
 * **`BedrockAgentCoreApp`:** `booking_agent.py` creates this object at module
   level. It serves the HTTP contract, so the agent code skips routing code.
-* **`@app.entrypoint`:** Marks the one function Runtime calls per invocation.
+* **`@app.entrypoint`:** This decorator marks the one function Runtime calls
+  per invocation.
   The function receives the payload as a dictionary and returns a dictionary.
   Runtime passes that dictionary back to the caller as JSON.
 * **`app.run()`:** The container's start command runs the module, and
@@ -120,8 +125,8 @@ AgentCore emits telemetry in OpenTelemetry format and stores it in Amazon
 CloudWatch. The container starts under `opentelemetry-instrument`, which adds
 the instrumentation for you.
 
-* **Metrics, on by default:** Invocations, session count, active sessions,
-  latency, throttles, user errors, and system errors.
+* **Metrics, on by default:** Runtime records invocations, session count,
+  active sessions, latency, throttles, user errors, and system errors.
 * **Traces and spans:** A span records one step of the agent loop, such as a
   model call or a tool call, with its timing. Enable CloudWatch Transaction
   Search once per account to view them.
@@ -137,18 +142,18 @@ the instrumentation for you.
 Runtime is one service in a larger set. The others cover the remaining parts of
 a production agent.
 
-* **Gateway:** Turns APIs, Lambda functions, and existing MCP servers into
-  tools. Module 4 uses it.
-* **Memory:** Stores short-term conversation state and long-term facts across
-  sessions. Module 6 builds this in Neo4j instead.
-* **Identity:** Holds the credentials an agent needs for outside services, such
-  as Slack or GitHub, and issues tokens at call time.
-* **Code Interpreter and Browser:** Give the agent a sandboxed shell and a
-  managed browser as tools.
-* **Evaluations and Optimization:** Score recorded agent runs, then recommend
-  prompt and tool-description changes and A/B test them.
-* **Policy:** Applies rules to each tool call at the Gateway before the call
-  runs.
+* **Gateway:** Gateway turns APIs, Lambda functions, and existing MCP servers
+  into tools. Module 4 uses it.
+* **Memory:** Memory stores short-term conversation state and long-term facts
+  across sessions. Module 6 builds this in Neo4j instead.
+* **Identity:** Identity holds the credentials an agent needs for outside
+  services, such as Slack or GitHub. It issues tokens at call time.
+* **Code Interpreter and Browser:** These services give the agent a sandboxed
+  shell and a managed browser as tools.
+* **Evaluations and Optimization:** These services score recorded agent runs.
+  They then recommend prompt and tool-description changes and A/B test them.
+* **Policy:** Policy applies rules to each tool call at the Gateway before the
+  call runs.
 
 AgentCore also includes Harness, Registry, and Payments. Each service works on
 its own, so you can adopt Runtime alone and add the others later.
@@ -203,7 +208,7 @@ structured tool reaches guarded Text2Cypher, and the command reaches the write
 that enforces the guest-limit rule inside its own transaction. The
 `BedrockModel` connection calls Claude on Amazon Bedrock, which reasons over
 the evidence the tools returned. No component here calls out to a Gateway or
-an MCP server; all three tools reach Neo4j from the Runtime process.
+an MCP server. All three tools reach Neo4j from the Runtime process.
 
 ## How Runtime Requests Work
 
@@ -298,6 +303,32 @@ results in the notebook.
 The failure log records only the exception type. This rule keeps connection
 details and credentials from exception messages out of CloudWatch. The handler
 then raises the exception so AgentCore can report the invocation failure.
+
+## Challenge Checkpoint
+
+The workshop challenge has a read part and a write part. Module 5 puts the
+tools for both parts into one hosted agent.
+
+The read part asks which Chicago hotel has both a spa and a swimming pool, and
+what its cancellation policy is. The hosted agent carries the same two read
+tools that answer it with graph retrieval and provenance. The smoke tests run
+those tools on Cairo and Paris questions, not on the Chicago question.
+
+The write part asks whether a guest can submit a booking request for four
+guests. The hosted agent exposes the reservation command as the
+`create_reservation` tool. Bookings work only for the two Cairo fixture
+hotels. The smoke tests check the command on AnyCompany Cairo Nile View:
+
+* **Over the limit:** A 15-guest request is rejected under the workshop's
+  10-guest rule. Neo4j writes no node.
+* **Within the limit:** A 10-guest request creates one `ReservationRequest`
+  node.
+* **Retry:** A second call with the same `request_id` returns the first result.
+  The graph still holds one node.
+
+As an optional exercise, send the Chicago question to the deployed agent with
+the notebook's `ask` helper and compare the answer with the Module 2 filter
+example.
 
 Slides for this module\: [Deploying to AgentCore Runtime](../slides/overview-agentcore-runtime/)
 

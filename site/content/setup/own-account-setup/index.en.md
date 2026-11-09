@@ -55,7 +55,7 @@ NEO4J_DATABASE=neo4j
 
 The username and the database name are already `neo4j`, which is what every Aura instance uses. Nothing below the Neo4j block needs changing either.
 
-`CONFIG.txt` is tracked, so it ships as a placeholder and your filled-in values should stay uncommitted. If you would rather not risk that, create a `.env` file at the repository root (or in `notebooks/`) with the same four settings instead. `.env` is in `.gitignore`, and `environment/verify.py` and the notebooks load it ahead of `CONFIG.txt`, so it is only needed if you want your real credentials to never touch a tracked file at all.
+`CONFIG.txt` is tracked, so it ships as a placeholder and your filled-in values should stay uncommitted. If you would rather not risk that, create a `.env` file with the same four settings instead. Put it at the repository root or in `notebooks/`. Git ignores `.env`. `environment/verify.py` and the notebooks load it ahead of `CONFIG.txt`. You only need it if you want your real credentials to stay out of every tracked file.
 
 ---
 
@@ -73,7 +73,8 @@ uv venv && uv pip install -r requirements.txt
 uv run python ../environment/verify.py
 :::
 
-**Expected output\:**
+When every check passes, the script prints\:
+
 :::code{language=text}
       loaded CONFIG.txt
 ok    python interpreter is supported

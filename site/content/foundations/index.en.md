@@ -17,9 +17,9 @@ individual services and capabilities.
 
 A property graph stores data with three parts:
 
-- **Node:** A thing, such as a hotel, room, amenity, document, or text chunk.
-- **Relationship:** A named connection between nodes, such as `OFFERS_AMENITY`.
-- **Property:** A named value, such as a hotel name or guest rating.
+- A **node** represents a thing, such as a hotel, room, amenity, document, or text chunk.
+- A **relationship** is a named connection between nodes, such as `OFFERS_AMENITY`.
+- A **property** is a named value, such as a hotel name or guest rating.
 
 :image[Property graph anatomy showing hotel, amenity, policy, and source chunk nodes connected by named relationships]{src="../../images/property-graph-anatomy.svg" width=800}
 
@@ -41,12 +41,12 @@ WHERE h.name = $hotel_name
 RETURN h.name AS hotel, collect(a.name) AS amenities
 :::
 
-- **`MATCH`:** Selects a graph pattern.
-- **Parentheses:** Describe nodes.
-- **Square brackets:** Describe relationships.
-- **Arrows:** Describe relationship direction.
-- **`WHERE`:** Filters the result.
-- **`RETURN`:** Selects the fields sent to the application.
+- **`MATCH`** selects a graph pattern.
+- **Parentheses** describe nodes.
+- **Square brackets** describe relationships.
+- **Arrows** describe relationship direction.
+- **`WHERE`** filters the result.
+- **`RETURN`** selects the fields sent to the application.
 
 Neo4j stores facts and their connections. Cypher retrieves the required path
 through those facts.
@@ -73,18 +73,18 @@ through those facts.
 Retrieval-augmented generation sends selected source material to a model before
 it answers. GraphRAG adds graph facts and connections to that source material.
 
-- **Vector search:** Finds text with similar meaning.
-- **Full-text search:** Finds exact names, identifiers, and terms.
-- **Graph expansion:** Adds connected entities, their properties, and provenance.
-- **Structured Cypher:** Filters and aggregates known graph fields.
+- **Vector search** finds chunks whose meaning resembles a question.
+- **Full-text search** finds exact hotel names, postal codes, identifiers, and terms.
+- **Graph expansion** follows a matched chunk to its hotel, amenities, policy, service, room, and source document. It adds their properties and provenance to the result.
+- **Structured Cypher** filters and aggregates known graph fields.
 
 The workshop graph keeps a lexical graph and a domain graph, connected to each other:
 
 :image[Two connected layers: the source file becomes a Document and Chunk in the lexical graph, and a Hotel node with typed Room, Amenity, Policy, and Service relationships in the domain graph]{src="../../images/01-graph-structure.svg" width=800}
 
-- **Search:** Finds a `Chunk` in the lexical graph.
-- **Expansion:** The retrieval query follows typed relationships into the domain graph.
-- **Provenance:** Links each extracted fact to its source.
+- **Search** finds a `Chunk` in the lexical graph.
+- **Expansion** follows typed relationships from that chunk into the domain graph.
+- **Provenance** links each extracted fact to its source.
 
 ---
 
@@ -99,7 +99,7 @@ Module 3 turns two retrieval patterns into model-selectable read tools:
 - **Answer flow:** The prompt directs the model to answer from returned evidence
   or state what is missing.
 - **Reservation command:** A separate command validates the request and writes it.
-- **Rule enforcement:** Neo4j checks the guest limit in the write transaction.
+- **Rule enforcement:** Neo4j checks the workshop's 10-guest rule in the write transaction.
 
 ---
 
@@ -108,9 +108,9 @@ Module 3 turns two retrieval patterns into model-selectable read tools:
 Each control belongs to a layer that can enforce it:
 
 - **Read-tool choice:** The model chooses between two application-defined tool specifications.
-- **Answer policy:** The prompt directs the model to use returned evidence; the trace and structured verdict make each lab turn inspectable.
+- **Answer policy:** The prompt directs the model to use returned evidence. The trace and the grounding verdict make each lab turn inspectable.
 - **Passage query:** A fixed `retrieval_query` defines the reviewed traversal.
-- **Structured query:** Text2Cypher generates Cypher, and the `EXPLAIN` guard allows only read plans.
+- **Structured query:** Text2Cypher generates Cypher. The `EXPLAIN` guard allows only read plans.
 - **Database write:** Neo4j rejects invalid and duplicate requests.
 - **AWS access:** IAM controls deployment and service calls.
 - **Memory access:** Actor-scoped Cypher limits recall to one actor.
@@ -118,6 +118,24 @@ Each control belongs to a layer that can enforce it:
 You can reuse this separation of layers with a different graph schema and domain.
 
 Slides for this module\: [Knowledge Graphs and AuraDB](../slides/overview-knowledge-graph/)
+
+---
+
+## Glossary
+
+- **Guest:** A guest is the person in the hotel scenario who asks questions and requests bookings.
+- **Actor:** Module 6 uses actor for the person a memory belongs to, stored in the graph as a `User` node.
+- **Read tools:** The two read tools, `search_hotel_passages` and `query_hotel_records`, return hotel evidence from Neo4j without writing to it.
+- **Reservation command:** The reservation command is application code that checks the 10-guest rule and writes a booking request for a Cairo fixture hotel in one Neo4j transaction.
+- **Retrieval pattern:** A retrieval pattern is one of the four ways Module 2 reads the graph: Vector, Hybrid, VectorCypher, or Text2Cypher.
+- **Deployment pattern:** A deployment pattern is one of three alternative places to run the agent and its tools.
+- **Pattern A:** The agent and its read tools run locally in Module 3.
+- **Pattern B:** The agent runs in the notebook and calls the read tools through AgentCore Gateway in Module 4.
+- **Pattern C:** The agent runs on AgentCore Runtime in Module 5 and exposes the reservation command as the `create_reservation` tool.
+- **Gateway tool:** A Gateway tool is a read tool that AgentCore Gateway exposes as a Lambda-backed MCP tool.
+- **Provenance:** Provenance is the graph path that links each fact back to the source chunk and document it came from.
+- **Grounding verdict:** The grounding verdict is the `grounding_result` that each read tool returns to say whether Neo4j holds enough evidence and which fact is missing.
+- **Module and notebook numbers:** Module 3 is a workshop section, and notebook 3.1 is the `3.1_grounded_booking_agent.ipynb` file you run inside it.
 
 ## Next
 

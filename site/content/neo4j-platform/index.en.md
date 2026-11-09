@@ -22,17 +22,15 @@ provenance, booking rules, reservation requests, and cross-session memory.
 ## AuraDB and the Property Graph
 
 :link[Neo4j AuraDB]{href="https://neo4j.com/product/auradb/" external=true} is the
-managed graph database used by every module. The workshop graph represents
-hotels, rooms, amenities, policies, services, documents, and chunks as nodes.
-Named relationships make the paths between them explicit.
+managed graph database used by every module. It stores the workshop data as a
+property graph of hotels, rooms, amenities, policies, services, documents, and
+chunks connected by named relationships.
+[Foundations](../foundations/#the-property-graph-model) explains the property
+graph model and the Cypher that queries it.
 
-For example, a query can require that the same hotel connects to both a spa and
-a swimming pool, then continue from that hotel to its cancellation policy and
-the source chunk that supports the answer. Cypher describes that shape directly.
-
-The graph transaction is also where the application-owned reservation command
-checks the hotel's guest limit and writes the request. Model behavior is not
-the final control.
+The reservation command is application-owned code. It checks the workshop's
+10-guest rule and writes the request in one graph transaction. Model behavior
+is not the final control.
 
 ---
 
@@ -49,27 +47,27 @@ applications.
 
 The ontology defines how the business works.
 
-- **Business concepts:** The important people, products, events, and terms.
-- **Relationships:** The connections between those concepts.
-- **Rules:** The policies and processes that guide access and action.
-- **System mappings:** The links from business terms to technical data sources.
+- **Business concepts** name the important people, products, events, and terms.
+- **Relationships** describe the connections between those concepts.
+- **Rules** set the policies and processes that guide access and action.
+- **System mappings** link business terms to technical data sources.
 
 ### Enterprise Data
 
 Enterprise data supplies the facts that ground the ontology.
 
-- **Reference data:** The approved values for concepts such as countries or account types.
-- **Business records:** The master and transaction data used to answer questions.
-- **Data access:** The layer can query data in its source system or bring selected data into the graph.
+- **Reference data** holds the approved values for concepts such as countries or account types.
+- **Business records** hold the master and transaction data used to answer questions.
+- **Data access** lets the layer query data in its source system or bring selected data into the graph.
 
 ### Agent Memory
 
 Agent memory stores context, facts, and past decisions.
 
-- **Short-term memory:** The context from the current conversation.
-- **Long-term memory:** Facts and preferences that remain across sessions.
-- **Reasoning memory:** Tool use, decisions, and outcomes from earlier work.
-- **Decision trace:** The recorded path that explains why the agent chose an action.
+- **Short-term memory** holds the context from the current conversation.
+- **Long-term memory** keeps facts and preferences across sessions.
+- **Reasoning memory** records tool use, decisions, and outcomes from earlier work.
+- A **decision trace** records the path that explains why the agent chose an action.
 
 Ontology defines the meaning. Enterprise data supplies current facts. Agent
 memory carries useful experience into the next request.
@@ -81,25 +79,18 @@ memory carries useful experience into the next request.
 ## One Graph, Multiple Retrieval Signals
 
 The workshop keeps source text and structured domain facts in one connected
-graph:
-
-- **Vector search** finds chunks whose meaning resembles a question.
-- **Full-text search** protects exact hotel names, postal codes, and other identifiers.
-- **Graph expansion** follows a matched chunk to the hotel, amenities, policy, service, room, and source document.
-- **Structured Cypher** filters and aggregates known graph fields.
-
-These are complementary entry paths over the same data. GraphRAG is the step
-that combines retrieved text with the explicit entities and relationships
-around it.
-
-:image[The workshop graph connects source documents and chunks to structured hotel facts]{src="../../images/01-graph-structure.svg" width=800}
+graph. Vector search, full-text search, graph expansion, and structured Cypher
+are complementary entry paths over that same data. GraphRAG is the step that
+combines retrieved text with the explicit entities and relationships around it.
+[Foundations](../foundations/#from-rag-to-graphrag) explains each retrieval
+signal and shows how the lexical graph connects to the domain graph.
 
 ---
 
 ## Provenance and Grounding
 
 The graph does more than return an answer-shaped record. It keeps the path back
-to the source document. The retrieval tools return source filenames, source
+to the source document. The read tools return source filenames, source
 chunks, graph fields, and a field-level provenance description in a bounded
 result shape.
 
@@ -109,8 +100,8 @@ That evidence lets the agent distinguish three outcomes:
 - **Missing fact:** The graph has related context but lacks a required fact.
 - **No evidence:** The tool returned no usable evidence.
 
-The prompt tells the model how to respond, while the returned evidence and trace
-make the behavior inspectable.
+The prompt tells the model how to respond. The returned evidence and trace make
+the behavior inspectable.
 
 ---
 
@@ -134,15 +125,8 @@ application can query and govern the memory in Neo4j.
 
 ## Where Neo4j Appears in the Workshop
 
-| Module | Neo4j capabilities |
-|---|---|
-| **Setup** | Create AuraDB, restore the workshop graph, and verify connectivity |
-| **1. Build the Graph** | Fixed schema, extraction, constraints, vector index, full-text index, and provenance |
-| **2. Graph-Enriched Retrieval** | Vector, hybrid, VectorCypher, and Text2Cypher retrieval |
-| **3. Grounded Booking Agent** | Bounded read tools, connected evidence, and transactional booking rules |
-| **4. Production Agent** | Neo4j driver access from Lambda-backed Gateway tools |
-| **5. AgentCore Deployment** | Direct AuraDB access from the Runtime-hosted agent |
-| **6. Neo4j Graph Memory** | Actor-scoped recall, source links, correction, and domain connections |
+The [module-by-module table](../platform/#module-by-module) on How Neo4j + AWS
+Work Together shows which Neo4j capabilities each module uses.
 
 ## Learn More
 

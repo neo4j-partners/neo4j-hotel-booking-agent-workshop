@@ -15,7 +15,7 @@ back to its source message and the hotel it describes.
 This page uses **actor** for the person a memory belongs to. The graph holds
 each actor as a `User` node, and every memory write names one.
 
-**Brief overview**
+The module covers six ideas:
 
 * **Preference:** The graph stores one statement about what an actor wants.
 * **Entity linking:** The source message points to the canonical `Hotel` it is
@@ -65,12 +65,13 @@ ends on the real `Hotel` node, with its rating, amenities, and source
 documents.
 
 * **One hotel, not two records:** The preference points at the `Hotel` node
-  Module 1 created. No copy of that hotel exists in a separate memory store.
+  from the restored graph. No copy of that hotel exists in a separate memory
+  store.
 * **No join step:** The query matches the hotel once and keeps using it. The
   application never stitches two result sets together.
 * **Name matching fails quietly:** Two separate stores force a text
   comparison on the hotel name. A difference in case or a trailing space makes
-  that comparison miss, and the query returns an empty result instead of an
+  that comparison miss. The query then returns an empty result instead of an
   error.
 
 ## What the Module Stores
@@ -123,7 +124,7 @@ Entity extraction and durable memory are separate decisions. Extraction answers
 what a turn is about. A memory policy decides which candidate facts and
 preferences are safe and useful to retain.
 
-1. **Store the turn:** Keep the user's exact words and session.
+1. **Store the turn:** Keep the actor's exact words and session.
 2. **Link its subjects:** A free-form conversation can use an entity extractor.
    When an agent or tool has already resolved a hotel, link that known subject
    directly to the canonical `Hotel` node.
@@ -142,12 +143,12 @@ not a reason to discard entity extraction in a production agent.
 The library connects a preference to its subject with
 `(:Preference)-[:APPLIES_TO]->(:Entity)`. That relationship needs the target to
 carry the `:Entity` label. Adding `:Entity` to the workshop's `Hotel` nodes
-would also set library-owned properties on them, and `type` is one of those
-properties.
+would also set library-owned properties on them. One of those properties is
+`type`.
 
 This module writes its own `ABOUT_HOTEL` relationship instead. The `Hotel`
-nodes keep exactly the labels and properties Module 1 gave them, and cleanup
-removes the relationship without touching the node.
+nodes keep exactly the labels and properties the restored graph gave them.
+Cleanup removes the relationship without touching the node.
 
 ## How Actor-Scoped Recall Works
 
@@ -161,8 +162,8 @@ owns the only matching relationship, so Actor B's traversal returns an empty
 list.
 
 Version 0.5.0 of the library searches vectors across the whole store. Its
-`search_preferences` call takes a query string and search options, and it takes
-no actor. The notebook therefore recalls with the actor-anchored Cypher query
+`search_preferences` call takes a query string and search options. It takes no
+actor. The notebook therefore recalls with the actor-anchored Cypher query
 above, so the query itself enforces the scope.
 
 ## The Memory Embedding Contract
@@ -264,11 +265,11 @@ manages extraction and recall for you. This workshop implements memory in Neo4j
 instead, so the application controls each write and can connect preferences to
 domain data.
 
-:image[AgentCore Memory and Neo4j graph memory: two approaches to long-term preference memory]{src="../../images/04-memory-comparison.svg" width=800}
+:image[AgentCore Memory and Neo4j graph memory: two approaches to long-term preference memory]{src="../../images/06-memory-comparison.svg" width=800}
 
 The diagram shows both approaches as they would run in production, with a
 Lambda function performing the graph writes. The notebook writes from Python
-directly, which keeps every write visible while you learn the pattern.
+directly, which keeps every write visible while you learn the approach.
 
 | | AgentCore Memory | :link[Neo4j graph memory]{href="https://neo4j.com/" external=true} |
 |---|---|---|
@@ -289,8 +290,8 @@ state, and graph memory can carry the records that have to be explainable.
 
 ## Remove What the Module Wrote
 
-Every identifier the notebook creates starts with the `memory06-` prefix, and
-every record it writes carries the `neo4j-ftw-memory` ownership marker. The
+Every identifier the notebook creates starts with the `memory06-` prefix.
+Every record it writes carries the `neo4j-ftw-memory` ownership marker. The
 final cell uses both to delete its own data. That marker differs from the one
 on the workshop fixtures, so memory cleanup cannot reach them.
 
@@ -301,8 +302,8 @@ on the workshop fixtures, so memory cleanup cannot reach them.
 * **Hotel nodes survive:** Cleanup counts `Hotel` nodes before and after, and
   it raises an error if that count changes.
 
-The memory vector indexes stay in place. They are shared infrastructure, they
-cost nothing while empty, and the workshop's setup check expects them.
+The memory vector indexes stay in place. They are shared infrastructure and
+cost nothing while empty.
 
 Slides for this module\: [Agent Memory with Neo4j](../slides/overview-agent-memory/)
 

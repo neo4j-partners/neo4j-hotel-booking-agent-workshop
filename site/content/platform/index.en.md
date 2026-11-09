@@ -30,23 +30,29 @@ authoritative hotel facts, relationships, provenance, booking rules, and memory.
 
 :image[A grounded request moves through an AWS-hosted agent and tools to Neo4j, then returns connected evidence and provenance]{src="../../images/neo4j-aws-together.svg" width=800}
 
-1. **A user asks a question.** The request reaches a Strands agent locally or on AgentCore Runtime.
+1. **A guest asks a question.** The request reaches a Strands agent locally or on AgentCore Runtime.
 2. **Amazon Bedrock reasons over the request.** The model chooses between bounded tools rather than querying infrastructure directly.
 3. **The tool reaches Neo4j.** It can connect directly with a Neo4j driver or run through AgentCore Gateway and Lambda.
 4. **Neo4j returns connected evidence.** Vector and full-text indexes find source text, while Cypher adds hotel facts, relationships, and provenance.
 5. **The model writes the answer.** The prompt requires the answer to use the returned evidence or state what is missing.
 6. **Application commands and memory remain explicit.** The reservation command checks its rules inside a Neo4j transaction. Agent memory stores actor-scoped preferences with links to their source.
 
+---
+
+## Module by Module
+
 The division of labor stays consistent as the workshop progresses. What changes
 is where the agent and tools run.
 
-| Stage | AWS role | Neo4j role |
+| Module | AWS role | Neo4j role |
 |---|---|---|
-| **Build the graph** | Bedrock models extract structure and create embeddings | AuraDB stores documents, chunks, entities, relationships, constraints, and indexes |
-| **Retrieve context** | Bedrock interprets the question; Strands selects a read tool | Vector, full-text, and Cypher paths return bounded evidence with provenance |
-| **Run remote tools** | AgentCore Gateway authenticates MCP calls and invokes Lambda | Lambda tools query the same graph through the Neo4j driver |
-| **Deploy the agent** | AgentCore Runtime hosts the packaged Strands agent | The deployed agent connects to AuraDB as its knowledge service |
-| **Remember across sessions** | Bedrock creates the memory embedding; IAM controls access to the model | Neo4j stores actor-scoped preferences, source messages, and domain links |
+| **Setup** | Verify AWS credentials, region, and Bedrock model access | Create AuraDB, restore the workshop graph, and verify connectivity |
+| **1. Build the Graph** | Bedrock models extract structure into a fixed schema and create embeddings | AuraDB stores documents, chunks, entities, relationships, constraints, vector and full-text indexes, and provenance |
+| **2. From Vector Search to Graph-Enriched Retrieval** | Nova creates query embeddings. Claude writes Cypher for the optional Text2Cypher path | Vector, Hybrid, VectorCypher, and Text2Cypher retrieval patterns return bounded evidence with provenance |
+| **3. Grounded Booking Agent** | Bedrock reasons through a local Strands agent that selects a read tool | The read tools return connected evidence. The reservation command checks the 10-guest rule and writes the request in one transaction |
+| **4. Production Agent** | AgentCore Gateway authenticates MCP calls with IAM SigV4 and invokes Lambda. Secrets Manager stores the Neo4j settings | Lambda tools query the same graph through the Neo4j driver |
+| **5. AgentCore Deployment** | ECR stores the container image. AgentCore Runtime hosts the packaged Strands agent. CloudWatch captures its logs | The deployed agent connects directly to AuraDB as its knowledge service |
+| **6. Neo4j Graph Memory** | Titan creates the memory embedding. IAM controls access to the model. AgentCore Memory serves as the managed comparison | Neo4j stores actor-scoped preferences with their source messages and domain links. The application can correct a stored preference |
 
 ---
 
@@ -55,7 +61,7 @@ is where the agent and tools run.
 The connection pattern is a top-level architecture choice. Choose it based on
 how data moves and who needs to use the graph.
 
-| Pattern | Use it when | Data or request path |
+| Connection pattern | Use it when | Data or request path |
 |---|---|---|
 | **Neo4j drivers in AWS applications** | Application code running in AWS Lambda, Amazon ECS, Amazon EKS, Amazon EC2, notebooks, or AgentCore needs transactional Cypher access | Application ↔ Neo4j |
 | **MCP tools for agents** | An MCP-compatible agent needs discoverable graph tools behind a standard tool protocol | Agent → graph tools → Neo4j |
@@ -63,10 +69,10 @@ how data moves and who needs to use the graph.
 | **Spark Connector on Amazon EMR** | Large Spark DataFrames need bulk reads or writes | Spark ↔ Neo4j |
 | **Kafka Connector on Amazon MSK** | Event streams need continuous graph updates or Neo4j changes need to reach Kafka topics | Kafka ↔ Neo4j |
 
-This workshop implements two of these patterns directly:
+This workshop implements two of these connection patterns directly:
 
 - **Direct driver:** Modules 1 through 3 and Modules 5 through 6 connect Python application code to Neo4j.
-- **MCP and Lambda:** Module 4 exposes Neo4j retrieval functions as Lambda-backed tools through an IAM-authenticated AgentCore Gateway.
+- **MCP and Lambda:** Module 4 exposes the two read tools as Lambda-backed tools through an IAM-authenticated AgentCore Gateway.
 
 The data-pipeline connectors solve a different problem from the agent path.
 Glue, Spark, and Kafka move or synchronize data. Drivers and MCP serve live

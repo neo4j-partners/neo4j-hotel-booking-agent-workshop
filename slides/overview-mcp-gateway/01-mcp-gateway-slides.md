@@ -110,7 +110,7 @@ Module 4 passes the two tools discovered through MCP.
 
 ---
 
-![bg contain](../images/03-agentcore-architecture.svg)
+![bg contain](../images/04-agentcore-gateway-architecture.svg)
 
 <!--
 Follow one request across the diagram.

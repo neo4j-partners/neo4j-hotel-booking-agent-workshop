@@ -73,9 +73,25 @@ failure.
 - **Deployment record:** Record the source version, dependencies, model IDs, prompts, and tool schemas.
 - **Sensitive data:** Keep secrets and unnecessary user content out of logs.
 
-Module 4 and Module 5 show separate patterns. A design that connects Runtime to
+Module 4 and Module 5 show separate deployment patterns. A design that connects Runtime to
 Gateway adds another network call and access boundary. Measure the effect on
 speed, cost, and operations.
+
+---
+
+## A Unified Target Architecture
+
+The workshop does not build this design. It combines the Module 4 and Module 5
+deployment patterns and adds memory to the agent loop.
+
+:image[Production target architecture: a guest app calls a Strands booking agent on AgentCore Runtime, which uses Amazon Bedrock and calls read, reservation, and memory Lambda tools through AgentCore Gateway, and each Lambda reaches Neo4j AuraDB with its own Neo4j identity]{src="../../images/production-target-architecture.svg" width=800}
+
+Four parts of this design differ from the workshop:
+
+- **Runtime calls Gateway:** In Module 5, the Runtime agent reaches Neo4j directly.
+- **The write is a Gateway tool:** In the workshop, the reservation command never sits behind Gateway.
+- **Memory is in the agent loop:** In the workshop, only the Module 6 notebook touches memory.
+- **Separate Neo4j identities:** The workshop uses one shared credential.
 
 ---
 
@@ -85,7 +101,7 @@ speed, cost, and operations.
 - **Generated Cypher:** Run it with a read-only database identity.
 - **IAM:** Grant access only to the required models, secrets, tools, and runtimes.
 - **Bedrock Guardrails:** Apply prompt and response policies where required.
-- **Tool separation:** Keep retrieval tools separate from write commands.
+- **Tool separation:** Keep read tools separate from write commands.
 - **Database rules:** Enforce business rules and uniqueness in the write transaction.
 - **Logging:** Review which prompts, results, and memory records may enter logs.
 

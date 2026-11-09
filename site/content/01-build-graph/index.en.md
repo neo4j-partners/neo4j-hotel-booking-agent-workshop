@@ -7,7 +7,7 @@ This module adds five hotel documents to Neo4j. The build stores each document a
 
 The two structures answer different parts of a question such as "Which Cairo hotels have a spa that costs extra?" Search finds text with similar meaning. Graph relationships connect the hotel, spa, and fee so one Cypher query can match all three facts.
 
-**What this module builds**
+This module produces three results\:
 
 * **Searchable text:** `Document` and `Chunk` nodes store source text and embeddings.
 * **Structured facts:** `Hotel`, `Room`, `Amenity`, `Policy`, and `Service` nodes store properties and relationships.
@@ -27,11 +27,11 @@ The build creates two connected graph structures.
 
 Every domain relationship starts at `Hotel`, so its facts are one hop away.
 
-* **`Document`:** One source file. Its `source_filename` property identifies the build output for cleanup and provenance.
-* **`Chunk`:** One searchable text slice and its embedding. Each hotel document in this module produces one chunk.
-* **`Hotel`:** One hotel with `name`, `address`, and `guest_rating` properties.
-* **`FROM_CHUNK`:** Connects an extracted entity to the chunk that produced it.
-* **`FROM_DOCUMENT`:** Connects a chunk to its source file.
+* **`Document`:** A `Document` node represents one source file. Its `source_filename` property identifies the build output for cleanup and provenance.
+* **`Chunk`:** A `Chunk` node holds one searchable text slice and its embedding. Each hotel document in this module produces one chunk.
+* **`Hotel`:** A `Hotel` node represents one hotel with `name`, `address`, and `guest_rating` properties.
+* **`FROM_CHUNK`:** This relationship connects an extracted entity to the chunk that produced it.
+* **`FROM_DOCUMENT`:** This relationship connects a chunk to its source file.
 
 ---
 
@@ -157,10 +157,10 @@ The build enforces one uniqueness constraint for deterministic identity: `Amenit
 
 The build stops when any of these four checks fails\:
 
-* **Schema check:** Lists every label created from the five chunks and rejects labels outside the extraction schema.
-* **Hotel identity check:** Requires each document to produce one `Hotel` and prevents one hotel from linking to several source documents.
-* **Amenity check:** Compares exact pairs of source filename and amenity label after the graph write.
-* **Retrieval check:** Verifies both indexes and runs the fixture queries used by later modules.
+* **Schema check:** This check lists every label created from the five chunks. It rejects labels outside the extraction schema.
+* **Hotel identity check:** This check requires each document to produce one `Hotel`. It also prevents one hotel from linking to several source documents.
+* **Amenity check:** This check compares exact pairs of source filename and amenity label after the graph write.
+* **Retrieval check:** This check verifies both indexes and runs the fixture queries used by later modules.
 
 The document, chunk, Hotel, and amenity-source checks require all five documents to load, each document to produce one Hotel, and every authored amenity to connect to that Hotel. The fixture checks allow variation in LLM-extracted properties while requiring at least one Cairo hotel with a spa, a pool, and a rating, plus at least two Paris hotels with a rating.
 

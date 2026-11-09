@@ -70,7 +70,7 @@ RETURN hotel.name AS name, hotel.address AS address
 
 One row comes back, and its address is `789 Corniche el-Nil, Cairo 11519, Egypt`.
 
-That is the same check `environment/verify.py` runs later. It reads one hotel by name and compares the address rather than counting nodes, because a count is plausible at any value and a half-restored dump passes it.
+Both setup paths run this same check later. Vocareum learners run it in the `1.0_verify_environment.ipynb` notebook, and own-account learners run it in `environment/verify.py`. It reads one hotel by name and compares the address rather than counting nodes, because a count is plausible at any value and a half-restored dump passes it.
 
 ---
 

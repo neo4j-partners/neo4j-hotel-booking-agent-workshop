@@ -10,11 +10,16 @@ moves those same read-only tools to AWS Lambda and exposes them through
 AgentCore Gateway. The agent stays in the notebook. This module does not add
 booking writes.
 
-The retrieval logic stays the same. `search_hotel_passages` runs the same
-`HybridCypherRetriever` from Module 2 and returns the same eight keys. Two
-things change: where the tool runs, and who is allowed to call it.
+Module 4 is Pattern B, the remote-tools deployment pattern. It is an
+alternative to Pattern A, the local agent in Module 3.
 
-**What this module introduces**
+The retrieval logic stays the same. `search_hotel_passages` runs the same
+`HybridCypherRetriever` from Module 2. Each passage it returns carries the same
+eight keys: `chunk_text`, `combined_score`, `exact_terms`, `hotel_id`,
+`hotel_name`, `address`, `guest_rating`, and `amenities`. Two things change:
+where the tool runs, and who is allowed to call it.
+
+This module introduces six pieces:
 
 | Order | Name | Type | What it contributes |
 |-------|------|------|---------------------|
@@ -28,7 +33,7 @@ things change: where the tool runs, and who is allowed to call it.
 Items 1 to 3 decide where the tool runs. Items 4 to 6 decide who may call it
 and where the credential lives.
 
-:image[Module 4 architecture: a Strands agent calls Neo4j retrieval Lambdas through an IAM-authenticated AgentCore Gateway]{src="../../images/03-agentcore-architecture.svg" width=800}
+:image[Module 4 architecture: a Strands agent calls Neo4j retrieval Lambdas through an IAM-authenticated AgentCore Gateway]{src="../../images/04-agentcore-gateway-architecture.svg" width=800}
 
 The diagram follows one request:
 
@@ -49,7 +54,7 @@ The diagram follows one request:
 
 ## 1. Model Context Protocol
 
-**MCP:** A standard that lets an agent discover a tool's name, inputs, and
+**MCP:** MCP is a standard that lets an agent discover a tool's name, inputs, and
 result format at runtime. The client asks a server which tools exist, then asks
 it to run one.
 
@@ -123,6 +128,10 @@ def handler(event, context):
     passages = search_hotel_knowledge(query)
     return grounding.passage_payload(query, passages)
 :::
+
+This snippet is simplified from
+`notebooks/04-production-agent/lambda_tools/search_hotel_passages/lambda_function.py`,
+which moves the input check into a `_validated_query` helper.
 
 The retrieval function keeps its Module 2 name, `search_hotel_knowledge`. The
 published tool name is `search_hotel_passages`, and that is the only one the
@@ -383,7 +392,7 @@ Expect a delay on new roles. IAM is eventually consistent, so a role can be
 rejected for a few seconds after it exists. The notebook retries that specific
 failure instead of stopping.
 
-## The Two Retrieval Tools
+## The Two Read Tools
 
 | Gateway tool | How it works | Use it for |
 |---|---|---|
@@ -392,7 +401,7 @@ failure instead of stopping.
 
 Both tools import their retrieval functions from
 `notebooks/workshop/hybrid_retrieval.py`. The first Lambda reuses the function
-Module 3 calls. The second turns the Module 2 Text2Cypher pattern into a
+Module 3 calls. The second turns the Module 2 Text2Cypher retrieval pattern into a
 reusable function.
 
 `query_hotel_records` exists because counts and averages need the whole
@@ -423,32 +432,33 @@ same hotel.
 
 The notebook runs checks at two layers:
 
-* **Step 5, direct invocation:** Runs the negative and positive controls. These
-  calls prove each Lambda reaches the graph.
-* **Step 7, through the Gateway:** Runs the positive controls. These calls
-  prove the Gateway invokes the Lambda and returns the expected values.
+* **Step 5, direct invocation:** This step runs the negative and positive
+  controls. These calls prove each Lambda reaches the graph.
+* **Step 7, through the Gateway:** This step runs the positive controls. These
+  calls prove the Gateway invokes the Lambda and returns the expected values.
 
 Running the two steps separately shows which layer failed.
 
 ## Blocking Write Queries
 
-**Brief overview:** `query_hotel_records` lets a model create a Cypher query.
+`query_hotel_records` lets a model create a Cypher query.
 The query must only read data. Before the query runs, `Text2CypherRetriever`
 asks Neo4j to inspect it. The retriever stops the query if Neo4j says it can
 change data.
 
 The safety steps are:
 
-* **Read-only prompt:** Instructions that tell the model to create a query that
-  only reads data. This reduces mistakes, but it does not enforce the rule.
-* **`EXPLAIN`:** A Neo4j command that plans a query without running it.
-* **Read-only guard:** A check built into `Text2CypherRetriever` in the pinned
-  `neo4j-graphrag` library. It runs the real query only when the `EXPLAIN`
-  result says the query is read-only.
-* **Stub model:** A small fake model used only in the test. It always returns a
-  write query so the notebook can check that the guard rejects it.
-* **Read-only Neo4j user:** A production database account that has permission
-  to read data but cannot change it.
+* **Read-only prompt:** The prompt tells the model to create a query that only
+  reads data. This reduces mistakes, but it does not enforce the rule.
+* **`EXPLAIN`:** This Neo4j command plans a query without running it.
+* **Read-only guard:** This check is built into `Text2CypherRetriever` in the
+  pinned `neo4j-graphrag` library. It runs the real query only when the
+  `EXPLAIN` result says the query is read-only.
+* **Stub model:** The stub is a small fake model used only in the test. It
+  always returns a write query so the notebook can check that the guard rejects
+  it.
+* **Read-only Neo4j user:** This production database account has permission to
+  read data but cannot change it.
 
 ### Why the Test Uses a Stub Model
 
@@ -506,7 +516,8 @@ callable operations in both cases.
 | Module 4 | An AWS Lambda function | IAM, through Gateway SigV4 | The Lambda, from Secrets Manager |
 | Module 5 | An AgentCore Runtime container | IAM, on `InvokeAgentRuntime` | The container |
 
-Module 4 and Module 5 are two separate patterns, not two steps of one path.
+Pattern B in Module 4 and Pattern C in Module 5 are two separate deployment
+patterns, not two steps of one path.
 Module 4 keeps the agent local and moves the tools out. Module 5 packages the
 agent itself and connects it to Neo4j from inside the container.
 
@@ -531,12 +542,12 @@ CloudWatch log groups do not carry an independent workshop tag.
 
 Secrets Manager charges for each secret while it remains stored and for API
 calls. Lambda charges for requests and execution duration. AgentCore Gateway
-charges are usage based. This workshop uses no Gateway search index, and there
-is no flat charge solely because this Gateway exists. IAM has no additional
+charges are usage based. This workshop uses no Gateway search index. The
+Gateway carries no flat charge just for existing. IAM has no additional
 charge. Stored CloudWatch logs can continue to incur storage charges.
 
-The notebook leaves these resources in place. Workshop Studio removes them
-when the event ends. In your own account, follow the
+The notebook leaves these resources in place. On the Vocareum path, the lab
+account is removed when the lab session ends. In your own account, follow the
 [cleanup inventory](../setup/own-account-setup/#cleanup) when you finish.
 :::
 

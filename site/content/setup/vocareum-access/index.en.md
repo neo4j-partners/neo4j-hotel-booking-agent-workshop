@@ -12,7 +12,7 @@ weight: 2
 Vocareum provisions an AWS account for you and supplies its credentials to the lab environment.
 
 :::alert{type="info" header="Where your AWS credentials come from"}
-The lab environment carries the AWS credentials the notebooks use. You do not run `aws configure` and you do not paste an access key anywhere. Modules 4, 5, and 6 create AWS resources under that lab account, and everything lands in **us-east-1**.
+The lab environment carries the AWS credentials the notebooks use. You do not run `aws configure` and you do not paste an access key anywhere. Modules 4 and 5 create AWS resources under that lab account, and everything lands in **us-east-1**.
 :::
 
 ---
@@ -29,7 +29,7 @@ not need to clone the repository or install dependencies.
 
 ## Step 3: Create Your Neo4j Database
 
-The Vocareum lab does not include Neo4j. If you have not done it already, follow [Neo4j AuraDB Free Setup](../aura-free-setup/) to create an instance and restore the hotel graph into it. Come back here with the URI and password in hand.
+The Vocareum lab does not include Neo4j, so complete [Neo4j AuraDB Free Setup](../aura-free-setup/) before you continue.
 
 ---
 
@@ -44,7 +44,7 @@ NEO4J_PASSWORD=your_password_here
 NEO4J_DATABASE=neo4j
 :::
 
-The username and the database name are already `neo4j`, which is what every Aura instance uses, so leave those two alone. If your instructor hands out a Bedrock API key at the start of class, uncomment the `AWS_BEARER_TOKEN_BEDROCK` line near the bottom of the file and paste the key after the equals sign. Otherwise leave that line commented out\: an uncommented but blank value is worse than no line at all, because it sends an empty Bearer header and Bedrock calls stop falling back to your normal AWS credentials. Paste the URI and password with no surrounding quotes and no trailing spaces, then save the file.
+The username and the database name are already `neo4j`, which is what every Aura instance uses, so leave those two alone. If your instructor hands out a Bedrock API key at the start of class, uncomment the `AWS_BEARER_TOKEN_BEDROCK` line near the bottom of the file and paste the key after the equals sign. Otherwise, leave that line commented out. An uncommented but blank value is worse than no line at all. It sends an empty Bearer header, and Bedrock calls stop falling back to your normal AWS credentials. Paste the URI and password with no surrounding quotes and no trailing spaces, then save the file.
 
 ---
 
@@ -58,8 +58,9 @@ interpreter shown below.
 :image[VS Code's Python interpreter picker with Python 3.10 selected]{src="../../../images/python-310.png" width=643}
 
 Run every cell. This notebook checks that the supplied Vocareum credentials
-can reach the Bedrock models the workshop uses. It does not create any
-resources.
+can reach the Bedrock models the workshop uses. It also reads one known hotel
+from your Aura instance to confirm that the restored graph is there. It does
+not create any resources.
 
 When `1.0` completes successfully, stay in the same folder and open
 `1.1_build_graph.ipynb` to begin Module 1. Run each later notebook with the
@@ -74,11 +75,15 @@ Proceed to [Module 1](../../01-build-graph/).
 ## Troubleshooting
 
 :::expand{header="Neo4j connection refused, or a connection timeout" defaultExpanded=false}
-The Aura instance is not accepting connections yet. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and look at the instance status. A newly created instance may still be provisioning, and an instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the script again.
+The Aura instance is not accepting connections yet. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and look at the instance status. A newly created instance may still be provisioning, and an instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the `1.0` notebook again.
 :::
 
-:::expand{header="NoCredentialsError" defaultExpanded=false}
-The terminal has no AWS credentials, which usually means the Vocareum lab session has expired or was never started. Return to the lab page, start the lab again, and open a fresh terminal so it picks up the new credentials.
+:::expand{header="The Neo4j check still fails after you fix CONFIG.txt" defaultExpanded=false}
+The notebook keeps the values it loaded first. Save `CONFIG.txt`, restart the notebook kernel, and run every cell again.
+:::
+
+:::expand{header="No AWS credentials are available" defaultExpanded=false}
+The notebook has no AWS credentials, which usually means the Vocareum lab session has expired or was never started. Return to the lab page, start the lab again, then restart the notebook kernel.
 :::
 
 :::expand{header="Bedrock access denied" defaultExpanded=false}
