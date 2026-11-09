@@ -30,7 +30,7 @@ A booking agent needs evidence for its answers and controls for its actions.
 - **Wrong answer:** The agent promises an amenity that the hotel does not offer.
 - **Wrong action:** The agent accepts a reservation request for more guests than the booking rules allow.
 - **Missing provenance:** The team cannot trace a claim to its source document.
-- **Workshop challenge:** The challenge has a read part and a write part. The read part asks, "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" The write part asks, "Can a guest submit a booking request for four guests?" The workshop tests that part on the Cairo fixture hotels.
+- **Workshop challenge:** The challenge has a read part and a write part. The read part asks, "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" The write part asks, "Can a guest submit a booking request for four guests?" The reservation command demonstrates the 10-guest rule on a Cairo fixture hotel. A 10-guest request succeeds. A 15-guest request is rejected. Four guests fall within that rule.
 
 You will connect each answer to its sources. A separate reservation command
 will enforce booking rules before it saves a request.
@@ -69,28 +69,31 @@ exercise.
 A booking agent should answer from evidence and act only within rules. This
 workshop builds that agent on one Neo4j graph. Amazon Bedrock reasons over
 the question. Neo4j supplies the facts, the source text behind each fact, and
-the rules a booking must satisfy. The agent then moves from a notebook onto
-managed AWS services without changing what it retrieves or how it is
-grounded.
+the rules a booking must satisfy. The same agent can run in a notebook or on
+managed AWS services without changing what it retrieves or how it is grounded.
 
 ---
 
 ## The Final Objective
 
 The workshop challenge has two parts. The read part asks, "Which Chicago hotel
-has both a spa and a swimming pool, and what is its cancellation policy?" The
-graph answers it with retrieval and provenance. The write part asks, "Can a
-guest submit a booking request for four guests?" The reservation command
-answers it on the two Cairo fixture hotels.
+has both a spa and a swimming pool, and what is its cancellation policy?"
+Module 2 demonstrates the retrieval each part of that question needs. The
+write part asks, "Can a guest submit a booking request for four guests?" The
+reservation command demonstrates the 10-guest rule on a Cairo fixture hotel.
+A 10-guest request succeeds. A 15-guest request is rejected. Four guests fall
+within that rule.
 
 The notebooks demonstrate four checkable parts:
 
 - **The hotel:** A fixed Cypher query in Module 2 checks both amenities on each
-  Chicago `Hotel` node. It returns Lakeview Horizon Suites and names the source
-  document for each field.
-- **The policy:** Hybrid search in Module 2 finds a Chicago cancellation policy
-  by postal code. The policy comes back with the source `Chunk` and `Document`
-  it was read from.
+  Chicago `Hotel` node. It returns Lakeview Horizon Suites. The result names
+  the hotel's source document and the graph path behind each field.
+- **The policy:** Hybrid search in Module 2 finds a cancellation policy by
+  postal code. It returns the policy of Windward Mile Tower, the Chicago hotel
+  that the spa-and-pool filter excludes. This result demonstrates exact-term
+  retrieval with provenance. The policy comes back with the source `Chunk` and
+  `Document` it was read from.
 - **The booking:** The reservation command checks the workshop's 10-guest rule
   and writes the `ReservationRequest` in one transaction. A 15-guest request is
   rejected. A retry with the same `request_id` returns the first result instead
@@ -98,7 +101,8 @@ The notebooks demonstrate four checkable parts:
 - **The gaps:** Questions the graph cannot answer, such as live room
   availability, come back as a stated missing fact instead of a guess.
 
-As an optional exercise, ask the Module 3 agent the full Chicago read question.
+As an optional exercise, retrieve the cancellation policy of Lakeview Horizon
+Suites, or ask the Module 3 agent the full Chicago read question.
 Module 5 runs the same agent as a hosted service on AgentCore Runtime. A
 separate exercise in Module 6 shows that a guest's stated preference can be
 stored in the same graph, recalled in a later session, and traced to the
@@ -110,20 +114,22 @@ message it came from.
 
 :image[Final architecture: Amazon Bedrock models on top, three agent patterns in the middle, and one Neo4j AuraDB graph at the bottom. Pattern A runs a local notebook agent. Pattern B calls read-only Lambda tools through AgentCore Gateway. Pattern C hosts the agent on AgentCore Runtime.]{src="../images/final-architecture.svg" width=800}
 
-- **Bottom layer, Neo4j:** Every pattern uses the same graph. Module 1 builds
-  the lexical and domain layers. Module 3 adds the reservation command. Module
-  6 adds memory.
+- **Bottom layer, Neo4j:** Every pattern uses the same graph. Setup restores
+  the lexical and domain layers. Module 1 extends them with held-out documents
+  and creates the indexes. Module 3 adds the reservation command. Module 6 adds
+  memory.
 - **Middle layer, three deployment patterns:** Pattern A is where you learn routing and
   grounding. Pattern B moves the read tools behind a managed MCP endpoint.
-  Pattern C hosts the full agent, including the write. The tool names,
-  descriptions, and result shapes stay the same in all three.
+  Pattern C hosts the full agent, including the write. The read tools keep the
+  same base names, descriptions, and result shapes in all three.
 - **Top layer, Bedrock:** Claude chooses tools and writes the answer. It also
   generates Cypher inside `query_hotel_records`. Nova embeds hotel chunks.
   Titan V2 embeds memory records. The two embedding spaces use separate
   indexes.
-- **What stays fixed:** The graph schema, the tool contract, the grounding
-  verdict, and the transactional write stay the same in every pattern. Only
-  the place where the agent and tools run changes.
+- **What stays fixed:** The graph schema, the read-tool contract, and the
+  grounding verdict stay the same in every pattern. Patterns A and C use the
+  same transactional reservation command. Only the place where the agent and
+  tools run changes.
 
 ---
 

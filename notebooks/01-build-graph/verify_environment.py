@@ -104,9 +104,10 @@ def check_neo4j(repo_root: Path) -> None:
         for problem in problems:
             print(f"  {problem}")
         raise RuntimeError(
-            "Neo4j is not ready. Check the Neo4j values in CONFIG.txt and the "
-            "instance status in the Aura console, then run this cell again. "
-            "Do not continue to 1.1."
+            "Neo4j is not ready. If you changed CONFIG.txt, save it, restart "
+            "the kernel, and run every cell again. If the Aura instance was "
+            "paused or still provisioning, wait until the Aura console shows "
+            "RUNNING, then run this cell again. Do not continue to 1.1."
         )
 
     from workshop.fixtures import HERO_ADDRESS, HERO_NAME

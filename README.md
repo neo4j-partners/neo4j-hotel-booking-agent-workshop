@@ -81,7 +81,7 @@ This is a hosted workshop. Almost everyone runs it the first way.
 
 ### At a hosted event, on Vocareum
 
-Vocareum provides a browser-based JupyterLab environment and an AWS account with Amazon Bedrock model access enabled in `us-east-1`. Neo4j is not part of that environment. You create your own free database and restore the workshop graph into it. Everything you need is on this page.
+Vocareum provides a hosted Visual Studio Code environment and an AWS account with Amazon Bedrock model access enabled in `us-east-1`. The workshop dependencies come preinstalled. Neo4j is not part of that environment. You create your own free database and restore the workshop graph into it. Everything you need is on this page.
 
 #### Step 1: Create a Neo4j AuraDB Free instance
 
@@ -125,7 +125,7 @@ AuraDB Free pauses an instance after three days without a connection. If you ret
 
 #### Step 4: Fill in CONFIG.txt
 
-Launch JupyterLab from the Vocareum lab page, open `CONFIG.txt` at the repository root, and replace the placeholder Neo4j values:
+Launch the Visual Studio Code environment from the Vocareum lab page, open `CONFIG.txt` at the repository root, and replace the placeholder Neo4j values:
 
 | Setting | Value |
 |---|---|
@@ -139,31 +139,13 @@ Only the URI and the password need typing. The username and the database name ar
 
 `NEO4J_URI` and `NEO4J_PASSWORD` have no defaults, on purpose. A built-in default password sends a bad credential to the right host and a built-in localhost URI sends a good credential to a host that is not listening. Both read like an outage rather than a missing setting.
 
-#### Step 5: Install and verify
+#### Step 5: Verify the environment
 
-Open a terminal in JupyterLab and run:
+The dependencies are already installed, so you do not open a terminal or install anything. In the `notebooks/01-build-graph/` folder, open `1.0_verify_environment.ipynb`. Select the **Python 3.10** interpreter in the kernel picker in the upper-right corner, then run every cell.
 
-```bash
-cd notebooks
-uv venv && uv pip install -r requirements.txt
-uv run python ../environment/verify.py
-```
+The notebook checks that the lab's AWS credentials can reach the Bedrock models the workshop uses. It also reads one known hotel from your Aura instance to confirm that the restored graph is there. When every check passes, the last cell prints `Environment is ready. Continue to 1.1_build_graph.ipynb.`
 
-Every line must read `ok`:
-
-```
-      loaded CONFIG.txt
-ok    python interpreter is supported
-ok    workshop dependencies import
-ok    neo4j settings are present
-ok    aws credentials resolve
-ok    neo4j returns the hero hotel
-ok    bedrock chat model answers
-ok    bedrock chunk embeddings are 1024-wide
-ok    bedrock memory embeddings are 1024-wide
-```
-
-Anything else means stop and fix it here. The script exits non-zero, prints what failed, and prints what to do about it. Run this check before Module 1; every failure it catches is cheaper here than three modules in.
+Any error means stop and fix it here. The notebook prints what failed and stops at that cell. Run this notebook before Module 1, because every failure it catches is cheaper here than three modules in.
 
 #### Step 6: Open the first notebook
 

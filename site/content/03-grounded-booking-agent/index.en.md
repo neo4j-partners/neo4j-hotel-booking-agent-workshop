@@ -100,7 +100,7 @@ For a hotel question, the normal agent loop is:
 
 1. The model reads each tool's name, description, and input schema.
 2. It chooses `search_hotel_passages`, `query_hotel_records`, or both and sends
-   the user's question as `query`.
+   the guest's question as `query`.
 3. Strands runs the selected tool and returns its JSON evidence to the model.
 4. The model writes a response. The trace shows which path ran and what came
    back.

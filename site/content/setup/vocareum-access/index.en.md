@@ -74,8 +74,10 @@ Proceed to [Module 1](../../01-build-graph/).
 
 ## Troubleshooting
 
-:::expand{header="Neo4j connection refused, or a connection timeout" defaultExpanded=false}
-The Aura instance is not accepting connections yet. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and look at the instance status. A newly created instance may still be provisioning, and an instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the `1.0` notebook again.
+The [Setup page troubleshooting](../#troubleshooting) covers the other Neo4j failures, such as `AuthError` and a missing hotel.
+
+:::expand{header="ServiceUnavailable, or a connection timeout" defaultExpanded=false}
+The Aura instance is not accepting connections yet. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and look at the instance status. A newly created instance may still be provisioning, and an instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the `1.0` notebook again. The `xxxxxxxx` placeholder URI in `CONFIG.txt` also produces `ServiceUnavailable`. If `NEO4J_URI` still shows that placeholder, paste your instance's URI first.
 :::
 
 :::expand{header="The Neo4j check still fails after you fix CONFIG.txt" defaultExpanded=false}

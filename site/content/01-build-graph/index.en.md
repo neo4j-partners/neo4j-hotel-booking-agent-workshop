@@ -7,7 +7,7 @@ This module adds five hotel documents to Neo4j. The build stores each document a
 
 The two structures answer different parts of a question such as "Which Cairo hotels have a spa that costs extra?" Search finds text with similar meaning. Graph relationships connect the hotel, spa, and fee so one Cypher query can match all three facts.
 
-This module produces three results\:
+This module produces three things\:
 
 * **Searchable text:** `Document` and `Chunk` nodes store source text and embeddings.
 * **Structured facts:** `Hotel`, `Room`, `Amenity`, `Policy`, and `Service` nodes store properties and relationships.

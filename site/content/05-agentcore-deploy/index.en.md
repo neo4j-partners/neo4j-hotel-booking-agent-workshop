@@ -311,7 +311,8 @@ tools for both parts into one hosted agent.
 
 The read part asks which Chicago hotel has both a spa and a swimming pool, and
 what its cancellation policy is. The hosted agent carries the same two read
-tools that answer it with graph retrieval and provenance. The smoke tests run
+tools that Modules 2 and 3 tested. Those tools return graph evidence with
+provenance. The smoke tests run
 those tools on Cairo and Paris questions, not on the Chicago question.
 
 The write part asks whether a guest can submit a booking request for four

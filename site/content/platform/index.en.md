@@ -49,9 +49,9 @@ is where the agent and tools run.
 | **Setup** | Verify AWS credentials, region, and Bedrock model access | Create AuraDB, restore the workshop graph, and verify connectivity |
 | **1. Build the Graph** | Bedrock models extract structure into a fixed schema and create embeddings | AuraDB stores documents, chunks, entities, relationships, constraints, vector and full-text indexes, and provenance |
 | **2. From Vector Search to Graph-Enriched Retrieval** | Nova creates query embeddings. Claude writes Cypher for the optional Text2Cypher path | Vector, Hybrid, VectorCypher, and Text2Cypher retrieval patterns return bounded evidence with provenance |
-| **3. Grounded Booking Agent** | Bedrock reasons through a local Strands agent that selects a read tool | The read tools return connected evidence. The reservation command checks the 10-guest rule and writes the request in one transaction |
-| **4. Production Agent** | AgentCore Gateway authenticates MCP calls with IAM SigV4 and invokes Lambda. Secrets Manager stores the Neo4j settings | Lambda tools query the same graph through the Neo4j driver |
-| **5. AgentCore Deployment** | ECR stores the container image. AgentCore Runtime hosts the packaged Strands agent. CloudWatch captures its logs | The deployed agent connects directly to AuraDB as its knowledge service |
+| **3. Build a Grounded Booking Agent with GraphRAG** | Bedrock reasons through a local Strands agent that selects a read tool | The read tools return connected evidence. The reservation command checks the 10-guest rule and writes the request in one transaction |
+| **4. Production Agent with AgentCore** | AgentCore Gateway authenticates MCP calls with IAM SigV4 and invokes Lambda. Secrets Manager stores the Neo4j settings | Lambda tools query the same graph through the Neo4j driver |
+| **5. Deploy to AgentCore Runtime** | ECR stores the container image. AgentCore Runtime hosts the packaged Strands agent. CloudWatch captures its logs | The deployed agent connects directly to AuraDB as its knowledge service |
 | **6. Neo4j Graph Memory** | Titan creates the memory embedding. IAM controls access to the model. AgentCore Memory serves as the managed comparison | Neo4j stores actor-scoped preferences with their source messages and domain links. The application can correct a stored preference |
 
 ---

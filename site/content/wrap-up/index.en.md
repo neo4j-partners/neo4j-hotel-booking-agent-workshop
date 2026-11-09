@@ -34,7 +34,7 @@ and preserve provenance.
 - **Grounding verdict:** You verified that live room availability was reported as a missing fact without grading final-answer wording.
 - **Protected reservation command:** You checked booking rules and wrote the request in one transaction.
 
-### Modules 4 and 5: Built Production Infrastructure
+### Modules 4 and 5: Ran Two Alternative Deployment Patterns
 
 - **AgentCore Gateway:** You exposed the Lambda read tools through a managed MCP endpoint.
 - **IAM SigV4 authentication:** You signed tool calls with the caller's AWS identity.
@@ -65,8 +65,12 @@ and preserve provenance.
 
 :image[Three architectures recapped: Module 4's Notebook Strands agent calling AgentCore Gateway and Lambda read tools into Neo4j, Module 5's authorized caller invoking AgentCore Runtime with a packaged Strands agent calling both Neo4j and Bedrock, and Module 6's notebook or app writing to the Neo4j graph memory]{src="../../images/wrap-up-architectures.svg" width=800}
 
-Module 4 routes remote tools through Gateway. Module 5 packages an agent on
-Runtime and connects it to Neo4j. Module 6 adds the hands-on graph memory path.
+The image shows Pattern B, Pattern C, and Module 6 memory. Pattern A is the
+notebook agent from Module 3.
+
+Pattern B, from Module 4, routes remote tools through Gateway. Pattern C, from
+Module 5, packages an agent on Runtime and connects it to Neo4j. Module 6 adds
+the hands-on graph memory path.
 
 ---
 

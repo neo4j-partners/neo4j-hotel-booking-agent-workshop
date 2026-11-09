@@ -62,19 +62,23 @@ objective, and the final architecture.
 ### 3.2 The Final Objective
 
 > The workshop challenge has two parts. The read part asks, "Which Chicago hotel
-> has both a spa and a swimming pool, and what is its cancellation policy?" The
-> graph answers it with retrieval and provenance. The write part asks, "Can a
-> guest submit a booking request for four guests?" The reservation command
-> answers it on the two Cairo fixture hotels.
+> has both a spa and a swimming pool, and what is its cancellation policy?"
+> Module 2 demonstrates the retrieval each part of that question needs. The
+> write part asks, "Can a guest submit a booking request for four guests?" The
+> reservation command demonstrates the 10-guest rule on a Cairo fixture hotel.
+> A 10-guest request succeeds. A 15-guest request is rejected. Four guests fall
+> within that rule.
 
 The notebooks demonstrate four checkable parts:
 
 - **The hotel:** A fixed Cypher query in Module 2 checks both amenities on each
-  Chicago `Hotel` node. It returns Lakeview Horizon Suites and names the source
-  document for each field.
-- **The policy:** Hybrid search in Module 2 finds a Chicago cancellation policy
-  by postal code. The policy comes back with the source `Chunk` and `Document`
-  it was read from.
+  Chicago `Hotel` node. It returns Lakeview Horizon Suites. The result names
+  the hotel's source document and the graph path behind each field.
+- **The policy:** Hybrid search in Module 2 finds a cancellation policy by
+  postal code. It returns the policy of Windward Mile Tower, the Chicago hotel
+  that the spa-and-pool filter excludes. This result demonstrates exact-term
+  retrieval with provenance. The policy comes back with the source `Chunk` and
+  `Document` it was read from.
 - **The booking:** The reservation command checks the workshop's 10-guest rule
   and writes the `ReservationRequest` in one transaction. A 15-guest request is
   rejected. A retry with the same `request_id` returns the first result instead
@@ -82,7 +86,8 @@ The notebooks demonstrate four checkable parts:
 - **The gaps:** Questions the graph cannot answer, such as live room
   availability, come back as a stated missing fact instead of a guess.
 
-As an optional exercise, ask the Module 3 agent the full Chicago read question.
+As an optional exercise, retrieve the cancellation policy of Lakeview Horizon
+Suites, or ask the Module 3 agent the full Chicago read question.
 Module 5 runs the same agent as a hosted service on AgentCore Runtime. A
 separate exercise in Module 6 shows that a guest's stated preference can be
 stored in the same graph, recalled in a later session, and traced to the
@@ -125,8 +130,8 @@ Proposed caption: *One graph and one tool contract, run three ways.*
 +------------------------------------------------------------------------------------------+
 |                          Neo4j AuraDB: one graph for every pattern                       |
 |                                                                                          |
-|  Lexical layer   Document -> Chunk, vector index + full-text index        (Module 1)     |
-|  Domain layer    Hotel -> Room, Amenity, Policy, Service, with provenance (Module 1)     |
+|  Lexical layer   Document -> Chunk, vector index + full-text index (Setup + Module 1)    |
+|  Domain layer    Hotel -> Room, Amenity, Policy, Service, provenance (Setup + Module 1)  |
 |  Commands        ReservationRequest -> Hotel, guest-limit rule, request_id (Module 3)    |
 |  Memory          User -> Preference -> Message -> Hotel, actor-scoped      (Module 6)    |
 +------------------------------------------------------------------------------------------+
@@ -137,8 +142,9 @@ Proposed caption: *One graph and one tool contract, run three ways.*
 
 Suggested text under the diagram:
 
-- **Bottom layer, Neo4j:** Every pattern reads and writes the same graph. Module
-  1 builds the lexical and domain layers. Module 3 adds the reservation command.
+- **Bottom layer, Neo4j:** Every pattern reads and writes the same graph. Setup
+  restores the lexical and domain layers. Module 1 extends them with held-out
+  documents and creates the indexes. Module 3 adds the reservation command.
   Module 6 adds memory.
 - **Middle layer, three patterns:** Pattern A is where you learn routing and
   grounding. Pattern B moves the read tools behind a managed MCP endpoint.

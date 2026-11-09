@@ -51,16 +51,16 @@ The workshop uses three models, all in **us-east-1**\:
 
 ## Troubleshooting
 
-Each path runs its own check. Vocareum learners run `notebooks/01-build-graph/1.0_verify_environment.ipynb`. Own-account learners run `environment/verify.py` from a terminal. The Neo4j and Bedrock failures look the same on both paths.
+Each path runs its own check. Vocareum learners run `notebooks/01-build-graph/1.0_verify_environment.ipynb`. Own-account learners run `environment/verify.py` from a terminal. The connection and Bedrock errors carry the same names on both paths.
 
 ### Both Paths
 
 :::expand{header="AuthError" defaultExpanded=false}
-The password is wrong. Aura shows the generated password once, so a mistyped or truncated paste is the usual cause. Re-copy it from the credentials file you downloaded, or reset the password from the Aura console and paste the new one.
+The password is wrong. Aura shows the generated password once, so a mistyped or truncated paste is the usual cause. Re-copy it from the credentials file you downloaded, or reset the password from the Aura console and paste the new one. On Vocareum, restart the notebook kernel first.
 :::
 
 :::expand{header="ServiceUnavailable, or a connection timeout" defaultExpanded=false}
-The Aura instance is not accepting connections. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and check its status. A newly created instance may still be provisioning, and a free instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run your check again. If `NEO4J_URI` still shows the `xxxxxxxx` placeholder, paste your instance's URI into `CONFIG.txt` first.
+The Aura instance is not accepting connections. Open :link[the Aura console]{href="https://console.neo4j.io/" external=true} and check its status. A newly created instance may still be provisioning, and a free instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run your check again. If `NEO4J_URI` still shows the `xxxxxxxx` placeholder, paste your instance's URI into `CONFIG.txt` first. On Vocareum, restart the notebook kernel first.
 :::
 
 :::expand{header="the graph has no hotel named ..." defaultExpanded=false}

@@ -102,7 +102,7 @@ The query embedder must match the build settings: the same model, 1024 dimension
 
 ## 2. Graph-Enhanced Vector Search with VectorCypherRetriever
 
-`VectorCypherRetriever` runs vector search first, then runs a reviewed `retrieval_query` for every matched chunk. Neo4j calls this GraphRAG retrieval pattern **Graph-Enhanced Vector Search**. The query below is a simplified version of the notebook's `VECTOR_CYPHER_QUERY`. The notebook version also returns `relationship_types` and a provenance path for every returned field\:
+`VectorCypherRetriever` runs vector search first, then runs a reviewed `retrieval_query` for every matched chunk. Neo4j calls this GraphRAG retrieval pattern **Graph-Enhanced Vector Search**. The query below is a simplified version of the notebook's `VECTOR_CYPHER_QUERY`. The notebook version also returns `relationship_types` and a provenance path for each of the six hotel and source fields\:
 
 :::code{language=cypher}
 MATCH (node)-[:FROM_DOCUMENT]->(document:Document)
@@ -138,8 +138,8 @@ WITH node, score, candidate
 WHERE score IS NOT NULL
 // Select one Hotel deterministically if malformed data supplies candidates.
 ORDER BY score DESC,
-         coalesce(candidate.hotel_id, '￿'),
-         coalesce(candidate.name, '￿')
+         coalesce(candidate.hotel_id, '\uffff'),
+         coalesce(candidate.name, '\uffff')
 WITH node, score, head(collect(candidate)) AS hotel
 CALL (hotel) {
     // Collect a stable, bounded list of the Hotel's named amenities.
@@ -159,8 +159,8 @@ RETURN left(coalesce(node.text, ''), 8000) AS chunk_text,
        hotel.guest_rating AS guest_rating,
        amenities
 ORDER BY combined_score DESC,
-         coalesce(hotel_id, '￿'),
-         coalesce(hotel_name, '￿')
+         coalesce(hotel_id, '\uffff'),
+         coalesce(hotel_name, '\uffff')
 :::
 
 The subquery returns one amenity list per hotel, so the traversal returns exactly one row per matched chunk no matter how many amenities the hotel has. A limit caps the list at 12 items. The file fills in that limit from `contracts.MAX_AMENITIES` and the 8000-character text bound from `MAX_CONTEXT_CHARS`. Ordered tie-breaking and `head(collect(candidate))` select one hotel per chunk deterministically.
@@ -382,7 +382,7 @@ Configure one Neo4j connection because every module uses the same credentials. T
 
 ## Challenge Checkpoint
 
-The workshop challenge starts with a read question: "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" Notebook section 4 answers the first half, because its fixed Cypher filter returns Lakeview Horizon Suites. Notebook section 2 shows hybrid search retrieving a Chicago cancellation policy along with its source filename. As an optional exercise, ask the passage search for the Lakeview Horizon Suites cancellation policy and check the returned source.
+The workshop challenge starts with a read question: "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" Notebook section 4 answers the first half, because its fixed Cypher filter returns Lakeview Horizon Suites. Notebook section 2 retrieves the Windward Mile Tower cancellation policy with its source filename. That example shows exact-term retrieval with provenance. As an optional exercise, ask the passage search for the Lakeview Horizon Suites cancellation policy and check the returned source.
 
 Slides for this module\: [GraphRAG Retrieval](../slides/overview-graphrag/)
 

@@ -388,6 +388,6 @@ is the unit you want to deploy and invoke.
 
 The resources created here stay until they are deleted: two Lambdas named
 hotel-booking-*, the Gateway with one target per tool, the secret, and two IAM
-roles. Workshop Studio cleans them up at the end of a hosted event. In your own
-account, delete them yourself.
+roles. On the Vocareum path, the lab account is removed when the lab session
+ends. In your own account, delete them yourself.
 -->

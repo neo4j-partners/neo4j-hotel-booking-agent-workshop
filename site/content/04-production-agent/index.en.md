@@ -48,7 +48,7 @@ The diagram follows one request:
 * **The database:** Each Lambda sends EXPLAIN-checked Cypher to Neo4j Aura.
   Aura sits outside the AWS Cloud boundary because it is a separately managed
   database.
-* **The arrow colors:** The dashed blue arrow is the user talking to the agent.
+* **The arrow colors:** The dashed blue arrow is the guest talking to the agent.
   The orange arrows are the MCP call, the Lambda invocation, and the secret
   read. The solid blue arrow is the retrieval Cypher.
 
