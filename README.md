@@ -48,7 +48,7 @@ validate that it contains the shared `workshop` package before using it.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    JupyterLab (browser)                         │
+│                    Notebook environment                         │
 │                                                                 │
 │  Jupyter Notebook ──► Strands Agent ──► @tool                  │
 │                              │                                  │
@@ -155,13 +155,13 @@ Open `notebooks/01-build-graph/1.1_build_graph.ipynb` and work forward through t
 
 | What you see | What to do |
 |---|---|
-| `NEO4J_URI, NEO4J_PASSWORD is not set` | The script did not find the values. Confirm `CONFIG.txt` is at the repository root, that you edited that file rather than a copy, and that the values carry no quotes. The line printed before the first check names the settings file it actually loaded. |
-| `AuthError` | The password is wrong. Aura shows it once, so a mistyped or truncated paste is the usual cause. Re-copy it from the credentials file, or reset the password from the Aura console. |
-| `ServiceUnavailable`, or a connection timeout | The instance is not accepting connections. Check its status in the Aura console. A newly created instance may still be provisioning, and a free instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the script again. |
+| `Missing required Neo4j environment values` | The notebook did not find the values. Confirm that the `NEO4J_URI` and `NEO4J_PASSWORD` lines in `CONFIG.txt` at the repository root are present and not blank, and that you saved the file. Then restart the notebook kernel and run every cell again. |
+| `AuthError` | The password is wrong. Aura shows it once, so a mistyped or truncated paste is the usual cause. Re-copy it from the credentials file, or reset the password from the Aura console. Then restart the notebook kernel and run every cell again. |
+| `ServiceUnavailable`, or a connection timeout | The instance is not accepting connections. Check its status in the Aura console. A newly created instance may still be provisioning, and a free instance left idle for three days pauses and has to be resumed. Wait for **RUNNING**, then run the `1.0` notebook again. The `xxxxxxxx` placeholder URI in `CONFIG.txt` also produces this error. |
 | `the graph has no hotel named ...` | The connection works but the dump is not in this instance. Confirm `NEO4J_URI` points at the instance you restored into, that `NEO4J_DATABASE` is `neo4j`, and that the restore finished. Re-running the restore is safe, because it overwrites. |
+| The check still fails after you fix `CONFIG.txt` | The notebook keeps the values it loaded first. Save `CONFIG.txt`, restart the notebook kernel, and run every cell again. |
 | `AccessDeniedException` from Bedrock | Confirm `AWS_REGION` is `us-east-1`. All three models live there. |
-| `NoCredentialsError` | The terminal has no AWS credentials. They come from the lab environment, so this usually means the lab session expired or the terminal was opened before the lab started. |
-| `cannot import ... (provided by ...)` | The install step did not finish. Re-run `uv pip install -r requirements.txt` from the `notebooks/` directory and read the output for the package that failed. |
+| `No AWS credentials are available` | The notebook has no AWS credentials. They come from the lab environment, so this usually means the lab session expired or was never started. Return to the lab page, start the lab again, then restart the notebook kernel. |
 
 ### Self-paced, in your own AWS account
 

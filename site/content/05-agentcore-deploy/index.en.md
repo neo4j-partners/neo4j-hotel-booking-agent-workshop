@@ -190,7 +190,7 @@ minutes.
 
 Runtime use, ECR image storage, and CodeBuild builds can incur AWS charges. The
 workshop leaves these resources in place. On the Vocareum path, the lab account
-goes away when the lab session ends. If you use your own account, remove all
+is removed when the lab session ends. If you use your own account, remove all
 four resources and their generated CloudWatch log groups when you finish.
 Stored CloudWatch logs can continue to incur storage charges. IAM has no
 additional charge. The [cleanup inventory](../setup/own-account-setup/#cleanup)

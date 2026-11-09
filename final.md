@@ -103,7 +103,7 @@ Proposed caption: *One graph and one tool contract, run three ways.*
                      ^                          ^                         ^
                      |                          |                         |
 =====================|==========================|=========================|==================
- HOW THE AGENT RUNS: one pattern per deployment
+ HOW THE AGENT RUNS: one deployment pattern per column
 
  [A] Local agent            [B] Remote tools               [C] Hosted agent
      Module 3                   Module 4                       Module 5
@@ -112,9 +112,9 @@ Proposed caption: *One graph and one tool contract, run three ways.*
   Strands agent             Strands agent                          |
    |                          |                                    | InvokeAgentRuntime (IAM)
    |- search_hotel_passages   | MCP over HTTPS, SigV4              v
-   |- query_hotel_records     v                            +-----------------------------+
-   '- reservation command  +-------------------------+     | AgentCore Runtime container |
-      (called directly)    | AgentCore Gateway       |     | booking_agent.py            |
+   '- query_hotel_records     v                            +-----------------------------+
+  Notebook also calls      +-------------------------+     | AgentCore Runtime container |
+  reservation command      | AgentCore Gateway       |     | booking_agent.py            |
    |                       | IAM authorizer          |     |  |- search_hotel_passages   |
    |                       +-------------------------+     |  |- query_hotel_records     |
    |                          | invoke                     |  '- create_reservation      |
@@ -142,20 +142,21 @@ Proposed caption: *One graph and one tool contract, run three ways.*
 
 Suggested text under the diagram:
 
-- **Bottom layer, Neo4j:** Every pattern reads and writes the same graph. Setup
+- **Bottom layer, Neo4j:** Every pattern uses the same graph. Setup
   restores the lexical and domain layers. Module 1 extends them with held-out
   documents and creates the indexes. Module 3 adds the reservation command.
   Module 6 adds memory.
-- **Middle layer, three patterns:** Pattern A is where you learn routing and
-  grounding. Pattern B moves the read tools behind a managed MCP endpoint.
-  Pattern C hosts the full agent, including the write. The tool names,
-  descriptions, and result shapes stay the same in all three.
+- **Middle layer, three deployment patterns:** Pattern A is where you learn
+  routing and grounding. Pattern B moves the read tools behind a managed MCP
+  endpoint. Pattern C hosts the full agent, including the write. The read tools
+  keep the same base names, descriptions, and result shapes in all three.
 - **Top layer, Bedrock:** Claude chooses tools and writes the answer. It also
   generates Cypher inside `query_hotel_records`. Nova embeds hotel chunks.
   Titan V2 embeds memory records. The two embedding spaces use separate
   indexes.
-- **What stays fixed:** The graph schema, the tool contract, the grounding
-  verdict, and the transactional write. Only the place where the agent and
+- **What stays fixed:** The graph schema, the read-tool contract, and the
+  grounding verdict stay the same in every pattern. Patterns A and C use the
+  same transactional reservation command. Only the place where the agent and
   tools run changes.
 
 Then keep the existing two role bullets for Neo4j and Bedrock, or fold them
