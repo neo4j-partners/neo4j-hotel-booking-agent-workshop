@@ -37,9 +37,10 @@ how Neo4j and AWS fit together, into the details of the integration patterns:
 data connectors, agent frameworks, memory, and GraphRAG.
 
 Source material: the original AWS Agentic AI Conference deck, plus slides
-pulled from the Neo4j hotel booking agent workshop (agent, memory,
-architecture, business-case, GraphRAG, and knowledge-graph decks), rewritten
-here in plain language for a general conference audience.
+pulled from the Neo4j hotel booking agent workshop, rewritten here in plain
+language for a general conference audience. The workshop slides come from the
+agent, memory, architecture, business-case, GraphRAG, and knowledge-graph
+decks.
 -->
 
 ---

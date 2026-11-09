@@ -185,13 +185,16 @@ The notebook creates the AgentCore Runtime `GraphRagBookingAgent`, the ECR
 repository `workshop-graphrag-booking-agent`, the CodeBuild project
 `bedrock-agentcore-graphragbookingagent-builder`, and the IAM execution role
 `workshop-graphrag-runtime-role`. It tags all four with
-`WorkshopResource=graphrag-with-neo4j`. The container build takes three to five
-minutes.
+`WorkshopResource=graphrag-with-neo4j`. The starter toolkit also creates the
+CodeBuild IAM role `AmazonBedrockAgentCoreSDKCodeBuild-{region}-{suffix}` and
+the S3 bucket `bedrock-agentcore-codebuild-sources-{account}-{region}`. These
+two resources do not carry the workshop tag. The container build takes three to
+five minutes.
 
 Runtime use, ECR image storage, and CodeBuild builds can incur AWS charges. The
 workshop leaves these resources in place. On the Vocareum path, the lab account
 is removed when the lab session ends. If you use your own account, remove all
-four resources and their generated CloudWatch log groups when you finish.
+six resources and their generated CloudWatch log groups when you finish.
 Stored CloudWatch logs can continue to incur storage charges. IAM has no
 additional charge. The [cleanup inventory](../setup/own-account-setup/#cleanup)
 lists every name.

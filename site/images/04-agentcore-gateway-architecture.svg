@@ -60,7 +60,7 @@
   <rect x="190" y="230" width="230" height="200" rx="14" fill="#E6F6F4" stroke="#01A88D" stroke-width="2" filter="url(#sh4)"/>
   <use href="#icon-strands" x="206" y="248" width="26" height="42"/>
   <text x="242" y="273" fill="#0D5C54" font-size="14" font-weight="700">Strands Agent</text>
-  <text x="206" y="304" fill="#3E6F6A" font-size="10.5">Jupyter notebook</text>
+  <text x="206" y="304" fill="#3E6F6A" font-size="10.5">Notebook</text>
   <text x="206" y="322" fill="#3E6F6A" font-size="10.5">Claude on Amazon Bedrock</text>
 
   <!-- ============ AWS CLOUD ============ -->

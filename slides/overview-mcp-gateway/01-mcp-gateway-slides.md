@@ -122,7 +122,8 @@ credential from Secrets Manager at cold start. It sends EXPLAIN-checked Cypher
 to Aura.
 
 Note where Aura sits: outside the AWS Cloud boundary, because it is a
-separately managed database. Slide 11 comes back to that.
+separately managed database. The "Neo4j Sits Outside the AWS Boundary" slide
+comes back to that.
 
 Arrow colors: dashed blue is the user talking to the agent, orange is the MCP
 call plus the Lambda invocation plus the secret read, solid blue is the
@@ -179,7 +180,8 @@ The reservation command stays outside this Gateway. Both tools only read.
 
 <!--
 These are the same two retrieval capabilities Module 3 taught, exposed here
-under Gateway base names. Slide 9 is the Text2Cypher guard.
+under Gateway base names. The "Text2Cypher Needs a Guard" slide covers the
+guard.
 
 Both tools reuse the same implementations in hybrid_retrieval.py. Module 3
 exposes them as `search_hotel_passages` and `query_hotel_records`; Module 4
@@ -203,7 +205,7 @@ The schema is committed to the repository, not built at deploy time, so the Gate
 Validate in the handler. The Gateway drops the constraint, so nothing else enforces it.
 
 <!--
-The subset behaviour is the practical trap. The committed schema keeps the
+The subset behavior is the practical trap. The committed schema keeps the
 stricter keys because the local tools validate against them, and the notebook
 projects the schema down to the keys the Gateway actually reads. If you assume
 minLength is enforced, an empty query string reaches your handler.
@@ -255,11 +257,13 @@ section { font-size: 24px; }
 ## Identity, SigV4 All the Way Down
 
 ```python
-gateway_mcp = MCPClient(lambda: stdio_client(StdioServerParameters(
-    command="uvx",
-    args=["mcp-proxy-for-aws@latest", GATEWAY_URL, "--region", REGION],
-    env=os.environ.copy(),
-)))
+from mcp_proxy_for_aws.client import aws_iam_streamablehttp_client
+
+gateway_mcp = MCPClient(lambda: aws_iam_streamablehttp_client(
+    endpoint=GATEWAY_URL,
+    aws_region=REGION,
+    aws_service="bedrock-agentcore",
+))
 ```
 
 - **`mcp-proxy-for-aws`** sends an MCP request as a signed HTTPS request
@@ -276,9 +280,8 @@ Walk the chain as three hops with three different identities. The caller never
 holds the Neo4j credential, and that is a property of the role split rather
 than of anyone being careful.
 
-The proxy gets a copy of the environment, so it finds the AWS credentials the
-notebook is already using. The Gateway sees that identity and IAM permissions
-apply to it.
+The client signs each request with the AWS credentials the notebook is
+already using. The Gateway sees that identity and IAM permissions apply to it.
 
 One operational note: IAM is eventually consistent, so a freshly created role
 can be rejected for a few seconds after it exists. The notebook retries that

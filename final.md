@@ -5,7 +5,7 @@
 ## 1. What Is on the Index Page Today
 
 The index page goes from **Workshop Flow** straight to **Module 4 Tool
-Architecture**. That section shows `03-agentcore-architecture.svg`.
+Architecture**. That section shows `04-agentcore-gateway-architecture.svg`.
 
 - **Is it the Module 4 diagram?** Yes. Module 4 uses the same file,
   `site/content/04-production-agent/index.en.md:31`. The index page repeats it
@@ -234,20 +234,12 @@ What differs from the workshop:
    diagram in section 3.3, because it matches what the notebooks build.
    Section 5 would overstate the workshop if it appeared on the index.
 
-three-pattern diagram in section 3.3
- 
 2. **New SVG or ASCII?** The index uses SVG diagrams. Section 3.3 would need a
    new SVG, likely a revision of `wrap-up-architectures.svg` with the shared
    Neo4j layer at the bottom and Pattern A added.
 
-have a background agent draw an svg
-
 3. **Keep the Module 4 diagram on the index at all?** The recommendation is to
    remove it there and keep it in Module 4, where it already appears.
 
-remove it 
-
 4. **Where does section 5 go, if anywhere?** The Production Path page is the
    natural home.
-
-Production Path Page 

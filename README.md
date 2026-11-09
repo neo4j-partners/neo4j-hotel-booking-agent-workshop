@@ -14,7 +14,7 @@ Running the workshop on your own? Follow the [self-paced AWS account instruction
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat&logo=python&logoColor=white)](https://python.org)
 [![Amazon Bedrock](https://img.shields.io/badge/Amazon-Bedrock-FF9900.svg?style=flat&logo=amazon-aws)](https://aws.amazon.com/bedrock/)
 [![Neo4j](https://img.shields.io/badge/Neo4j-Graph--RAG-4581C3.svg?style=flat&logo=neo4j)](https://neo4j.com)
-[![Strands Agents](https://img.shields.io/badge/Strands_Agents-1.27+-00B4D8.svg?style=flat)](https://strandsagents.com)
+[![Strands Agents](https://img.shields.io/badge/Strands_Agents-1.53+-00B4D8.svg?style=flat)](https://strandsagents.com)
 [![Vocareum](https://img.shields.io/badge/Hosted_on-Vocareum-1F6FEB.svg?style=flat)](https://www.vocareum.com/)
 
 > Semantic search finds relevant source text. Graph traversal turns that entry point into compact, connected evidence with explicit provenance.
@@ -27,12 +27,12 @@ A hands-on workshop in six modules. You build a hotel knowledge graph, compare s
 
 | Module | Notebooks | What You Build |
 |--------|-----------|----------------|
-| [01: Build the Graph](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/01-build-graph) | `1.1_build_graph.ipynb` | Live extraction of five held-out hotels, deterministic amenities, both retrieval indexes |
-| [02: From Similarity Search to Connected Context](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/02-connected-context) | `2.1_connected_context.ipynb` | Semantic, exact-term, graph-enriched, and structured retrieval evidence |
-| [03: Build the Grounded Booking Agent](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/03-grounded-booking-agent) | `3.1_grounded_booking_agent.ipynb` | Grounded answers, abstention, and a protected reservation command |
+| [01: Build the Graph](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/01-build-graph) | `1.0_verify_environment.ipynb`, `1.1_build_graph.ipynb` | Live extraction of five held-out hotels, deterministic amenities, both retrieval indexes |
+| [02: From Vector Search to Graph-Enriched Retrieval](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/02-connected-context) | `2.1_connected_context.ipynb` | Semantic, exact-term, graph-enriched, and structured retrieval evidence |
+| [03: Build a Grounded Booking Agent with GraphRAG](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/03-grounded-booking-agent) | `3.1_grounded_booking_agent.ipynb` | Grounded answers, abstention, and a protected reservation command |
 | [04: Production Agent with AgentCore](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/04-production-agent) | `4.1_agentcore_gateway.ipynb` | Gateway Lambda tools, IAM-authenticated MCP, and a Strands agent over the Gateway |
 | [05: Deploy to AgentCore Runtime](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/05-agentcore-deploy) | `5.1_deploy.ipynb` | Containerized agent on AgentCore Runtime, one request correlated end to end |
-| [06: Inspectable Neo4j Memory](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/06-neo4j-memory) | `6.1_neo4j_memory.ipynb` | Cross-session graph memory with actor-scoped recall and full provenance tracing |
+| [06: Neo4j Graph Memory](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/tree/main/site/content/06-neo4j-memory) | `6.1_neo4j_memory.ipynb` | Cross-session graph memory with actor-scoped recall and full provenance tracing |
 
 Each module folder under `notebooks/` has a short `README.md` that says what the module is, which notebook or notebooks to run, and where to find the full lesson on the workshop site.
 
@@ -50,7 +50,7 @@ validate that it contains the shared `workshop` package before using it.
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Notebook environment                         │
 │                                                                 │
-│  Jupyter Notebook ──► Strands Agent ──► @tool                  │
+│          Notebook ──► Strands Agent ──► @tool                  │
 │                              │                                  │
 │                    ┌─────────┴──────────┐                       │
 │                    │                    │                       │
@@ -211,7 +211,10 @@ uv venv && uv pip install -r requirements.txt
 # 3. Build the graph from scratch instead of restoring the dump
 uv run python 02-connected-context/prepare_graph.py
 
-# 4. Run the modules in order
+# 4. Verify the environment
+uv run python ../environment/verify.py
+
+# 5. Run the modules in order
 uv run jupyter lab
 # Open 01-build-graph/1.1_build_graph.ipynb first
 ```
@@ -245,6 +248,8 @@ As a participant you need three things: this README, `CONFIG.txt`, and `notebook
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING](https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop/blob/main/CONTRIBUTING.md) for more information.
+
+To run the offline test suite, use the command in [tools/README.md](tools/README.md). Plain `uv run pytest` at the repository root does not work.
 
 ---
 

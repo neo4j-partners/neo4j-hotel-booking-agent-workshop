@@ -134,6 +134,11 @@ The Module 5 notebook applies the tag
 - The CodeBuild project `bedrock-agentcore-graphragbookingagent-builder`
 - The IAM execution role `workshop-graphrag-runtime-role`
 
+The starter toolkit also creates these two resources without the tag\:
+
+- The CodeBuild IAM role `AmazonBedrockAgentCoreSDKCodeBuild-{region}-{suffix}`
+- The S3 bucket `bedrock-agentcore-codebuild-sources-{account}-{region}`
+
 Use the tag to confirm ownership before deletion. Also remove the generated
 CloudWatch log groups, including
 `/aws/bedrock-agentcore/runtimes/{runtime-id}-DEFAULT` and

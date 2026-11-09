@@ -33,7 +33,8 @@ A booking agent needs evidence for its answers and controls for its actions.
 - **Workshop challenge:** The challenge has a read part and a write part. The read part asks, "Which Chicago hotel has both a spa and a swimming pool, and what is its cancellation policy?" The write part asks, "Can a guest submit a booking request for four guests?" The reservation command demonstrates the 10-guest rule on a Cairo fixture hotel. A 10-guest request succeeds. A 15-guest request is rejected. Four guests fall within that rule.
 
 You will connect each answer to its sources. A separate reservation command
-will enforce booking rules before it saves a request.
+will save each approved request. Neo4j enforces the guest limit inside the
+write transaction, so an over-limit request creates no reservation node.
 
 :::alert{type="info" header="Region"}
 This workshop runs in **us-east-1**, the N. Virginia region. Your AWS account

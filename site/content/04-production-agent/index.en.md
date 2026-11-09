@@ -165,11 +165,15 @@ The deployment zip must hold wheels that run on Lambda, not wheels that run on
 the machine that built the zip. `build_lambda_zips` handles four problems:
 
 * **Platform wheels:** Lambda runs Amazon Linux on `arm64` here. The build
-  passes `--python-platform aarch64-manylinux2014` and `--only-binary :all:`,
-  so the wheels match the runtime even when the notebook runs on macOS.
-* **`--no-deps` for the shared package:** The `workshop` package declares
-  dependencies for every module in the workshop, including the Strands agent.
-  `--no-deps` keeps those out of a zip that only needs retrieval.
+  runs `pip install --target` with `--platform manylinux2014_aarch64`,
+  `--python-version 3.12`, `--implementation cp`, `--abi cp312`, and
+  `--only-binary :all:`. The wheels match the runtime even when the notebook
+  runs on macOS.
+* **Copied shared package:** The `workshop` package declares dependencies for
+  every module in the workshop, including the Strands agent. The build does not
+  pip install that package. It copies the package's `*.py` files and the
+  `notebooks/workshop/fixtures/` directory into the zip. This keeps those
+  dependencies out of a zip that only needs retrieval.
 * **Packages left out of the requirements:** Lambda already ships `boto3`, so
   adding it only grows the zip. The requirements also skip `neo4j-rust-ext`, an
   optional native driver accelerator. It would add a compiled artifact to a

@@ -7,7 +7,8 @@ Module 2 compares GraphRAG ways to read hotel information from Neo4j. Module 3
 turns two of those read paths into tools for one local hotel assistant. A plain
 Strands agent chooses a read tool, uses its returned evidence to answer, and
 says when the graph does not have a needed fact. A separate reservation command
-checks business rules before it writes an approved request to Neo4j.
+writes an approved request to Neo4j. Neo4j enforces the guest limit inside the
+write transaction, so an over-limit request creates no reservation node.
 
 This module is deployment Pattern A, the local agent. Modules 4 and 5 show
 Patterns B and C as alternatives to it, not as later steps.

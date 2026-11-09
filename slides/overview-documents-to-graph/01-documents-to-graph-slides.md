@@ -32,7 +32,8 @@ ol > li {
 Hotel FAQ documents become a graph you can query
 
 <!--
-The hinge of this deck is slide 6, schema drift. Everything before it explains
+The hinge of this deck is the "Schema Drift, and What It Costs" slide.
+Everything before it explains
 what extraction has to decide, and everything after it is the machinery for
 taking those decisions away from the model.
 

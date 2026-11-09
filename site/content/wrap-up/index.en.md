@@ -17,7 +17,7 @@ and preserve provenance.
 
 - **Source documents:** You extracted the held-out hotel documents into :link[Neo4j]{href="https://neo4j.com/" external=true}.
 - **Extraction schema:** You defined predictable node labels and relationship types before extraction.
-- **Uniqueness constraints:** You verified the constraints that prevent duplicate entities.
+- **Uniqueness constraints:** The build merged each amenity name into one shared node under a uniqueness constraint.
 - **Retrieval indexes:** You created the vector and full-text indexes used by later modules.
 
 ### Module 2: Built Graph-Enriched Retrieval

@@ -173,7 +173,7 @@ Graph enrichment returns facts written during extraction. Each result includes `
 
 ## 3. Full-Text Search for Exact Terms
 
-The second notebook question asks for the cancellation policy of the hotel at `60611`. A five-digit token carries little meaning on its own, so its embedding lands near many unrelated numbers. The notebook runs a `top_k=30` diagnostic scan and prints the Chicago chunk's vector rank to show how far down the list it falls.
+The second notebook question asks for the cancellation policy of the hotel at `60611`. A five-digit token carries little meaning on its own, so its embedding lands near many unrelated numbers. The notebook runs vector search and hybrid search with `top_k=5`. For each result row, it prints the rank, the source filename, and whether the chunk contains `60611`.
 
 Full-text search fixes this problem. It uses the Apache Lucene index `hotel_chunk_fulltext` over `Chunk.text`. Lucene breaks the text into tokens, matches literal terms, and assigns a relevance score. The rare token `60611` gets a strong score in the chunk that contains it.
 
@@ -300,11 +300,11 @@ This result shape records why each hotel passed or failed. "Reviewed fixed Cyphe
 ## 8. Text2Cypher with Text2CypherRetriever
 
 `Text2CypherRetriever` asks a model to write a query from the extraction schema.
-The optional Module 2 notebook cell demonstrates the flow explicitly so each
+The Module 2 notebook cell demonstrates the flow explicitly so each
 validation step remains visible. Module 3 uses this retrieval pattern in its structured
 record tool\:
 
-1. Add the schema and three examples to the prompt.
+1. Add the schema and four examples to the prompt.
 2. Ask the model for Cypher and remove any code fence.
 3. Plan the statement with `EXPLAIN`.
 4. Run only a read query, identified by `query_type == 'r'`, with a 15-second timeout.
@@ -353,13 +353,13 @@ This module uses three named retrieval patterns from Neo4j's :link[GraphRAG Patt
 
 * **Graph-Enhanced Vector Search:** This retrieval pattern finds a chunk through vector similarity and follows a reviewed graph traversal. `VectorCypherRetriever` implements this retrieval pattern directly. Full-text and hybrid retrieval can use the same graph-enrichment structure with different entry searches.
 * **Cypher Templates:** This retrieval pattern runs reviewed, parameterized Cypher for known structured question shapes.
-* **Text2Cypher:** This retrieval pattern asks a model to create Cypher at request time. Its Module 2
-  teaching cell is optional. Module 3 uses the guarded implementation for its
+* **Text2Cypher:** This retrieval pattern asks a model to create Cypher at request time. Module 2
+  includes a teaching cell for it. Module 3 uses the guarded implementation for its
   structured record tool.
 
 ## Run It
 
-Open `notebooks/02-connected-context/2.1_connected_context.ipynb` and run the cells in order. The **Check that the graph has the required data** cell checks the Module 1 fixtures and both indexes before it creates a retriever. The notebook runs the core vector, hybrid, vector-Cypher, Cypher Template, and optional Text2Cypher exercises. The page also explains standalone full-text retrieval and full-text retrieval with Cypher traversal. Module 3 turns Hybrid Cypher and Text2Cypher into its two read tools.
+Open `notebooks/02-connected-context/2.1_connected_context.ipynb` and run the cells in order. The **Check that the graph has the required data** cell checks the Module 1 fixtures and both indexes before it creates a retriever. The notebook runs the core vector, hybrid, vector-Cypher, Cypher Template, and Text2Cypher exercises. The page also explains standalone full-text retrieval and full-text retrieval with Cypher traversal. Module 3 turns Hybrid Cypher and Text2Cypher into its two read tools.
 
 The page and the notebook number their sections differently. This table shows where each page section runs in notebook 2.1\:
 
@@ -377,7 +377,7 @@ The page and the notebook number their sections differently. This table shows wh
 If the readiness check fails, complete Module 1 and restart this notebook. Module 2 reads the graph and preserves the Module 1 data.
 
 :::alert{type="info" header="Use one Neo4j connection"}
-Configure one Neo4j connection because every module uses the same credentials. The optional Text2Cypher cell reuses that connection with a read-only session and a 15-second statement timeout.
+Configure one Neo4j connection because every module uses the same credentials. The Text2Cypher cell reuses that connection with a read-only session and a 15-second statement timeout.
 :::
 
 ## Challenge Checkpoint

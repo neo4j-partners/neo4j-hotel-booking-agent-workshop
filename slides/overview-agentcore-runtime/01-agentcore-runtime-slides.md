@@ -54,7 +54,7 @@ section { font-size: 25px; }
 |---|---|
 | Runs in your kernel | Runs in a container AgentCore starts |
 | The notebook environment holds the Neo4j password | The Runtime holds it, injected at launch |
-| Reachable only from Jupyter | Invoked through `InvokeAgentRuntime` by authorized AWS clients |
+| Reachable only from the notebook | Invoked through `InvokeAgentRuntime` by authorized AWS clients |
 | Runs in one local notebook process | Each invocation carries a caller-provided session ID |
 
 Both read paths and the reservation rule carry forward. The packaged agent adds the reservation command as a third tool.
@@ -147,11 +147,12 @@ if __name__ == "__main__":
 - **Port 8080 on `0.0.0.0`.** Runtime posts every request to `/invocations`
 - **`linux/arm64`.** Runtime runs ARM64 images
 - **`BedrockAgentCoreApp`** serves the contract, so the agent code has no routing
-- **`app.run()`** serves port 8080 when the container start command runs the module, and it runs the agent on your laptop too
+- **`app.run()`** serves port 8080 when the container start command runs the module, and it runs the agent in your notebook environment too
 
 <!--
 The last bullet is the one that saves debugging. The same line that serves the
-container serves it on your laptop, so you can exercise the entry point before
+container serves it in your notebook environment, so you can exercise the
+entry point before
 any of the deployment machinery is involved.
 
 The entry point returns a dictionary and Runtime hands it back to the caller as
@@ -216,7 +217,7 @@ history is the state itself.
 
 ## Direct to Neo4j, No Gateway
 
-This deployment does not use the Module 4 Gateway. Both tools call Neo4j from the same process that received the request.
+This deployment does not use the Module 4 Gateway. All three tools call Neo4j from the same process that received the request.
 
 | Choose Gateway when | Choose Runtime-direct when |
 |---|---|
@@ -245,7 +246,7 @@ the agent is the thing other people need to call.
 Two identifiers, doing two different jobs.
 
 - **Session ID:** the caller supplies it, and Runtime routes invocations sharing it to the same container
-- **Conversation scope:** the session is what makes a follow-up question a follow-up
+- **Conversation scope:** The session ID selects the isolated Runtime environment. This agent keeps no history across invocations.
 - **`request_id`:** the caller supplies it too, and it is the idempotency key for the reservation write
 
 A hook requires the reservation tool to use the caller's exact UUID. A retry returns the first result and the graph keeps one node.
@@ -253,7 +254,8 @@ A hook requires the reservation tool to use the caller's exact UUID. A retry ret
 Every invocation in the smoke tests opens its own session.
 
 <!--
-Attendees conflate these. Session is about conversation continuity. request_id
+Attendees conflate these. The session ID selects the isolated Runtime
+environment, and this agent keeps no history across invocations. request_id
 is about write safety. A session can contain many requests, and a request_id
 can outlive a session when a client retries after a disconnect.
 
@@ -262,9 +264,9 @@ the retry, which would produce a second reservation for the same intent. This
 is the same idempotency guarantee Module 3 built, carried across the network
 boundary.
 
-The replay in test 5 uses a fresh session on purpose. Reusing the session would
-let conversation history explain the correct answer, and the thing under test
-is the idempotency key.
+The replay in test 6 uses a fresh session. The session ID selects the isolated
+Runtime environment. This agent keeps no history across invocations, so the
+thing under test is the idempotency key.
 -->
 
 ---

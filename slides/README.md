@@ -21,6 +21,8 @@ the slide holds the fragments and the note holds what you say.
 Deck 5 is the longest and deck 1 is the only one that needs a live demo. If you
 fall behind, demonstrate Modules 4 and 5 rather than having the room run them.
 
+`overview-aws-neo4j-conference` is a separate conference talk and is not part of the workshop build.
+
 ## Quick Start
 
 Preview one deck with live reload:

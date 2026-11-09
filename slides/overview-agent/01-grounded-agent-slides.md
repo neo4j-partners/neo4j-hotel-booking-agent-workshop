@@ -407,7 +407,7 @@ read response; the application calls the reservation command separately.
 
 ---
 
-## Correct and Safe, and Running on Your Laptop
+## Correct and Safe, and Running in Your Notebook
 
 The agent chooses between two read paths, exposes its evidence, and cannot write to the graph.
 
@@ -423,7 +423,7 @@ Synthesis, not restatement. The point is that the interesting work is done, and
 the next two modules are deployments of it.
 
 Say the last line carefully. Module 4 publishes the two retrieval capabilities
-under Gateway tool names. Module 5 is a deployment-oriented variant with a
-read tool and a reservation tool. The exact tool sets differ, while read
+under Gateway tool names. Module 5 is a deployment-oriented variant with
+both read tools and a reservation tool. The exact tool sets differ, while read
 evidence, guarded writes, and explicit results remain the throughline.
 -->

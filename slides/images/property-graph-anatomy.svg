@@ -111,7 +111,7 @@
     <path class="leader" d="M780 354 C735 310 692 283 648 265"/>
     <rect x="520" y="176" width="320" height="126" rx="16" fill="#F4FAFB" stroke="#B9DCE1" stroke-width="2"/>
     <text class="property-label" x="545" y="211">Hotel properties</text>
-    <text class="property-copy" x="545" y="241">name: "Chicago Lakefront"</text>
+    <text class="property-copy" x="545" y="241">name: "Evergreen Park Grand"</text>
     <text class="property-copy" x="545" y="268">guest_rating: 4.7</text>
     <text class="property-copy" x="545" y="295">total_rooms: 240</text>
   </g>

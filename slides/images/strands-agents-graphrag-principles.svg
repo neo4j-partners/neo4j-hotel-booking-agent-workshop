@@ -69,15 +69,15 @@
 
   <rect x="427" y="248" width="106" height="38" rx="19" fill="#FFFFFF" stroke="#4581C3" stroke-width="1.5"/>
   <text x="480" y="265" text-anchor="middle" font-size="10.5" font-weight="700" fill="#232F3E">Hotel</text>
-  <text x="480" y="278" text-anchor="middle" font-size="8.5" fill="#56616F">Windward Mile</text>
+  <text x="480" y="278" text-anchor="middle" font-size="8.5" fill="#56616F">Lakeview Horizon Suites</text>
 
   <rect x="368" y="317" width="106" height="38" rx="19" fill="#FFFFFF" stroke="#4581C3" stroke-width="1.5"/>
   <text x="421" y="334" text-anchor="middle" font-size="10.5" font-weight="700" fill="#232F3E">Amenity</text>
-  <text x="421" y="347" text-anchor="middle" font-size="8.5" fill="#56616F">indoor pool</text>
+  <text x="421" y="347" text-anchor="middle" font-size="8.5" fill="#56616F">Outdoor Swimming Pool</text>
 
   <rect x="486" y="317" width="106" height="38" rx="19" fill="#EAF2FA" stroke="#4581C3" stroke-width="1.5"/>
   <text x="539" y="334" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1F4E7A">Policy</text>
-  <text x="539" y="347" text-anchor="middle" font-size="8.5" fill="#56616F">family access</text>
+  <text x="539" y="347" text-anchor="middle" font-size="8.5" fill="#56616F">24-hour cancellation</text>
 
   <rect x="360" y="369" width="240" height="25" rx="6" fill="#E8F7F2"/>
   <circle cx="374" cy="381.5" r="7" fill="#00A87A"/>
