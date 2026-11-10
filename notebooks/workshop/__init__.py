@@ -34,4 +34,4 @@ a caller invokes when it cannot proceed without a database.
 # package's modules, or the deploy/runtime image. `1.0_verify_environment.ipynb`
 # prints this line first, so a support request carries which revision of the
 # workshop the participant is actually running.
-__version__ = "0.1.1"
+__version__ = "0.1.2"

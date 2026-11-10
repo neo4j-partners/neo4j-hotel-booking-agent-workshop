@@ -16,7 +16,7 @@ It has no dependencies on purpose. This repository is public and cannot install
 the private tooling that consumes the pin, so the one operation that has to
 happen on this side of the seam does it with the standard library alone.
 
-Two guards, both from real failures:
+Three guards. The first two come from real failures:
 
 **A dirty tree is refused.** The package is built with ``git archive`` against
 the pinned commit, so an uncommitted edit is invisible to it. Pinning HEAD with
@@ -25,6 +25,12 @@ an edit still in the working tree ships the old file and reports success.
 **Every packaged path is checked at the target commit.** ``git archive`` fails
 on a path that moved, and it fails during a release rather than here. A commit
 that renames a listed path is caught before the pin changes.
+
+**The release must change.** ``notebooks/VERSION`` ships in the starter files
+and is how a running lab says which release it is. A new pin whose
+``notebooks/VERSION`` matches the current pin's would ship different content
+under the same release name, so it is refused. A current pin that predates the
+file is allowed through once.
 """
 
 from __future__ import annotations
@@ -43,6 +49,9 @@ DEFINITION_PATH = VOCAREUM_DIR / "course.json"
 TEMPLATE_PATH = VOCAREUM_DIR / "lab.template"
 
 SHA_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+
+# The release identifier, as a path inside a commit.
+RELEASE_PATH = "notebooks/VERSION"
 
 # Both rewrites require exactly one match. A second `"commit"` key or a second
 # `SourceCommit:` line means the file grew a shape this script does not
@@ -145,6 +154,33 @@ def assert_paths_exist(sha: str, paths: list[str]) -> None:
         )
 
 
+def release_at(sha: str) -> str | None:
+    """Return ``notebooks/VERSION`` at one commit, or None when it is absent."""
+    if not git("ls-tree", "--name-only", sha, RELEASE_PATH):
+        return None
+    return git("show", f"{sha}:{RELEASE_PATH}")
+
+
+def assert_release_bumped(pinned: str, target: str) -> None:
+    """Refuse a target whose release matches the pinned commit's release."""
+    target_release = release_at(target)
+    if target_release is None:
+        raise BumpError(
+            f"Commit {target[:12]} has no {RELEASE_PATH}. Every pinned commit "
+            "must name its release there."
+        )
+    pinned_release = release_at(pinned)
+    if pinned_release is None:
+        return
+    if target_release == pinned_release:
+        raise BumpError(
+            f"Commit {target[:12]} has the same {RELEASE_PATH} as the current "
+            f"pin ({pinned_release}). Bump the release in {RELEASE_PATH}, "
+            "notebooks/workshop/__init__.py and "
+            "notebooks/workshop/pyproject.toml, commit, then bump the pin."
+        )
+
+
 def changed_packaged_paths(old: str, new: str, paths: list[str]) -> list[str]:
     """Return the packaged files that differ between the old and new pin.
 
@@ -235,6 +271,8 @@ def main(argv: list[str] | None = None) -> int:
             print("Pin is already current. Nothing written.")
             return 0
 
+        if pin.definition != target:
+            assert_release_bumped(pin.definition, target)
         write_pin(target)
     except BumpError as error:
         print(f"error: {error}", file=sys.stderr)

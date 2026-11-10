@@ -98,6 +98,10 @@ With every line reporting `ok`, proceed to [Module 1](../../01-build-graph/). Th
 Modules 4 and 5 leave AWS resources in your account. The workshop does not
 delete them for you. Clean up both resource sets when you finish.
 
+IAM refuses to delete a role while policies are attached to it. Detach each
+managed policy and delete each inline policy first, then delete the role. The
+lists below name the policies on each role.
+
 ### Module 4 resources
 
 The Module 4 notebook applies the tag
@@ -112,8 +116,13 @@ ownership, then remove\:
   `hotel-booking-query_hotel_records`
 - Every Secrets Manager secret whose name starts with
   `neo4j-ws-retrieval`. A retry can create a name with a numeric suffix.
+  The suffix appears because a deleted secret keeps its name reserved for the
+  default 30-day recovery window. Delete each secret with
+  `--force-delete-without-recovery` so a later run can reuse the name.
 - The IAM roles `workshop-hotel-lambda-role` and
-  `workshop-hotel-gateway-role`
+  `workshop-hotel-gateway-role`. The Lambda role has the managed policy
+  `AWSLambdaBasicExecutionRole` and the inline policy `hotel-retrieval`. The
+  Gateway role has the inline policy `invoke-lambdas`.
 - The CloudWatch log groups
   `/aws/lambda/hotel-booking-search_hotel_passages` and
   `/aws/lambda/hotel-booking-query_hotel_records`
@@ -130,19 +139,39 @@ The Module 5 notebook applies the tag
 `WorkshopResource=graphrag-with-neo4j` to these four resources\:
 
 - The AgentCore Runtime `GraphRagBookingAgent`
-- The ECR repository `workshop-graphrag-booking-agent`
+- The ECR repository `workshop-graphrag-booking-agent`. It still holds the
+  agent image. Delete it with `--force`, or delete the images first.
 - The CodeBuild project `bedrock-agentcore-graphragbookingagent-builder`
-- The IAM execution role `workshop-graphrag-runtime-role`
+- The IAM execution role `workshop-graphrag-runtime-role`. It has the inline
+  policy `graphrag-runtime-policy`.
 
-The starter toolkit also creates these two resources without the tag\:
+The starter toolkit also uses these two resources, which do not carry the tag.
+It creates them only when they do not already exist. Otherwise it reuses them
+and logs `Reusing existing CodeBuild execution role`. They can therefore
+predate your run.
 
-- The CodeBuild IAM role `AmazonBedrockAgentCoreSDKCodeBuild-{region}-{suffix}`
-- The S3 bucket `bedrock-agentcore-codebuild-sources-{account}-{region}`
+- The CodeBuild IAM role `AmazonBedrockAgentCoreSDKCodeBuild-{region}-{suffix}`.
+  It has the inline policy `CodeBuildExecutionPolicy`.
+- The S3 bucket `bedrock-agentcore-codebuild-sources-{account}-{region}`. It
+  holds `{agent}/source.zip` and must be emptied before you can delete it.
+
+Before you delete either one, check that no other AgentCore toolkit project in
+the account uses it.
 
 Use the tag to confirm ownership before deletion. Also remove the generated
 CloudWatch log groups, including
 `/aws/bedrock-agentcore/runtimes/{runtime-id}-DEFAULT` and
 `/aws/codebuild/bedrock-agentcore-graphragbookingagent-builder` if they exist.
+
+Each Runtime also gets an X-Ray trace delivery in CloudWatch Logs. It has three
+parts: the delivery source `{runtime-id}-traces-source`, the delivery
+destination `{runtime-id}-traces-destination`, and the delivery that connects
+them. Runtimes from earlier runs can leave their own sets behind. Delete each
+set in this order: the delivery, then the delivery source, then the delivery
+destination. Find the delivery ID with `aws logs describe-deliveries`, remove it
+with `delete-delivery`, and then run `delete-delivery-source` and
+`delete-delivery-destination`.
+
 Runtime use, ECR image storage, CodeBuild builds, and stored CloudWatch logs
 can incur charges. IAM has no additional charge.
 
