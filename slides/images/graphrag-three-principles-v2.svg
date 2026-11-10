@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -29 960 540" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif">
+  <title>Three ways the graph makes agents more intelligent</title>
+  <defs>
+    <filter id="sh" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#1a1a1a" flood-opacity="0.10"/>
+    </filter>
+    <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#2E6DB4"/>
+    </marker>
+    <marker id="arrowGray" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#8A8A8A"/>
+    </marker>
+  </defs>
+
+  <!-- White card -->
+  <rect x="40" y="32" width="880" height="418" rx="16" fill="#FFFFFF" stroke="#E7E4DB" filter="url(#sh)"/>
+
+  <!-- ============ HEADER ============ -->
+  <text x="64" y="64" fill="#16233A" font-size="20" font-weight="700">Three ways the graph makes agents more intelligent</text>
+  <text x="64" y="84" fill="#16233A" font-size="10.5">Grounded retrieval, multi-hop reasoning, right-sized context.</text>
+
+  <!-- ============ PRINCIPLE 1: GROUNDED RETRIEVAL ============ -->
+  <rect x="64" y="96" width="252" height="330" rx="12" fill="#EEF4FB" stroke="#6E86CF"/>
+  <text x="76" y="146" fill="#1F4E86" font-size="14" font-weight="700">Grounded retrieval over guessing</text>
+  <line x1="76" y1="168" x2="304" y2="168" stroke="#CBDAF0"/>
+
+  <!-- the question -->
+  <rect x="104" y="186" width="172" height="26" rx="8" fill="#FFFFFF" stroke="#6E86CF"/>
+  <text x="190" y="203" fill="#34519B" font-size="9.5" font-style="italic" text-anchor="middle">the question</text>
+
+  <!-- branch: guess (left, dashed) vs ground (right, solid) -->
+  <line x1="172" y1="214" x2="146" y2="240" stroke="#A9A69B" stroke-width="1.6" stroke-dasharray="4 3"/>
+  <line x1="208" y1="214" x2="234" y2="240" stroke="#2E6DB4" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+
+  <!-- rejected: text that only looks similar -->
+  <rect x="84" y="242" width="100" height="52" rx="9" fill="#F1F1EE" stroke="#D8D8D2" stroke-dasharray="4 3"/>
+  <g stroke="#DAD7CE" stroke-width="3" stroke-linecap="round">
+    <line x1="96" y1="260" x2="170" y2="260"/>
+    <line x1="96" y1="271" x2="158" y2="271"/>
+    <line x1="96" y1="282" x2="164" y2="282"/>
+  </g>
+  <circle cx="176" cy="242" r="8.5" fill="#FFFFFF" stroke="#D8D8D2"/>
+  <g stroke="#5C6470" stroke-width="1.6" stroke-linecap="round">
+    <line x1="172.5" y1="238.5" x2="179.5" y2="245.5"/>
+    <line x1="179.5" y1="238.5" x2="172.5" y2="245.5"/>
+  </g>
+
+  <!-- retrieved: a real entity -->
+  <rect x="192" y="242" width="100" height="52" rx="10" fill="#2E6DB4" stroke="#1F4E86" stroke-width="1.6"/>
+  <text x="242" y="265" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle">Full-Service Spa</text>
+  <text x="242" y="280" fill="#DEEAF6" font-size="8" text-anchor="middle" font-family="'SF Mono',Menlo,monospace">:Amenity</text>
+  <circle cx="292" cy="242" r="8.5" fill="#2E6DB4" stroke="#FFFFFF" stroke-width="1.6"/>
+  <path d="M288,242 L290.8,245 L296,238.6" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="134" y="310" fill="#5C6470" font-size="8" text-anchor="middle">words that look alike</text>
+  <text x="242" y="310" fill="#1F4E86" font-size="8" text-anchor="middle">an entity in the graph</text>
+  <text x="190" y="336" fill="#16233A" font-size="9" text-anchor="middle">the graph decides which one is real</text>
+
+  <text x="76" y="376" fill="#16233A" font-size="9">
+    <tspan x="76" dy="0">The answer starts on a resolved entity,</tspan>
+    <tspan x="76" dy="12">so it is true, not just similar.</tspan>
+  </text>
+
+  <!-- ============ PRINCIPLE 2: MULTI-HOP REASONING ============ -->
+  <rect x="354" y="96" width="252" height="330" rx="12" fill="#EEF4FB" stroke="#6E86CF"/>
+  <text x="366" y="146" fill="#1F4E86" font-size="15" font-weight="700">Multi-hop reasoning</text>
+  <line x1="366" y1="168" x2="594" y2="168" stroke="#CBDAF0"/>
+
+  <!-- the walk -->
+  <rect x="385" y="182" width="110" height="26" rx="9" fill="#2E6DB4" stroke="#1F4E86" stroke-width="1.6"/>
+  <text x="440" y="199" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle">Chicago hotel</text>
+
+  <line x1="440" y1="208" x2="440" y2="226" stroke="#2E6DB4" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <circle cx="506" cy="220" r="7.5" fill="#DEEAF6" stroke="#6E86CF"/>
+  <text x="506" y="223" fill="#2E6DB4" font-size="7.5" font-weight="700" text-anchor="middle">1</text>
+  <text x="520" y="223" fill="#5C6470" font-size="7.5" font-weight="700" letter-spacing="0.2">HAS_POLICY</text>
+
+  <rect x="385" y="226" width="110" height="26" rx="9" fill="#FFFFFF" stroke="#2E6DB4" stroke-width="1.6"/>
+  <text x="440" y="243" fill="#16233A" font-size="10.5" font-weight="600" text-anchor="middle">Cancellation policy</text>
+
+  <line x1="440" y1="252" x2="440" y2="270" stroke="#2E6DB4" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <circle cx="506" cy="264" r="7.5" fill="#DEEAF6" stroke="#6E86CF"/>
+  <text x="506" y="267" fill="#2E6DB4" font-size="7.5" font-weight="700" text-anchor="middle">2</text>
+  <text x="520" y="267" fill="#5C6470" font-size="7.5" font-weight="700" letter-spacing="0.2">FROM_CHUNK</text>
+
+  <rect x="385" y="270" width="110" height="26" rx="9" fill="#FFFFFF" stroke="#2E6DB4" stroke-width="1.6"/>
+  <text x="440" y="287" fill="#16233A" font-size="10.5" font-weight="600" text-anchor="middle">Chunk</text>
+
+  <line x1="440" y1="296" x2="440" y2="314" stroke="#2E6DB4" stroke-width="1.8" marker-end="url(#arrowBlue)"/>
+  <circle cx="506" cy="308" r="7.5" fill="#DEEAF6" stroke="#6E86CF"/>
+  <text x="506" y="311" fill="#2E6DB4" font-size="7.5" font-weight="700" text-anchor="middle">3</text>
+  <text x="520" y="311" fill="#5C6470" font-size="7.5" font-weight="700" letter-spacing="0.2">FROM_DOCUMENT</text>
+
+  <rect x="385" y="314" width="110" height="26" rx="9" fill="#DEEAF6" stroke="#2E6DB4" stroke-width="2"/>
+  <text x="440" y="331" fill="#1F4E86" font-size="10.5" font-weight="700" text-anchor="middle">Source document</text>
+
+  <text x="480" y="356" fill="#16233A" font-size="9" text-anchor="middle">one query, not three lookups</text>
+
+  <text x="366" y="376" fill="#16233A" font-size="9">
+    <tspan x="366" dy="0">Relationships are stored as data,</tspan>
+    <tspan x="366" dy="12">so one query spans many entities.</tspan>
+  </text>
+
+  <!-- ============ PRINCIPLE 3: RIGHT-SIZED CONTEXT ============ -->
+  <rect x="644" y="96" width="252" height="330" rx="12" fill="#EEF4FB" stroke="#6E86CF"/>
+  <text x="656" y="146" fill="#1F4E86" font-size="15" font-weight="700">Right-sized context</text>
+  <line x1="656" y1="168" x2="884" y2="168" stroke="#CBDAF0"/>
+
+  <text x="660" y="177" fill="#5C6470" font-size="7.5" font-weight="700" letter-spacing="0.4">THE WHOLE GRAPH</text>
+  <text x="884" y="177" fill="#1F4E86" font-size="7.5" font-weight="700" letter-spacing="0.4" text-anchor="end">WHAT THE AGENT GETS</text>
+
+  <rect x="660" y="182" width="220" height="138" rx="12" fill="#FFFFFF" stroke="#DEEAF6"/>
+
+  <g transform="translate(0,-34) translate(770,285) scale(0.92) translate(-770,-285)">
+    <!-- everything the agent does not need -->
+    <g fill="#DAD7CE">
+      <circle cx="676" cy="232" r="3"/>
+      <circle cx="700" cy="228" r="3"/>
+      <circle cx="730" cy="222" r="3"/>
+      <circle cx="766" cy="220" r="3"/>
+      <circle cx="802" cy="222" r="3"/>
+      <circle cx="836" cy="228" r="3"/>
+      <circle cx="864" cy="240" r="3"/>
+      <circle cx="712" cy="244" r="3"/>
+      <circle cx="828" cy="250" r="3"/>
+      <circle cx="672" cy="262" r="3"/>
+      <circle cx="692" cy="290" r="3"/>
+      <circle cx="668" cy="292" r="3"/>
+      <circle cx="852" cy="282" r="3"/>
+      <circle cx="866" cy="272" r="3"/>
+      <circle cx="866" cy="310" r="3"/>
+      <circle cx="676" cy="320" r="3"/>
+      <circle cx="716" cy="336" r="3"/>
+      <circle cx="824" cy="330" r="3"/>
+      <circle cx="700" cy="344" r="3"/>
+      <circle cx="734" cy="348" r="3"/>
+      <circle cx="770" cy="352" r="3"/>
+      <circle cx="806" cy="348" r="3"/>
+      <circle cx="842" cy="340" r="3"/>
+    </g>
+
+    <!-- the slice the question actually needs -->
+    <circle cx="770" cy="290" r="52" fill="#EEF4FB" stroke="#2E6DB4" stroke-width="1.3" stroke-dasharray="5 4"/>
+    <g stroke="#2E6DB4" stroke-width="1.4">
+      <line x1="770" y1="290" x2="742" y2="272"/>
+      <line x1="770" y1="290" x2="798" y2="272"/>
+      <line x1="770" y1="290" x2="742" y2="310"/>
+      <line x1="770" y1="290" x2="798" y2="310"/>
+    </g>
+    <g fill="#FFFFFF" stroke="#2E6DB4" stroke-width="1.6">
+      <circle cx="742" cy="272" r="6.5"/>
+      <circle cx="798" cy="272" r="6.5"/>
+      <circle cx="742" cy="310" r="6.5"/>
+      <circle cx="798" cy="310" r="6.5"/>
+    </g>
+    <circle cx="770" cy="290" r="9" fill="#2E6DB4" stroke="#1F4E86" stroke-width="1.6"/>
+  </g>
+
+  <rect x="690" y="326" width="160" height="17" rx="8.5" fill="#DEEAF6" stroke="#2E6DB4"/>
+  <text x="770" y="337.5" fill="#1F4E86" font-size="8" text-anchor="middle">bounded by the question</text>
+  <text x="770" y="356" fill="#16233A" font-size="9" text-anchor="middle">5 nodes and 4 relationships</text>
+
+  <text x="656" y="376" fill="#16233A" font-size="9">
+    <tspan x="656" dy="0">Only the slice this question needs,</tspan>
+    <tspan x="656" dy="12">so cost falls and accuracy rises.</tspan>
+  </text>
+</svg>

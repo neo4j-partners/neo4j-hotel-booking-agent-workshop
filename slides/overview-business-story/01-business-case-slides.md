@@ -35,8 +35,8 @@ A guest asks for a Chicago hotel with a spa and a pool. The model answers with c
 This deck sets up the whole workshop. The argument runs in a fixed order:
 what is at stake, why the model alone fails, why retrieval alone fails, what
 a graph adds, third-party evidence, and then the hero question the rest of
-the day answers. The deck closes on the demo, the six-module roadmap, the
-request flow, and the control-ownership table.
+the day answers. The deck closes on the demo, the platform roles, the
+six-module roadmap, the request flow, and the control-ownership table.
 
 Do not explain retrievers here. Deck 4 owns that. This deck only has to make
 the room want the graph.
@@ -153,9 +153,30 @@ The agent answers from evidence the graph can defend.
 
 <!--
 The last bullet is the one that separates this workshop from a generic
-GraphRAG talk, and it comes back on slide 8. In most demos the model decides
+GraphRAG talk, and it comes back on slide 9. In most demos the model decides
 what to fetch. Here the application decides, once, and the model never gets
 that choice.
+-->
+
+---
+
+![bg contain](../images/graphrag-three-principles-v2.svg)
+
+<!--
+This is the previous slide as a picture. There is one panel for each word in
+the claim: verified, connected, focused.
+
+On the left, the question resolves to a real node, the Full-Service Spa
+amenity. It does not resolve to text that only reads like the question.
+
+In the middle, one query walks from the hotel to its cancellation policy, to
+the chunk that states it, to the source document. That walk is why every
+answer can name its file.
+
+On the right, the agent gets the handful of nodes the question needs. The rest
+of the graph stays out of the prompt.
+
+Do not explain the retrievers here. The evidence slide is next.
 -->
 
 ---
@@ -269,6 +290,39 @@ Keep the runtime live all day so attendees can invoke it during breaks. Point
 back to this demo from each module: Module 1 builds the graph behind it,
 Module 2 chooses its retriever, Module 3 grounds it, Modules 4 and 5 deploy
 it, Module 6 gives it memory.
+-->
+
+---
+
+<style scoped>
+/* Four rows of two-column prose sit just under the theme's 29px. */
+section { font-size: 26px; }
+</style>
+
+## Neo4j and AWS: What Each Platform Brings
+
+| Component | Role in this workshop |
+|---|---|
+| **Neo4j Aura** | Stores connected hotel facts, source text, indexes, business rules, reservation requests, and memory |
+| **Amazon Bedrock** | Provides Claude for extraction and reasoning, Amazon Nova for retrieval embeddings, Titan Text Embeddings V2 for memory |
+| **Strands Agents** | Gives the model its tools and runs the agent loop |
+| **AgentCore** | Exposes remote tools through Gateway and runs the deployed agent on Runtime |
+
+The graph holds more than the retrieval corpus. Business rules and reservation requests live there too, and that is what makes the write path in Module 3 enforceable.
+
+<!--
+Give the two platforms parallel treatment. Neo4j holds connected facts and
+rules. Bedrock provides reasoning and embeddings. Each platform owns a clear
+part of the request path.
+
+The closing line is the one that is worth slowing down for. Most agents keep
+their business rules in a system prompt, where the rule and the reasoning share
+one surface and the model can talk itself past either. Here a rule is data in
+the same database as the booking, so Module 3 can check it inside the
+transaction that writes.
+
+The two agent layers arrive as the day goes on. The graph and the models are in
+every module.
 -->
 
 ---

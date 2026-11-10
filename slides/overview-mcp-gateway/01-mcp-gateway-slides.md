@@ -51,6 +51,38 @@ change.
 
 ---
 
+<style scoped>
+/* Five connection patterns plus a short source line. */
+section { font-size: 24px; }
+</style>
+
+## Five Ways AWS Connects to Neo4j
+
+Choose the pattern that matches how the data moves and who needs it.
+
+- **Spark Connector on Amazon EMR:** moves large Spark DataFrames into Neo4j and reads graph data back into Spark
+- **AWS Glue Connector:** builds managed ETL jobs from S3, RDS, Redshift, DynamoDB, and other Glue sources
+- **Kafka Connector on Amazon MSK:** streams events into Neo4j and publishes Neo4j changes to Kafka topics
+- **Neo4j drivers in AWS applications:** let Lambda, ECS, EKS, and EC2 services run Cypher directly
+- **MCP for AWS agents:** lets Bedrock and AgentCore agents call graph tools through a standard interface
+
+<small>Sources: [AWS Glue and data connectors](https://neo4j.com/docs/connectors/), [Spark Connector](https://neo4j.com/docs/spark/current/), [Kafka Connector](https://neo4j.com/docs/kafka/current/), and [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
+
+<!--
+These are separate connection patterns, not one required stack. Choose EMR for
+large Spark workloads, Glue for managed ETL, MSK for event streams, a driver
+for application requests, and MCP when an agent needs graph tools.
+
+This workshop uses the last two. Modules 1 through 3 connect with the Neo4j
+driver, and so do Modules 5 and 6. Module 4 is the one that uses MCP, and the
+next slide defines it.
+
+Keep the first three at overview level. They move data. The last two serve
+live requests.
+-->
+
+---
+
 ## Model Context Protocol
 
 The retriever, driver, and tool all run in one notebook process. Gateway gives
