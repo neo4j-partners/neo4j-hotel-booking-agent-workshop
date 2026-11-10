@@ -35,10 +35,11 @@ A guest asks for a Chicago hotel with a spa and a pool. The model answers with c
 
 <!--
 This deck sets up the whole workshop. The argument runs in a fixed order:
-what is at stake, why the model alone fails, why retrieval alone fails, what
-a graph adds, third-party evidence, and then the hero question the rest of
-the day answers. The deck closes on the demo, the platform roles, the
-six-module roadmap, the request flow, and the Aura briefing that starts setup.
+what is at stake, why retrieval alone fails, what a graph adds, third-party
+evidence, and then the hero question the rest of the day answers. The deck
+closes on a preview of the finished build, the platform roles, the ways AWS
+connects to Neo4j, the six-module roadmap, the request flow, and the Aura
+briefing that starts setup.
 
 Do not explain retrievers here. Deck 4 owns that. This deck only has to make
 the room want the graph.
@@ -223,29 +224,26 @@ refuse this one on purpose.
 
 ---
 
-## Opening Demo
+## A Preview of the Finished Build
 
-See the finished build answer the hero question live.
+By the end of the day, you have a hotel booking agent that answers the hero question from your own graph.
 
-Then we look at what each platform brings and the six modules that build it.
+- **A knowledge graph:** Your Neo4j Aura instance holds hotel facts, source text, business rules, and guest memory
+- **A grounded agent:** The agent answers from graph evidence and declines when the graph lacks the fact
+- **A deployed agent:** The agent runs as a container on Amazon Bedrock AgentCore Runtime
+
+The six modules build this one step at a time.
 
 <!--
-Instructor run instructions:
+There is no live demo here. Describe the end state in one sentence for each
+bullet and move on.
 
-Run the hero question against the pre-deployed Module 5 AgentCore Runtime
-agent, deployed before the event against the instructor's own Aura instance:
+Point back to this slide from each module. Module 1 builds the graph. Module 2
+chooses its retriever. Module 3 grounds the agent. Modules 4 and 5 deploy it.
+Module 6 gives it memory.
 
-"Which Chicago hotel has both a spa and a swimming pool, what is its
-cancellation policy, and can I submit a booking request for four guests?"
-
-Show the tool calls, not just the answer, so the room sees the retrieval
-happen. Then ask the availability question and let it refuse. The refusal
-gets more comment than the answer, every time.
-
-Keep the runtime live all day so attendees can invoke it during breaks. Point
-back to this demo from each module: Module 1 builds the graph behind it,
-Module 2 chooses its retriever, Module 3 grounds it, Modules 4 and 5 deploy
-it, Module 6 gives it memory.
+The next two slides cover what each platform brings and how AWS connects to
+Neo4j.
 -->
 
 ---
@@ -279,6 +277,39 @@ transaction that writes.
 
 The two agent layers arrive as the day goes on. The graph and the models are in
 every module.
+-->
+
+---
+
+<style scoped>
+/* Five connection patterns plus a short source line. */
+section { font-size: 24px; }
+</style>
+
+## Five Ways AWS Connects to Neo4j
+
+Choose the pattern that matches how the data moves and who needs it.
+
+- **Spark Connector on Amazon EMR:** moves large Spark DataFrames into Neo4j and reads graph data back into Spark
+- **AWS Glue Connector:** builds managed ETL jobs from S3, RDS, Redshift, DynamoDB, and other Glue sources
+- **Kafka Connector on Amazon MSK:** streams events into Neo4j and publishes Neo4j changes to Kafka topics
+- **Neo4j drivers in AWS applications:** let Lambda, ECS, EKS, and EC2 services run Cypher directly
+- **MCP for AWS agents:** lets Bedrock and AgentCore agents call graph tools through a standard interface
+
+<small>Sources: [AWS Glue and data connectors](https://neo4j.com/docs/connectors/), [Spark Connector](https://neo4j.com/docs/spark/current/), [Kafka Connector](https://neo4j.com/docs/kafka/current/), and [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
+
+<!--
+These are separate connection patterns, not one required stack. Choose EMR for
+large Spark workloads, Glue for managed ETL, MSK for event streams, a driver
+for application requests, and MCP when an agent needs graph tools.
+
+This workshop uses the last two. Every module connects with the Neo4j driver.
+Module 4 adds MCP. Its MCP server is AgentCore Gateway in front of two Lambda
+tools. The workshop does not use the Neo4j MCP server. Deck 6 covers the
+Gateway.
+
+Keep the first three at overview level. They move data. The last two serve
+live requests.
 -->
 
 ---

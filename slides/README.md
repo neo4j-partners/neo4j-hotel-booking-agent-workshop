@@ -21,8 +21,8 @@ Setup starts on the last slide of deck 1. Present deck 2 while the Aura
 instances provision and the restore runs. The room then fills in `CONFIG.txt`
 and runs the environment check before Module 1.
 
-Deck 4 is the longest and deck 1 is the only one that needs a live demo. If you
-fall behind, demonstrate Modules 4 and 5 rather than having the room run them.
+Deck 4 is the longest. If you fall behind, demonstrate Modules 4 and 5 rather
+than having the room run them.
 
 `overview-aws-neo4j-conference` is a separate conference talk and is not part of the workshop build.
 

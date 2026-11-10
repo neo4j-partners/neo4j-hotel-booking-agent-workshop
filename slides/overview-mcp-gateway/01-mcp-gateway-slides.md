@@ -122,16 +122,14 @@ not change the rule that the model does not write.
 
 ---
 
-## Two Ways Module 4 Connects to Neo4j
+## The Two Connections in Module 4
 
-AWS connects to Neo4j in several ways. Module 4 uses the two that serve live requests.
+Module 4 has two connections between the agent and the graph.
 
-- **Neo4j driver in each Lambda:** The driver lets the Lambda run Cypher directly. The connection comes from Secrets Manager
-- **MCP for the agent:** MCP lets the agent call the Lambda tools through a standard interface. AgentCore Gateway provides that interface
+- **Lambda to Neo4j:** Each Lambda connects with the Neo4j driver and runs Cypher directly. The connection details come from Secrets Manager
+- **Agent to Lambda:** The agent calls the Lambda tools through the MCP server that AgentCore Gateway exposes
 
-The driver connects the Lambda to Neo4j. MCP connects the agent to the Lambda.
-
-<small>Source: [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
+Module 4 does not use the Neo4j MCP server. The MCP server is the Gateway, and only the Lambdas connect to Neo4j.
 
 <!--
 The Lambdas are built. This slide covers how each one reaches Neo4j and how the
@@ -140,12 +138,14 @@ agent will reach the Lambdas.
 Each Lambda holds a Neo4j driver. The driver is the same one the rest of the
 workshop uses. Modules 1 through 3 connect with it, and so do Modules 5 and 6.
 
-The agent still needs a way to reach the Lambdas. That is MCP, and AgentCore
-Gateway provides the MCP endpoint. The next slide covers the Gateway.
+The agent still needs a way to reach the Lambdas. AgentCore Gateway exposes an
+MCP server in front of them. The next slide covers the Gateway.
 
-AWS has three other connection patterns. The Spark Connector on Amazon EMR, the
-AWS Glue Connector, and the Kafka Connector on Amazon MSK move data in bulk.
-Module 4 does not use them. Mention them only if someone asks.
+Say the last line out loud. Neo4j publishes its own MCP server, and people in
+the room may assume Module 4 uses it. The MCP server here belongs to AgentCore
+Gateway. The agent never connects to Neo4j.
+
+Deck 1 listed the other AWS connection patterns. Module 4 does not use them.
 -->
 
 ---
