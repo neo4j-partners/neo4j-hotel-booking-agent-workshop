@@ -8,7 +8,7 @@
   },
   "startercode": {
     "repository": "https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop.git",
-    "commit": "dc05b9400b8ce55761f90b58ad6776754bbe5858",
+    "commit": "ac4f233e75616bc6da387297ee1706633cd83078",
     "source": "../..",
     "paths": [
       "CONFIG.txt",
