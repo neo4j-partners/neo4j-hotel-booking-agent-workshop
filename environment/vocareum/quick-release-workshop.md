@@ -46,6 +46,18 @@ environment/verify.py
 Workshop Studio content and go out through that pipeline. A release does not
 touch them.
 
+## Release version
+
+`notebooks/VERSION` names the release. It ships with the starter code, so the
+first cell of notebook 1.0 prints it and `aws-vocareum` can read it from the
+starter files.
+
+Bump it for every release, even when `Packaged changes: none`. Set the same
+value in `__version__` in `notebooks/workshop/__init__.py` and `version` in
+`notebooks/workshop/pyproject.toml`. `tests/test_release_version.py` fails when
+they disagree. Then run `uv lock` in `notebooks/workshop` so `uv.lock` records
+the new version.
+
 ## Release
 
 ### 1. Commit your content edits
@@ -84,6 +96,8 @@ git push
 
 Pass `--commit REV` to pin a revision other than `HEAD`. The bump refuses a
 dirty tree or a target that makes any configured starter-code path unavailable.
+It also refuses a target whose `notebooks/VERSION` is missing or matches the
+current pin. `--check` does not apply this version rule.
 
 ### 3. Run the offline gate
 
