@@ -87,26 +87,6 @@ talks only cover the first.
 
 ---
 
-## Why LLMs Alone Fall Short
-
-- **Hallucination:** the model generates the statistically probable answer, not the verified one. It describes an amenity that does not exist as confidently as one that does
-- **No access to your data:** the model has never seen this chain's hotels, rates, or policies. Retraining on a newer snapshot of the public web does not change that
-- **Relationship blindness:** it cannot connect a policy to the property it governs, or find every hotel that shares one amenity
-
-Plain retrieval narrows the first two gaps. Graph retrieval closes all three, with context that is verified, connected, and focused.
-
-<!--
-The closing line is the pivot the next two slides depend on. Say it slowly.
-
-If someone pushes on hallucination as a solved problem, agree partly: plain
-retrieval does reduce it. Then make the stronger claim. Graph retrieval does
-better on all three gaps. The answer starts on a verified entity, follows
-stored relationships, and carries only the facts the question needs. The
-third bullet is the one no amount of chunk retrieval fixes.
--->
-
----
-
 ## The Problem Vectors Do Not Solve
 
 Vector search finds text that is **similar**. It cannot **traverse relationships** or **guarantee a condition**.

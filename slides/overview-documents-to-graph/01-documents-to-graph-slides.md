@@ -36,9 +36,9 @@ Hotel FAQ documents become a graph you can query
 
 <!--
 The hinge of this deck is the "Schema Drift, and What It Costs" slide.
-Everything before it explains
-what extraction has to decide, and everything after it is the machinery for
-taking those decisions away from the model.
+Everything before it shows
+the graph the build has to produce, and everything after it is the machinery
+for taking the modeling decisions away from the model.
 
 Do not turn this into a SimpleKGPipeline API tour. The room does not need the
 argument list; they need to understand why the schema is pinned and why
@@ -79,28 +79,6 @@ becomes the Hotel and everything hanging off it.
 
 Then trace it backward, which is the direction Module 2 reads it. This same
 picture appears in deck 4 with a retrieval path drawn over it.
--->
-
----
-
-## What Extraction Has To Decide
-
-Handed a page of hotel prose, the model must choose:
-
-- **Labels:** is a bed configuration a node, or a property of the room?
-- **Properties:** is `4.6/5.0` a string, or the float `4.6`?
-- **Relationships:** what connects the hotel to a cancellation rule, and in which direction?
-- **Boundaries:** is "Cairo" part of the address, or a place in its own right?
-
-Every one of these is defensible. That is the problem.
-
-<!--
-This slide is doing setup, so resist answering the questions yet.
-
-The point to make is that none of these four has a wrong answer in isolation.
-The model is not being careless when it promotes the address to a node. It is
-making a reasonable modeling choice, for that one document, with no knowledge
-of the choice it made on the previous one.
 -->
 
 ---
@@ -267,46 +245,4 @@ resembles every other five-digit number, so vector search ranks the right chunk
 too low. Full-text matches the literal token. Deck 4 runs that failure live.
 
 Do not explain hybrid search here. Deck 4 owns it.
--->
-
----
-
-## Verifying the Build
-
-The build stops on any of four failures:
-
-- **Schema check:** The check lists every label the five new chunks created and fails on anything off-schema
-- **Hotel identity check:** The check requires exactly one `Hotel` per document and refuses a hotel reached from several documents
-- **Amenity check:** The check compares exact source-filename and amenity-name pairs after the write
-- **Retrieval check:** Both indexes exist, and the fixture queries that later modules depend on return rows
-
-A broken build shows up in Module 2 as an empty result. These checks make it show up here.
-
-<!--
-The retrieval check is the one that saves the afternoon. It runs the specific
-fixture queries Modules 2 and 3 rely on, so a graph that is subtly wrong fails
-now rather than in a notebook cell in front of the room.
-
-Note that the fixture checks tolerate variation in LLM-extracted properties.
-They require at least one Cairo hotel with a spa, a pool, and a rating, and at
-least two Paris hotels with a rating. They do not assert exact values, because
-extraction is not deterministic and a check that demands determinism from it
-will fail for the wrong reason.
--->
-
----
-
-## From Graph to Retrieval
-
-The graph is built and both indexes exist. Everything that reads it starts here.
-
-Module 2 runs eight retrieval patterns against this graph. Module 3 then uses two complementary read paths: passage search and structured record queries.
-
-<!--
-Forward pointer. The next deck is the longest of the day and it is where the
-GraphRAG argument from deck 1 gets its evidence.
-
-If you are running behind, this is a good place to say that Module 1's real
-output is not five hotels. It is the two indexes, and everything after this
-depends on them.
 -->

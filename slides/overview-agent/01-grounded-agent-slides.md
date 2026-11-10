@@ -256,6 +256,105 @@ number the model read out of a sentence.
 
 ---
 
+## Writes Do Not Go Through the Model
+
+The reservation command sits beside the agent, not inside it.
+
+- **Not a tool.** It is plain Python the application calls
+- **Five defined inputs.** The command accepts `request_id`, `hotel_id`, `check_in`, `check_out`, and `guests`
+- **`hotel_id`** is the stable identifier retrieval already returned
+- **Application-owned Cypher.** The model writes none of it
+
+Retrieval and writes need different controls, so they get different code paths.
+
+<!--
+Second hinge, and the part of this deck that is least common elsewhere.
+
+The usual design registers create_reservation as a tool and constrains it with
+a careful prompt and a JSON schema. That works until the model passes a
+plausible wrong value, and then you have a row.
+
+Here the model's role ends at proposing. It can tell the user which hotel to
+book and why. Turning that into a request is the application's call, and the
+inputs are typed before anything opens a transaction.
+-->
+
+---
+
+<style scoped>
+/* Five rows of two-column prose plus framing. */
+section { font-size: 22px; }
+</style>
+
+## Who Enforces What
+
+| Layer | What it owns |
+|---|---|
+| **The model** | Chooses read tools and writes the final response under prompt policy |
+| **Tool specifications** | Describe the routing boundary and one-field input schema |
+| **Read tools** | Validate input and return bounded evidence plus a verdict |
+| **Query guard** | Plans generated Cypher and allows only read plans |
+| **The command** | Validates the five inputs and opens the transaction |
+| **Neo4j** | Holds the maximum-guests rule and rejects a duplicate `request_id` |
+
+The model decides. Code and the database enforce the hard boundaries.
+
+<!--
+This corrects an important distinction. The prompt governs the model's intended
+answer behavior, but input validation, the read-only planning guard, and the
+transaction are mechanisms in code or Neo4j.
+
+The model still cannot commit a reservation in Module 3. Its role ends with the
+read response; the application calls the reservation command separately.
+
+The appendix has one slide on the maximum-guests transaction and one on
+duplicate `request_id` handling. Go there if the room asks how Neo4j enforces
+either one.
+-->
+
+---
+
+## Next, the Tools Move Out of the Notebook
+
+Module 3 runs everything in the notebook process: the agent, both read tools, their Neo4j drivers, and the reservation command.
+
+Module 4 moves the two read tools out. The agent stays local.
+
+- **Lambda:** Each read tool becomes its own Lambda function and calls the same retrieval code
+- **AgentCore Gateway:** One managed endpoint lists both tools and their schemas
+- **MCP:** The agent discovers and calls the tools through Model Context Protocol
+- **Credentials:** Each Lambda reads the Neo4j connection from Secrets Manager
+
+The reservation command does not move. Module 5 then moves the whole agent onto AgentCore Runtime.
+
+<!--
+Module 3 is done at this point. The agent chooses between two read paths,
+exposes its evidence, and cannot write to the graph.
+
+This slide is the handoff to deck 6. Keep it short. Deck 6 covers Lambda, the
+Gateway, MCP, and request security in detail.
+
+The retrieval code and the grounding response do not change in Module 4. The
+deployment location and the IAM boundary change.
+
+Stop here during the session. The appendix slides after this one cover
+abstention, the maximum-guests rule, and idempotent retries. Use them if the
+room asks.
+-->
+
+---
+
+## Appendix
+
+These reference slides cover abstention, the maximum-guests rule in the write transaction, and idempotent retries.
+
+<!--
+Reference material only. Return here when someone asks how the agent declines
+to answer, how the guest limit is enforced, or what happens on a retry.
+-->
+
+---
+
 ## Abstention
 
 Abstention means the agent states that the available data cannot answer the question.
@@ -281,31 +380,6 @@ live inventory fact.
 
 The check detects an unsupported answer during the lab. Run this example live
 if you run one example.
--->
-
----
-
-## Writes Do Not Go Through the Model
-
-The reservation command sits beside the agent, not inside it.
-
-- **Not a tool.** It is plain Python the application calls
-- **Five defined inputs.** The command accepts `request_id`, `hotel_id`, `check_in`, `check_out`, and `guests`
-- **`hotel_id`** is the stable identifier retrieval already returned
-- **Application-owned Cypher.** The model writes none of it
-
-Retrieval and writes need different controls, so they get different code paths.
-
-<!--
-Second hinge, and the part of this deck that is least common elsewhere.
-
-The usual design registers create_reservation as a tool and constrains it with
-a careful prompt and a JSON schema. That works until the model passes a
-plausible wrong value, and then you have a row.
-
-Here the model's role ends at proposing. It can tell the user which hotel to
-book and why. Turning that into a request is the application's call, and the
-inputs are typed before anything opens a transaction.
 -->
 
 ---
@@ -360,56 +434,4 @@ reservations.
 The concurrency case is the one worth naming. Application-level "check then
 create" has a race. The uniqueness constraint closes it in the database, which
 is the only layer that can.
--->
-
----
-
-<style scoped>
-/* Five rows of two-column prose plus framing. */
-section { font-size: 22px; }
-</style>
-
-## Who Enforces What
-
-| Layer | What it owns |
-|---|---|
-| **The model** | Chooses read tools and writes the final response under prompt policy |
-| **Tool specifications** | Describe the routing boundary and one-field input schema |
-| **Read tools** | Validate input and return bounded evidence plus a verdict |
-| **Query guard** | Plans generated Cypher and allows only read plans |
-| **The command** | Validates the five inputs and opens the transaction |
-| **Neo4j** | Holds the maximum-guests rule and rejects a duplicate `request_id` |
-
-The model decides. Code and the database enforce the hard boundaries.
-
-<!--
-This corrects an important distinction. The prompt governs the model's intended
-answer behavior, but input validation, the read-only planning guard, and the
-transaction are mechanisms in code or Neo4j.
-
-The model still cannot commit a reservation in Module 3. Its role ends with the
-read response; the application calls the reservation command separately.
--->
-
----
-
-## Correct and Safe, and Running in Your Notebook
-
-The agent chooses between two read paths, exposes its evidence, and cannot write to the graph.
-
-Everything is still local: the agent, both read tools, their drivers, the trace, and the command.
-
-- **Module 4** moves the tools out, behind an AgentCore Gateway
-- **Module 5** moves the whole agent out, onto AgentCore Runtime
-
-The core boundaries persist even where later modules package the tools differently.
-
-<!--
-Synthesis, not restatement. The point is that the interesting work is done, and
-the next two modules are deployments of it.
-
-Say the last line carefully. Module 4 publishes the two retrieval capabilities
-under Gateway tool names. Module 5 is a deployment-oriented variant with
-both read tools and a reservation tool. The exact tool sets differ, while read
-evidence, guarded writes, and explicit results remain the throughline.
 -->
