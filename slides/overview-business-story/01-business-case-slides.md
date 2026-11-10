@@ -29,15 +29,16 @@ ol > li {
 
 # The Business Case for Grounded Agents
 
-A guest asks for a Chicago hotel with a spa and a pool. The confident answer and the correct answer are not the same thing.
+A guest asks for a Chicago hotel with a spa and a pool. The model answers with confidence. The graph answers with evidence.
 
 <!--
 This deck sets up the whole workshop. The argument runs in a fixed order:
 what is at stake, why the model alone fails, why retrieval alone fails, what
 a graph adds, third-party evidence, and then the hero question the rest of
-the day answers.
+the day answers. The deck closes on the demo, the six-module roadmap, the
+request flow, and the control-ownership table.
 
-Do not explain retrievers here. Deck 5 owns that. This deck only has to make
+Do not explain retrievers here. Deck 4 owns that. This deck only has to make
 the room want the graph.
 -->
 
@@ -48,7 +49,7 @@ the room want the graph.
 Modern models already out-reason most people on general knowledge, recall, and synthesis. So why is the booking assistant still wrong?
 
 - **High intelligence** plus **missing operational context** equals confident, useless answers
-- The gap is not model capability. It is what the model was never told
+- The gap is not model capability. It is what the model was never told: how the facts of this business connect
 
 <!--
 Open here rather than with the technology. Everyone in the room has watched a
@@ -69,7 +70,7 @@ A hotel group is putting agents in front of guests. Three failures cost real mon
 - **A wrong action:** the agent holds a room for fifteen guests in a suite that sleeps ten. Someone on the property has to unwind the reservation by hand
 - **An unexplainable answer:** nobody can say which document the claim came from
 
-Retrieval addresses the first. A controlled write path addresses the second. Provenance addresses the third.
+Graph retrieval addresses the first. A controlled write path addresses the second. Graph provenance addresses the third.
 
 <!--
 This is where the hotel domain earns its place. The stakes are lower drama
@@ -90,14 +91,16 @@ talks only cover the first.
 - **No access to your data:** the model has never seen this chain's hotels, rates, or policies. Retraining on a newer snapshot of the public web does not change that
 - **Relationship blindness:** it cannot connect a policy to the property it governs, or find every hotel that shares one amenity
 
-Retrieval closes the first two gaps. Only a graph closes the third.
+Plain retrieval narrows the first two gaps. Graph retrieval closes all three, with context that is verified, connected, and focused.
 
 <!--
 The closing line is the pivot the next two slides depend on. Say it slowly.
 
-If someone pushes on hallucination as a solved problem, agree partly: a good
-retrieval layer does reduce it a lot. Then point at the third bullet, which
-no amount of chunk retrieval fixes, and which is the reason the day exists.
+If someone pushes on hallucination as a solved problem, agree partly: plain
+retrieval does reduce it. Then make the stronger claim. Graph retrieval does
+better on all three gaps. The answer starts on a verified entity, follows
+stored relationships, and carries only the facts the question needs. The
+third bullet is the one no amount of chunk retrieval fixes.
 -->
 
 ---
@@ -120,9 +123,12 @@ vector search miss the 60611 chunk before hybrid retrieval finds it, and then
 sees the spa-and-pool question answered by reviewed Cypher rather than by
 similarity at all.
 
-Postal code 60611 is the demo that changes minds fastest, because the fix is
-not a graph at all, it is a full-text index. Being honest about that buys you
-credibility for the spa-and-pool case, where a graph genuinely is the answer.
+Postal code 60611 is the demo that changes minds fastest. The fix is a
+full-text index, and it lives in the same Neo4j database as the graph. The
+exact-term match finds the chunk, and the traversal still attaches the hotel
+behind it. Say plainly that an old idea beats the embedding here. That honesty
+buys credibility for the spa-and-pool case, where only the graph can tie two
+conditions to one hotel.
 -->
 
 ---
@@ -140,7 +146,7 @@ A knowledge graph stores each hotel as a record and stores the links between rec
 - **Connected, verifiable facts:** the graph stores facts you can check, not pattern-matched chunks
 - **Traversal on top of similarity:** a traversal reaches context that a vector search cannot
 - **Traceable:** every answer walks back to the document behind it
-- **Fewer tokens:** the agent receives the facts the answer needs, not everything that looked similar
+- **Fewer tokens:** the graph returns the facts the answer needs, not everything that looked similar
 - **Governed retrieval:** the application fixes the traversal, and the model does not choose it
 
 The agent answers from evidence the graph can defend.
@@ -169,7 +175,7 @@ The UK's National Innovation Centre for Data ran 510 complex questions. Some nee
 - **Fewer tokens per correct answer:** the retriever fetches sections, not whole documents
 - **No ontology project:** the graph was built from the titles, sections, and links the documents already carried
 
-An agent that declines two questions in three is as unusable as one that guesses.
+GraphRAG answered more than twice as many questions, and it answered them more truthfully.
 
 <small>Source: [Independent study: GraphRAG makes AI agents 80% more truthful](https://neo4j.com/blog/agentic-ai/study-graphrag-ai-agents-80-percent-more-truthful/), Neo4j</small>
 
@@ -192,12 +198,12 @@ does the same thing to the hotel documents with a pinned schema.
 
 ## Grounding Is More Than Retrieval
 
-Retrieval decides what the model sees. Grounding decides what it is allowed to do with it.
+Graph retrieval decides what the model sees. Grounding decides what it is allowed to do with it.
 
-- **Two bounded read tools:** the model routes by tool name, description, and input schema
-- **Answer from tool evidence:** the prompt limits hotel answers to facts returned by a read tool
-- **Expose missing facts:** both read tools return the same structured answerability verdict
-- **Application-owned writes:** the model proposes an action. Application code validates it, and the database enforces the rule inside the write transaction
+- **Two bounded read tools:** both tools read only from the graph. The model routes by tool name, description, and input schema
+- **Answer from graph evidence:** the prompt limits hotel answers to facts a read tool returned from the graph
+- **Expose missing facts:** both read tools return the same structured verdict, which names any fact the graph does not hold
+- **Application-owned writes:** the model proposes an action. Application code validates it, and Neo4j enforces the rule inside the write transaction
 
 <!--
 This slide has no equivalent in most GraphRAG decks, and it is the one that
@@ -226,10 +232,10 @@ One sentence, three different mechanisms:
 - **The cancellation policy:** hybrid retrieval finds the passage, a graph traversal attaches the hotel and its source document
 - **The hold for four guests:** a reservation command validates the guest count, and Neo4j enforces the limit in the write transaction
 
-Add a fourth question, "is a room free tonight," and the correct answer is that the graph does not know.
+Add a fourth question, "is a room free tonight," and the graph shows it holds no availability data. The agent declines instead of guessing.
 
 <!--
-This question runs through decks 5, 6, 7, and 8 word for word. Do not
+This question runs through decks 4, 5, 6, and 7 word for word. Do not
 paraphrase it later. The repetition is what makes the arc legible.
 
 The fourth line matters as much as the first three. Every attendee has been
@@ -240,82 +246,11 @@ refuse this one on purpose.
 
 ---
 
-## What We Are Building Today
-
-By the end of the workshop you will have built and deployed exactly this:
-
-- A **knowledge graph** in your own Neo4j Aura instance, with five hotels you extract from source documents yourself
-- A **Strands agent** on **Amazon Bedrock**, choosing between passage and structured read tools
-- **Retrieval tools published through AgentCore Gateway** as IAM-authenticated MCP
-- The **agent itself deployed to AgentCore Runtime** as an arm64 container
-- **Preference memory** written back into the same graph, with provenance
-
-Fully isolated: your own Aura instance and a workshop AWS account.
-
-<!--
-Five bullets, six modules. Module 2 is missing from this list on purpose,
-because comparing retrievers produces understanding rather than an artifact.
-
-Stress "your own." The most common workshop failure is a shared environment
-where a participant's mistake is invisible to them. Here a broken graph load
-shows up in the next module as an empty result, which is the point.
--->
-
----
-
-## Neo4j and AWS
-
-- **Neo4j Aura:** stores connected enterprise facts and returns graph context with provenance
-- **Amazon Bedrock:** provides models for extraction, embeddings, and agent reasoning
-- **Amazon Bedrock AgentCore:** publishes remote tools through Gateway and runs deployed agents through Runtime
-- **Together:** Neo4j supplies verified context. AWS runs the models, tools, and agent services
-- **AWS Marketplace:** lets customers buy Neo4j Aura through their AWS account
-
-<!--
-Keep the roles clear. Neo4j stores the connected facts and returns focused
-context. Amazon Bedrock provides the models. AgentCore provides managed tool
-and agent deployment.
-
-A joint-customer proof table belongs here. It is left out rather than filled
-with unapproved logos. Add one for your event if you have cleared the names
-and the numbers.
--->
-
----
-
-<style scoped>
-/* Five connection patterns plus a short source line. */
-section { font-size: 24px; }
-</style>
-
-## Five Ways AWS Connects to Neo4j
-
-Choose the pattern that matches how the data moves and who needs it.
-
-- **Spark Connector on Amazon EMR:** moves large Spark DataFrames into Neo4j and reads graph data back into Spark
-- **AWS Glue Connector:** builds managed ETL jobs from S3, RDS, Redshift, DynamoDB, and other Glue sources
-- **Kafka Connector on Amazon MSK:** streams events into Neo4j and publishes Neo4j changes to Kafka topics
-- **Neo4j drivers in AWS applications:** let Lambda, ECS, EKS, and EC2 services run Cypher directly
-- **MCP for AWS agents:** lets Bedrock and AgentCore agents call graph tools through a standard interface
-
-<small>Sources: [AWS Glue and data connectors](https://neo4j.com/docs/connectors/), [Spark Connector](https://neo4j.com/docs/spark/current/), [Kafka Connector](https://neo4j.com/docs/kafka/current/), and [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
-
-<!--
-These are separate connection patterns, not one required stack. Choose EMR for
-large Spark workloads, Glue for managed ETL, MSK for event streams, a driver
-for application requests, and MCP when an agent needs graph tools.
-
-Keep this at overview level. Later decks show the bounded MCP tools used in
-this workshop and the AgentCore Gateway path that publishes them.
--->
-
----
-
 ## Opening Demo
 
 See the finished build answer the hero question live.
 
-Then we look at what a knowledge graph actually is, and set up your Aura instance and your AWS environment.
+Then we look at the six modules that build it, and who owns each control.
 
 <!--
 Instructor run instructions:
@@ -334,4 +269,96 @@ Keep the runtime live all day so attendees can invoke it during breaks. Point
 back to this demo from each module: Module 1 builds the graph behind it,
 Module 2 chooses its retriever, Module 3 grounds it, Modules 4 and 5 deploy
 it, Module 6 gives it memory.
+-->
+
+---
+
+<style scoped>
+/* A numbered list of six plus one closing line. */
+section { font-size: 24px; }
+</style>
+
+## What You Will Build
+
+Six modules, six verbs:
+
+1. **Build** a knowledge graph from hotel documents into your own Aura instance
+2. **Compare** eight retrieval patterns and identify complementary question shapes
+3. **Ground** an agent in two bounded read tools, and keep its write path separate
+4. **Publish** the retrieval tools through AgentCore Gateway, on the Model Context Protocol
+5. **Deploy** the whole agent to AgentCore Runtime as a container
+6. **Remember** guest preferences in the same graph, with provenance
+
+Modules 3, 4, and 5 reuse the same boundaries while packaging their tools differently.
+
+<!--
+This deck's thesis, restated: the model does not get smarter across these six
+steps. What changes is what it can see and what it is allowed to do.
+
+Say the grouping out loud, because it saves questions later. Modules 1 and 2
+are where the day's understanding gets built. Modules 3, 4, and 5 are the same
+design deployed three ways, so nobody should spend Module 5 wondering why the
+Gateway disappeared. If you fall behind, 4 and 5 are the ones to demonstrate
+rather than have everyone run.
+-->
+
+---
+
+![bg contain](../images/foundations-grounded-request-flow.svg)
+
+<!--
+Walk this end to end, once, slowly. It is the only time today the whole path
+is on one slide.
+
+A question arrives at the Strands agent running a model on Bedrock. The model
+reads two tool specifications. It can choose passage search, which uses Nova,
+the vector and full-text indexes, and a reviewed traversal, or a structured
+record query, which adds a model call to generate Cypher and an `EXPLAIN`
+read-plan check. Bounded evidence and a shared verdict come back to the model.
+
+The reservation write is not on this path at all. It runs beside the agent,
+and the next slide is where you say who owns it.
+
+The packaging changes across later modules. Module 3's key lesson is the
+model-driven choice between two local read tools.
+-->
+
+---
+
+<style scoped>
+/* Six rows of three-column prose. */
+section { font-size: 21px; }
+</style>
+
+## The Model Chooses Inside Guarded Boundaries
+
+| Decision or constraint | Owner |
+|---|---|
+| Which read tool fits the question | The model, from two tool specifications |
+| Passage-search configuration and traversal | Application code, fixed inside `search_hotel_passages` |
+| Whether generated Cypher has a read plan | The `EXPLAIN` guard, backed by a read-only database identity in production |
+| Whether live availability is supported | The shared tool verdict, computed from the question and graph boundary |
+| Rejecting an invalid or duplicate write | Neo4j, inside the reservation transaction |
+| Who can call AWS services | IAM, on the execution role |
+
+The model routes and writes prose. Code and the database own the hard constraints.
+
+<!--
+This is the control-ownership correction to emphasize. Module 3 deliberately
+returns one decision to the model: which evidence shape fits the question.
+
+The passage tool still owns a fixed retrieval configuration. The structured
+tool does allow a model to generate Cypher, but the query is returned for
+inspection and Neo4j runs it only after the planner reports a read plan. A
+valid read query can still have the wrong meaning. The plan check is a safety
+boundary. Semantic validation remains a separate responsibility.
+
+The availability verdict is deterministic data from the tool. The final prose
+and whether the agent follows its prompt remain model behavior, which the lab
+observes through traces rather than claiming to enforce.
+
+This table reuses cleanly with a different schema and a different domain, which
+is the takeaway to name out loud.
+
+Next is what a knowledge graph actually is. Setup follows that deck.
 -->

@@ -1,6 +1,6 @@
 ---
 title: "Setup"
-weight: 10
+weight: 1
 ---
 
 ## Get Your Environment Ready
@@ -100,7 +100,5 @@ The terminal has no AWS credentials. Run `aws configure` or export the usual cre
 :::
 
 ---
-
-Slides for this module\: [The Hotel Booking Assistant](../slides/overview-architecture/)
 
 ::children{depth=1 variant=list}

@@ -1,6 +1,6 @@
 ---
 title: "How Neo4j + AWS Work Together"
-weight: 1
+weight: 2
 ---
 
 AWS and Neo4j provide complementary parts of a grounded AI system. AWS supplies

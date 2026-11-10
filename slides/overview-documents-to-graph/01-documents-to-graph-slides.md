@@ -75,7 +75,7 @@ Document holds a Chunk, the Chunk text goes to Claude, and Claude's output
 becomes the Hotel and everything hanging off it.
 
 Then trace it backward, which is the direction Module 2 reads it. This same
-picture appears in deck 5 with a retrieval path drawn over it.
+picture appears in deck 4 with a retrieval path drawn over it.
 -->
 
 ---
@@ -233,7 +233,7 @@ One chunk per document, and zero overlap.
 The same embedder writes the document vectors and the query vectors.
 
 <!--
-This is a property of this corpus, not general advice. Deck 5 covers chunking
+This is a property of this corpus, not general advice. Deck 4 covers chunking
 as a real trade-off. Here the documents are small enough that the trade-off
 does not arise, and saying so honestly is better than pretending a decision
 was made.
@@ -261,9 +261,9 @@ other job, and every retriever in Module 2 depends on both.
 
 Preview the reason there are two rather than one: an embedding of 60611
 resembles every other five-digit number, so vector search ranks the right chunk
-too low. Full-text matches the literal token. Deck 5 runs that failure live.
+too low. Full-text matches the literal token. Deck 4 runs that failure live.
 
-Do not explain hybrid search here. Deck 5 owns it.
+Do not explain hybrid search here. Deck 4 owns it.
 -->
 
 ---

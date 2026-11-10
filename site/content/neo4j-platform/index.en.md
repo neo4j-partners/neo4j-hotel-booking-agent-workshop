@@ -1,6 +1,6 @@
 ---
 title: "Neo4j Graph Intelligence Platform"
-weight: 3
+weight: 4
 ---
 
 A grounded agent needs a knowledge layer that can retrieve source text and

@@ -67,7 +67,7 @@ When `1.0` completes successfully, stay in the same folder and open
 same **Python 3.10** interpreter selected.
 
 :::alert{type="success" header="Ready"}
-Proceed to [Module 1](../../01-build-graph/).
+Proceed to [How Neo4j + AWS Work Together](../../platform/).
 :::
 
 ---

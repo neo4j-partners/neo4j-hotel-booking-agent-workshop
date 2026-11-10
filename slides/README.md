@@ -8,17 +8,16 @@ the slide holds the fragments and the note holds what you say.
 
 | # | Deck | Covers | Pairs with |
 |---|---|---|---|
-| 1 | `overview-business-story` | Why retrieval alone is not grounding, and the hero question | Opening |
-| 2 | `overview-knowledge-graph` | The property graph model, Cypher, and Neo4j Aura | Foundations |
-| 3 | `overview-architecture` | The dataset, the environment, and who owns which control | Setup |
-| 4 | `overview-documents-to-graph` | Extraction, schema drift, and the indexes that power search | Module 1 |
-| 5 | `overview-graphrag` | Vector, full-text, hybrid, and graph-enriched retrieval | Module 2 |
-| 6 | `overview-agent` | Strands model-driven routing, grounding evidence, and the write path | Module 3 |
-| 7 | `overview-mcp-gateway` | Moving the read tools out of the notebook process | Module 4 |
-| 8 | `overview-agentcore-runtime` | The container contract, sessions, and observability | Module 5 |
-| 9 | `overview-agent-memory` | Conversation entities, durable memory, and provenance | Module 6 |
+| 1 | `overview-business-story` | Why retrieval alone is not grounding, the hero question, and who owns which control | Opening |
+| 2 | `overview-knowledge-graph` | The property graph model, Cypher, the hotel dataset, and Neo4j Aura | Foundations |
+| 3 | `overview-documents-to-graph` | Extraction, schema drift, and the indexes that power search | Module 1 |
+| 4 | `overview-graphrag` | Vector, full-text, hybrid, and graph-enriched retrieval | Module 2 |
+| 5 | `overview-agent` | Strands model-driven routing, grounding evidence, and the write path | Module 3 |
+| 6 | `overview-mcp-gateway` | Moving the read tools out of the notebook process | Module 4 |
+| 7 | `overview-agentcore-runtime` | The container contract, sessions, and observability | Module 5 |
+| 8 | `overview-agent-memory` | Conversation entities, durable memory, and provenance | Module 6 |
 
-Deck 5 is the longest and deck 1 is the only one that needs a live demo. If you
+Deck 4 is the longest and deck 1 is the only one that needs a live demo. If you
 fall behind, demonstrate Modules 4 and 5 rather than having the room run them.
 
 `overview-aws-neo4j-conference` is a separate conference talk and is not part of the workshop build.
@@ -63,7 +62,7 @@ failure this rule exists to prevent.
 ## Adding or Changing a Deck
 
 1. Copy the frontmatter and `<style>` block from any existing deck. They are
-   byte-identical across all nine and disable Marp's fragment animations.
+   byte-identical across all eight and disable Marp's fragment animations.
 2. Add the deck to the `DECKS` array in `site/scripts/build-slides.mjs`. The
    array is in run-of-show order and drives the deck index page.
 3. Add it to `site/nav.adoc` under the Slides entry.
@@ -78,7 +77,7 @@ failure this rule exists to prevent.
 - No agenda, questions, or thank-you slides, and no summary that only restates
 - Every deck opens with a one-line recall of the previous one and closes
   pointing at the next
-- The hero question appears verbatim in decks 1, 5, 6, 7, and 8. Do not
+- The hero question appears verbatim in decks 1, 4, 5, 6, and 7. Do not
   paraphrase it. The repetition is what makes the arc legible
 
 Local Marp preview output (`slides/**/*.html`) is git-ignored. The published

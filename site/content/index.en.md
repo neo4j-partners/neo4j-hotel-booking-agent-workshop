@@ -16,10 +16,10 @@ This workshop uses a hotel booking scenario. You will:
 - **Deploy tools and the agent:** Use :link[Amazon Bedrock AgentCore]{href="https://aws.amazon.com/bedrock/agentcore/" external=true}.
 - **Add memory:** Store agent memory as a graph in :link[Neo4j]{href="https://neo4j.com/" external=true}.
 
-Start with [How Neo4j + AWS Work Together](./platform/). It leads through short
-guides to [AWS GenAI Services](./aws-services/) and the
-[Graph Intelligence Platform](./neo4j-platform/), then into the GraphRAG
-concepts in [Foundations](./foundations/).
+:::alert{type="info" header="Start with Setup"}
+Begin with [Setup](./setup/). It creates your Neo4j AuraDB Free database and
+restores the workshop graph, and every module depends on it.
+:::
 
 **Source code:** :link[Open the workshop repository on GitHub]{href="https://github.com/neo4j-partners/neo4j-hotel-booking-agent-workshop" external=true}.
 
@@ -47,9 +47,9 @@ arrives pre-configured. Setup guides you through creating a free Neo4j database.
 
 | Module | What You Will Build |
 |--------|---------------------|
+| **Setup** | Create a Neo4j AuraDB Free database, restore the workshop graph, verify Neo4j and :link[Amazon Bedrock]{href="https://aws.amazon.com/bedrock/" external=true} access |
 | **Platform overview** | See how AWS and Neo4j work together, then learn the capabilities each platform contributes, including Amazon Bedrock AgentCore |
 | **Foundations** | Learn the property graph, the GraphRAG retrieval flow, and service responsibilities |
-| **Setup** | Create a Neo4j AuraDB Free database, restore the workshop graph, verify Neo4j and :link[Amazon Bedrock]{href="https://aws.amazon.com/bedrock/" external=true} access |
 | **Module 1: Build the Graph** | Extract five held-out hotel documents into the graph, define the extraction schema, create both retrieval indexes |
 | **Module 2: From Vector Search to Graph-Enriched Retrieval** | Semantic search, exact-term search, and graph-enriched retrieval |
 | **Module 3: Build a Grounded Booking Agent with GraphRAG** | Turn two GraphRAG read paths into agent tools, check grounding verdicts, and protect reservation writes |

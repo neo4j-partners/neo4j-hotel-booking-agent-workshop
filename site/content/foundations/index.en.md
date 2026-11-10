@@ -139,4 +139,4 @@ Slides for this module\: [Knowledge Graphs and AuraDB](../slides/overview-knowle
 
 ## Next
 
-Head to [Setup](../setup/).
+Head to [Module 1: Build the Graph](../01-build-graph/).

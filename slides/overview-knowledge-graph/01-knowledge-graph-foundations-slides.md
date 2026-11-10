@@ -44,7 +44,7 @@ the tools you get, and what the Free tier omits.
 Announce the split. Attendees who already know graphs can relax through the
 first half, and the ones who do not will not think the whole day is theory.
 
-Do not explain retrieval here. Deck 5 owns vectors, hybrid search, and
+Do not explain retrieval here. Deck 4 owns vectors, hybrid search, and
 retrievers. This deck only has to make the graph feel like a normal database.
 -->
 
@@ -271,14 +271,15 @@ CYPHER 25 pins the language version, so the query means the same thing on any
 server the workshop runs against. Every Cypher query in the workshop carries it.
 
 That is enough Cypher to read every query in this deck. Modules 2 and 6 add
-CALL, WITH, and MERGE, and each one is introduced where it is first used.
+CALL and WITH, and each one is introduced where it is first used. MERGE comes
+up two slides on, where it creates the shared amenity node.
 -->
 
 ---
 
 <style scoped>
-/* Seven rows with examples. */
-section { font-size: 24px; }
+/* Seven rows with examples plus three closing paragraphs. */
+section { font-size: 20px; }
 </style>
 
 ## The Hotel Knowledge Graph
@@ -295,41 +296,63 @@ section { font-size: 24px; }
 
 `Document` and `Chunk` are the lexical layer. Everything else is the domain layer.
 
+Hundreds of properties worldwide. These eight carry the workshop: Cairo, Chicago, Paris, Tokyo, Sydney, Rio de Janeiro, Cape Town, Prague.
+
+You restore this from a prebuilt dump, and the dump deliberately ships with no vector index, no full-text index, and five hotels missing. Module 1 is where all three arrive.
+
 <!--
 The two-layer split is the single most important structural idea in the
 workshop's schema, and Module 1's deck takes it apart in detail. Name it here
 and move on.
 
+The last line is the setup for Module 1. Participants often assume a prebuilt
+graph means there is nothing to build. There is: the two indexes that every
+later retrieval depends on, and five held-out documents to extract.
+
+Cairo is deliberately not one of the five. Module 2's comparison has to work
+identically for everyone, so it cannot depend on a participant's own extraction
+run. The hero hotel, AnyCompany Cairo Nile View, also appears in the
+environment check, in Module 3's grounded answer, and in the Module 5 smoke
+tests. If someone sees it three times and asks, that is why.
+
 Amenity being unique across the graph is the second thing to flag. Two hotels
 with a spa point at the same Amenity node, so "which other hotels have this"
-is one hop from a node you already have.
+is one hop from a node you already have. The next slide shows that shared node.
 -->
 
 ---
 
-![bg contain](../images/01-graph-structure.svg)
+<style scoped>
+/* One graph pattern plus four modeling points. */
+section { font-size: 25px; }
+</style>
+
+## Shared Amenity Nodes Connect Hotels
+
+`Full-Service Spa` is one shared `Amenity` node. Every hotel that offers it connects through `OFFERS_AMENITY`.
+
+```cypher
+CYPHER 25
+MATCH (a:Amenity {name: "Full-Service Spa"})
+      <-[:OFFERS_AMENITY]-(h:Hotel)
+RETURN a.name, collect(h.name) AS hotels
+```
+
+- **One shared entity:** `MERGE` creates one node for the normalized amenity name
+- **Two-way traversal:** start at a hotel to list amenities, or start at an amenity to find hotels
+- **Connected context:** continue from each hotel to rooms, policies, services, chunks, and documents
+- **Composable paths:** Module 2 starts from a search match and walks outward through these relationships
+
+The graph stores the amenity once and makes every connected path available for traversal.
 
 <!--
-Left side, the lexical layer: a source file becomes a Document, which holds
-Chunks, and each Chunk carries the text and its embedding.
-
-Right side, the domain layer: a Hotel with typed relationships out to Room,
-Amenity, Policy, and Service.
-
-The line between them is FROM_CHUNK, and it is the whole reason this schema
-works for retrieval. Search finds a Chunk by meaning. The traversal crosses
-into the domain layer and returns structured facts. The same edge run backward
-is the provenance answer.
-
-Hotel is the hub, and every domain fact about a stay is one hop away. That
-shape is deliberate. A retrieval query that lands anywhere near a hotel reaches
-everything a guest might ask about in a single hop, which keeps the traversal
-in Module 2 short and its returned context small.
-
-Ask the room what happens if you also want to answer "which hotels are near
-this attraction." You add a node type and an edge. You do not migrate a schema.
-
-Deck 5 will put a retrieval path on top of this exact picture.
+- Read the pattern from right to left. Each Hotel points to the same Amenity.
+- Module 1 normalizes amenity names before writing them.
+- MERGE uses the normalized name to create one shared node.
+- A traversal can start at the Hotel or the Amenity.
+- From the matched Hotel, the query can continue to policies, rooms, services,
+  chunks, and source documents.
+- Module 2 uses this outward traversal to assemble connected context.
 -->
 
 ---
@@ -435,6 +458,11 @@ error.
 
 ---
 
+<style scoped>
+/* Five module bullets, a closing line, and the setup prerequisites. */
+section { font-size: 25px; }
+</style>
+
 ## Where the Graph Goes Next
 
 The graph you are about to restore is the one every module reads:
@@ -447,11 +475,20 @@ The graph you are about to restore is the one every module reads:
 
 One database carries all six modules. You never create a second one.
 
+To start you need an Aura instance, an AWS account with Bedrock access in **us-east-1**, a filled-in `CONFIG.txt`, and a passing `environment/verify.py`. Setup has the steps.
+
 <!--
 This is the forward pointer. It also answers the question people are holding:
 whether they are about to accumulate a pile of infrastructure. They are not.
 One Aura instance and one AWS account carry the entire day.
 
-Next up is the dataset and the environment, and then you build the instance
-this deck has been describing.
+Do not read the setup line out. It is on the screen so people know what is
+coming, and the setup pages have the actual steps.
+
+verify.py runs eight checks before Module 1: Python version, imports,
+settings, AWS credentials, the hero hotel in the graph, and each of the three
+Bedrock models. Tell the room to read the first failure rather than the last.
+
+Head to Setup. Every path ends in the same place: a terminal, four Neo4j
+settings in CONFIG.txt, AWS credentials in us-east-1, and eight passing checks.
 -->

@@ -348,10 +348,11 @@ YIELD node, score
 Rare tokens score high, which is the opposite of how embeddings treat them. Continue the same procedure into the traversal from pattern 2 and you have pattern 4, exact-term entry with a graph-enriched exit.
 
 <!--
-Say plainly that the graph is not the hero of this slide. A full-text index is
-a forty-year-old idea and it beats a modern embedding model outright on this
-question. Admitting that is what buys credibility for the slides where the
-graph genuinely is the answer.
+Say plainly that a full-text index is a forty-year-old idea and it beats a
+modern embedding model outright on this question. The index lives in the same
+Neo4j database as the graph, so the exact-term match hands straight into the
+traversal from pattern 2. Admitting where embeddings lose is what buys
+credibility for the slides where the traversal is the answer.
 
 Note the limit of the boolean form. "spa AND pool" requires both terms in the
 same chunk, which is not the same as requiring both amenities on the same
@@ -494,7 +495,7 @@ relationship OFFERS_AMENITY. A model that guesses HAS_AMENITY produces valid
 Cypher that returns zero rows, and zero rows looks like "no such hotel" rather
 than "wrong query." Supplying the schema and examples is what reduces that.
 
-Deck 7 puts this behind an AgentCore Gateway with the same EXPLAIN guard, so
+Deck 6 puts this behind an AgentCore Gateway with the same EXPLAIN guard, so
 flag the forward pointer.
 -->
 

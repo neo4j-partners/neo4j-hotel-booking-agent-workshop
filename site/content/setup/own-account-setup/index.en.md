@@ -89,7 +89,7 @@ ok    bedrock memory embeddings are 1024-wide
 Your environment is ready. Open the Module 1 notebook.
 :::
 
-With every line reporting `ok`, proceed to [Module 1](../../01-build-graph/). The [Setup](../) page lists the failures worth expanding on.
+With every line reporting `ok`, proceed to [How Neo4j + AWS Work Together](../../platform/). The [Setup](../) page lists the failures worth expanding on.
 
 ---
 

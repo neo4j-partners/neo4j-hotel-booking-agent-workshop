@@ -3,7 +3,7 @@ title: "Module 1: Build the Graph"
 weight: 20
 ---
 
-This module adds five hotel documents to Neo4j. The build stores each document as searchable text and extracts hotel facts into a structured graph.
+This module adds five hotel documents to the graph you restored in Setup. The build stores each document as searchable text and extracts hotel facts into a structured graph.
 
 The two structures answer different parts of a question such as "Which Cairo hotels have a spa that costs extra?" Search finds text with similar meaning. Graph relationships connect the hotel, spa, and fee so one Cypher query can match all three facts.
 
@@ -39,10 +39,10 @@ Every domain relationship starts at `Hotel`, so its facts are one hop away.
 
 The graph dump from Setup already contains most of the hotel FAQ corpus. Extracting the full corpus takes hours, so this module adds five held-out documents in about four minutes. These documents use the same extraction schema as the prepared data.
 
-You extract the `-002` document for Tokyo, Sydney, Rio de Janeiro, Cape Town, and Prague. These documents keep your build separate from the fixtures used by later modules\:
+You extract a second hotel in each of five cities\: Tokyo, Sydney, Rio de Janeiro, Cape Town, and Prague. The dump already holds the first hotel in each city. The source files end in `-002`, as in `hotel-tokyo-002.txt`. These documents keep your build separate from the fixtures used by later modules\:
 
-* **Separate fixtures:** Later modules use other hotels, so rebuilding the five `-002` hotels preserves their fixture data.
-* **City coverage:** The dump retains each city's `-001` hotel while the build adds its `-002` hotel.
+* **Separate fixtures:** Later modules use other hotels, so rebuilding these five second hotels preserves their fixture data.
+* **City coverage:** The dump retains each city's first hotel while the build adds its second hotel.
 * **Cairo baseline:** The list excludes Cairo because Module 2 starts with a Cairo hotel already stored in the dump.
 
 Later modules run retrieval against the combined graph, including your five hotels.

@@ -1,6 +1,6 @@
 ---
 title: "AWS GenAI Services"
-weight: 2
+weight: 3
 ---
 
 AWS provides the model and application infrastructure around the Neo4j graph.
