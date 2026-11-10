@@ -104,7 +104,7 @@ Later modules require this structure. Module 2 compares source retrieval with gr
 
 ### Deterministic Amenity Parsing
 
-Each source document contains a `## Hotel Amenities` bullet list. An LLM can rewrite one amenity with several valid names, so the build reads this structured section with code.
+Each source document contains a `## Hotel Amenities` bullet list. An LLM can rewrite one amenity with several valid names, so the build reads this structured section with text parsing.
 
 1. The extraction schema covers prose facts and leaves amenities to the parser.
 2. The parser reads bullets under `## Hotel Amenities` and stops at the next heading.

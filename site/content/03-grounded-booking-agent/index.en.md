@@ -1,5 +1,5 @@
 ---
-title: "Module 3: Build a Grounded Booking Agent with GraphRAG"
+title: "Module 3: Build a Grounded Booking Agent with Strands and GraphRAG"
 weight: 40
 ---
 

@@ -9,7 +9,7 @@
 * xref:foundations/index.adoc[Foundations]
 * xref:01-build-graph/index.adoc[Module 1: Build the Graph]
 * xref:02-connected-context/index.adoc[Module 2: From Vector Search to Graph-Enriched Retrieval]
-* xref:03-grounded-booking-agent/index.adoc[Module 3: Build a Grounded Booking Agent with GraphRAG]
+* xref:03-grounded-booking-agent/index.adoc[Module 3: Build a Grounded Booking Agent with Strands and GraphRAG]
 * xref:04-production-agent/index.adoc[Module 4: Production Agent with AgentCore]
 * xref:05-agentcore-deploy/index.adoc[Module 5: Deploy to AgentCore Runtime]
 * xref:06-neo4j-memory/index.adoc[Module 6: Neo4j Graph Memory]
