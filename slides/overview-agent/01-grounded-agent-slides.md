@@ -160,12 +160,12 @@ section { font-size: 24px; }
 
 ## Two Read Tools, One Boundary
 
-The model chooses the evidence shape that fits the question.
+The model reads both tool descriptions and picks by question type: what does it say, or how many?
 
-| Tool | How it reads Neo4j | Best fit | Evidence returned |
+| Tool | How it reads Neo4j | Best fit | Example question |
 |---|---|---|---|
-| **`search_hotel_passages`** | Hybrid search over the vector and full-text indexes, then a fixed Cypher traversal | Amenities, rooms, policies, services, locations, source wording | Up to five passages and linked hotel facts |
-| **`query_hotel_records`** | Text2Cypher. A model writes read-only Cypher from the question | Counts, averages, rankings, filters, relationships | The generated Cypher and bounded records |
+| **`search_hotel_passages`** | Hybrid search over the vector and full-text indexes, then a fixed Cypher traversal | Amenities, rooms, policies, services, locations, source wording | "What amenities does AnyCompany Cairo Nile View have?" |
+| **`query_hotel_records`** | Text2Cypher. A model writes read-only Cypher from the question | Counts, averages, rankings, filters, relationships | "How many hotels have a helipad?" |
 
 Both take one natural-language `query`. Only `query_hotel_records` is Text2Cypher. Neither exposes credentials or a write.
 
