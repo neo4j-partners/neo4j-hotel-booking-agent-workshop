@@ -29,6 +29,9 @@ ol > li {
 
 # From Documents to a Knowledge Graph
 
+**Lab:** Module 1, Notebook 1.1
+`1.1_build_graph.ipynb`
+
 Hotel FAQ documents become a graph you can query
 
 <!--

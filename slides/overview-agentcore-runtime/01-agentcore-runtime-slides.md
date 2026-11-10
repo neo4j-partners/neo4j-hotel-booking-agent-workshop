@@ -29,6 +29,9 @@ ol > li {
 
 # Deploying to AgentCore Runtime
 
+**Lab:** Module 5, Notebook 5.1
+`5.1_deploy.ipynb`
+
 The whole agent becomes a service someone else can call
 
 <!--

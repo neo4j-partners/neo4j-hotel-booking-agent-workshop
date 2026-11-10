@@ -363,15 +363,15 @@ Open `notebooks/02-connected-context/2.1_connected_context.ipynb` and run the ce
 
 The page and the notebook number their sections differently. This table shows where each page section runs in notebook 2.1\:
 
-| Page section | Notebook 2.1 section |
+| Page section | Notebook 2.1 step |
 |--------------|----------------------|
-| 1. Vector Search with VectorRetriever | 1. Find an arrival time with semantic search |
-| 2. Graph-Enhanced Vector Search with VectorCypherRetriever | 3. Find a source, then add related hotel facts |
-| 3. Full-Text Search for Exact Terms | No standalone cell. Section 2 runs full-text search as the exact-term arm of hybrid search. |
+| 1. Vector Search with VectorRetriever | Step 1: Find an arrival time with semantic search |
+| 2. Graph-Enhanced Vector Search with VectorCypherRetriever | Step 3: Find a source, then add related hotel facts |
+| 3. Full-Text Search for Exact Terms | No standalone cell. Step 2 runs full-text search as the exact-term arm of hybrid search. |
 | 4. Full-Text Search with Cypher Traversal | No notebook cell. The page explains this concept only. |
-| 5. Hybrid Search with HybridRetriever | 2. Find a postal code with hybrid search |
-| 6. Graph-Enriched Hybrid Search with HybridCypherRetriever | 5. Compare passage search with Text2Cypher. The passage path calls `search_hotel_knowledge`. |
-| 7. Cypher Templates for Structured Filtering | 4. Filter hotels with fixed Cypher |
+| 5. Hybrid Search with HybridRetriever | Step 2: Find a postal code with hybrid search |
+| 6. Graph-Enriched Hybrid Search with HybridCypherRetriever | Step 5: Compare passage search with Text2Cypher. The passage path calls `search_hotel_knowledge`. |
+| 7. Cypher Templates for Structured Filtering | Step 4: Filter hotels with fixed Cypher |
 | 8. Text2Cypher with Text2CypherRetriever | 5. Compare passage search with Text2Cypher. The structured path calls `graph_query`. |
 
 If the readiness check fails, complete Module 1 and restart this notebook. Module 2 reads the graph and preserves the Module 1 data.

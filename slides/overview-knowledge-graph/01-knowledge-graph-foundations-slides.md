@@ -29,6 +29,9 @@ ol > li {
 
 # Knowledge Graph Foundations
 
+**Lab:** Setup, Notebook 1.0
+`1.0_verify_environment.ipynb`
+
 What a property graph is, and how the hotel graph is modeled
 
 <!--

@@ -29,6 +29,9 @@ ol > li {
 
 # The Grounded Booking Agent
 
+**Lab:** Module 3, Notebook 3.1
+`3.1_grounded_booking_agent.ipynb`
+
 Module 2's GraphRAG read paths become two tools the agent can choose. The write path stays separate.
 
 <!--

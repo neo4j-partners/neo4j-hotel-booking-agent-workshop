@@ -29,6 +29,8 @@ ol > li {
 
 # The Business Case for Grounded Agents
 
+**Lab:** Setup, Neo4j AuraDB Free
+
 A guest asks for a Chicago hotel with a spa and a pool. The model answers with confidence. The graph answers with evidence.
 
 <!--

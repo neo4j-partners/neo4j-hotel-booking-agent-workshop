@@ -13,7 +13,7 @@ the slide holds the fragments and the note holds what you say.
 | 3 | `overview-documents-to-graph` | Extraction, schema drift, and the indexes that power search | Module 1 |
 | 4 | `overview-graphrag` | Vector, full-text, hybrid, and graph-enriched retrieval | Module 2 |
 | 5 | `overview-agent` | Strands model-driven routing, grounding evidence, and the write path | Module 3 |
-| 6 | `overview-mcp-gateway` | Moving the read tools out of the notebook process | Module 4 |
+| 6 | `overview-mcp-gateway` | Moving the two hotel search tools to Lambda, AgentCore Gateway, MCP, and request security | Module 4 |
 | 7 | `overview-agentcore-runtime` | The container contract, sessions, and observability | Module 5 |
 | 8 | `overview-agent-memory` | Conversation entities, durable memory, and provenance | Module 6 |
 
@@ -79,8 +79,8 @@ failure this rule exists to prevent.
   diagrams where a picture would be one box and an arrow
 - Descriptive noun-phrase titles. No emojis, no exclamation points, no em dashes
 - No agenda, questions, or thank-you slides, and no summary that only restates
-- Every deck opens with a one-line recall of the previous one and closes
-  pointing at the next
+- Every deck opens with its lab and a short statement of its purpose, and
+  closes pointing at the next
 - The hero question appears verbatim in decks 1, 4, 5, 6, and 7. Do not
   paraphrase it. The repetition is what makes the arc legible
 

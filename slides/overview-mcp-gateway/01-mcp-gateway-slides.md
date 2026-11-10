@@ -27,14 +27,14 @@ ol > li {
 }
 </style>
 
-# MCP and AgentCore Gateway
+# Hotel Search Tools Behind AgentCore Gateway
 
-Module 2 built two GraphRAG read paths. Module 3 gave both paths to one agent.
-Module 4 moves those same read-only tools to AWS Lambda behind AgentCore
-Gateway.
+**Lab:** Module 4, Notebook 4.1
+`4.1_agentcore_gateway.ipynb`
 
-The Strands agent stays in the notebook. Module 5 separately deploys the agent
-and its tools to AgentCore Runtime.
+Module 4 moves the agent's two hotel search tools from the notebook to AWS Lambda. AgentCore Gateway makes those tools available to the agent.
+
+These slides follow the notebook. They cover what moves, the Lambda tools, the Gateway, how the agent calls the tools through MCP, and how each request is secured.
 
 <!--
 Module 4 moves the two read tools out of the notebook. Each tool runs in a
@@ -52,121 +52,107 @@ change.
 ---
 
 <style scoped>
-/* Five connection patterns plus a short source line. */
-section { font-size: 24px; }
-</style>
-
-## Five Ways AWS Connects to Neo4j
-
-Choose the pattern that matches how the data moves and who needs it.
-
-- **Spark Connector on Amazon EMR:** moves large Spark DataFrames into Neo4j and reads graph data back into Spark
-- **AWS Glue Connector:** builds managed ETL jobs from S3, RDS, Redshift, DynamoDB, and other Glue sources
-- **Kafka Connector on Amazon MSK:** streams events into Neo4j and publishes Neo4j changes to Kafka topics
-- **Neo4j drivers in AWS applications:** let Lambda, ECS, EKS, and EC2 services run Cypher directly
-- **MCP for AWS agents:** lets Bedrock and AgentCore agents call graph tools through a standard interface
-
-<small>Sources: [AWS Glue and data connectors](https://neo4j.com/docs/connectors/), [Spark Connector](https://neo4j.com/docs/spark/current/), [Kafka Connector](https://neo4j.com/docs/kafka/current/), and [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
-
-<!--
-These are separate connection patterns, not one required stack. Choose EMR for
-large Spark workloads, Glue for managed ETL, MSK for event streams, a driver
-for application requests, and MCP when an agent needs graph tools.
-
-This workshop uses the last two. Modules 1 through 3 connect with the Neo4j
-driver, and so do Modules 5 and 6. Module 4 is the one that uses MCP, and the
-next slide defines it.
-
-Keep the first three at overview level. They move data. The last two serve
-live requests.
--->
-
----
-
-## Model Context Protocol
-
-The retriever, driver, and tool all run in one notebook process. Gateway gives
-approved clients a shared, managed endpoint.
-
-**MCP:** A standard that lets an agent discover a tool's name, inputs, and
-result format at runtime.
-
-- **`tools/list`:** the client asks what exists. Each tool comes back as a name, a description, and a JSON Schema for its input
-- **`tools/call`:** the client sends a tool name and arguments. The server runs it and returns the result
-
-Strands calls these as `list_tools_sync()` and `call_tool_sync()`. The Gateway answers them.
-
-An MCP tool is three things: a name, an input schema, and something callable.
-
-<!--
-Name the three problems with the notebook process without dwelling: the
-credential is in the process, nothing checks who is calling, and the only way
-to share the tool is to share the notebook.
-
-The last line is the one that makes MCP feel small rather than mysterious. A
-local Python function decorated with @tool is exactly those same three things.
-That is why the agent code at the end of this module looks almost identical to
-Module 3's.
-
-Do not detour into the rest of the MCP specification. Two operations is all
-this workshop uses.
--->
-
----
-
-<style scoped>
 /* Five rows of two-column prose. */
 section { font-size: 24px; }
 </style>
 
 ## What Moves and What Does Not
 
-| Aspect | Module 3, local `@tool` | Module 4, Gateway MCP tool |
+| Aspect | Module 3, local `@tool` | Module 4, Gateway tool |
 |---|---|---|
 | Where the code runs | The notebook process | An AWS Lambda function |
-| How the model learns the tool | `@tool` exposes a generated tool specification | The client calls `tools/list` |
+| How the model learns the tool | `@tool` exposes a generated tool specification | The Gateway lists each tool and its schema |
 | Who holds the Neo4j credential | The notebook process | The Lambda, from Secrets Manager |
 | Who checks the caller | Nobody. The caller is the process | IAM checks the SigV4 signature |
-| What the agent passes to Strands | `tools=list(READ_TOOLS)` | `tools=gateway_mcp.list_tools_sync()` |
+| What the agent passes to Strands | Two local tools | The same two tools, listed by the Gateway |
 
 The agent stays local. The tools go remote.
 
 <!--
+Name the three problems with the notebook process without dwelling: the
+credential is in the process, nothing checks who is calling, and the only way
+to share the tool is to share the notebook.
+
 Row four is the one that matters. In Module 3 there is no caller to check,
 because the caller and the tool are the same process. The moment the tool moves
 out, "who is allowed to call this" becomes a real question, and IAM answers it.
 
-Row five is the transport change. Module 3 passes two decorated Python tools;
-Module 4 passes the two tools discovered through MCP.
+Row five is the transport change. Module 3 passes two decorated Python tools.
+Module 4 passes the same two tools after the Gateway lists them. A later slide
+shows that line of code.
 -->
 
 ---
 
-![bg contain](../images/04-agentcore-gateway-architecture.svg)
+## The Two Tools Move to Lambda
+
+Module 3 defined `search_hotel_passages` and `query_hotel_records` as local tools. Module 4 deploys each one as its own Lambda function.
+
+- **Handler:** Each handler checks the one `query` input, calls the same retrieval code as Module 3, and returns the same grounding response
+- **Credential:** Each Lambda reads the Neo4j connection from Secrets Manager at cold start
+- **Package:** Each zip holds the `workshop` package and the Neo4j driver libraries
+- **Check:** The notebook invokes both functions directly. It asks about a hotel that exists and one that does not, and it confirms that a generated write is rejected
+
+The retrieval code does not change. The reservation command does not move. Both Lambda tools only read.
 
 <!--
-Follow one request across the diagram.
+Deck 5 introduced these two tools on "Two Read Tools, One Boundary." Do not
+explain them again. This slide only covers how each one becomes a Lambda
+function.
 
-The agent runs in the notebook and calls Claude on Bedrock. Its MCP tool call
-crosses into AWS and reaches the Gateway, which checks the SigV4 signature. The
-Gateway invokes the Lambda backing that tool. The Lambda read its Neo4j
-credential from Secrets Manager at cold start. It sends EXPLAIN-checked Cypher
-to Aura.
+The bullets follow Steps 2 through 5 of the notebook. Step 2 prints the two
+handlers. Step 3 stores the Neo4j connection in Secrets Manager. Step 4 builds
+one zip per tool and deploys it. Step 5 invokes both functions directly.
 
-Note where Aura sits: outside the AWS Cloud boundary, because it is a
-separately managed database. The "Neo4j Sits Outside the AWS Boundary" slide
-comes back to that.
+Both handlers call the same implementations in hybrid_retrieval.py. Module 4
+keeps the same model-visible tool names that Module 3 used.
 
-Arrow colors: dashed blue is the user talking to the agent, orange is the MCP
-call plus the Lambda invocation plus the secret read, solid blue is the
-retrieval Cypher.
+Step 5 asks about a hotel that exists and a hotel that does not. A broken
+retrieval path and a genuine miss both return an empty result, so the notebook
+runs both checks. Step 5 also runs a stub model that always generates a write.
+The EXPLAIN guard must reject that write before execution.
+
+One trap worth naming: packaging errors appear at invocation and not at
+deployment. create_function accepts any zip, and a missing dependency shows up
+the first time the function runs.
+
+The last line is deliberate and worth saying out loud. Moving the tools did
+not change the rule that the model does not write.
+-->
+
+---
+
+## Two Ways Module 4 Connects to Neo4j
+
+AWS connects to Neo4j in several ways. Module 4 uses the two that serve live requests.
+
+- **Neo4j driver in each Lambda:** The driver lets the Lambda run Cypher directly. The connection comes from Secrets Manager
+- **MCP for the agent:** MCP lets the agent call the Lambda tools through a standard interface. AgentCore Gateway provides that interface
+
+The driver connects the Lambda to Neo4j. MCP connects the agent to the Lambda.
+
+<small>Source: [Neo4j MCP](https://neo4j.com/developer/genai-ecosystem/model-context-protocol-mcp/)</small>
+
+<!--
+The Lambdas are built. This slide covers how each one reaches Neo4j and how the
+agent will reach the Lambdas.
+
+Each Lambda holds a Neo4j driver. The driver is the same one the rest of the
+workshop uses. Modules 1 through 3 connect with it, and so do Modules 5 and 6.
+
+The agent still needs a way to reach the Lambdas. That is MCP, and AgentCore
+Gateway provides the MCP endpoint. The next slide covers the Gateway.
+
+AWS has three other connection patterns. The Spark Connector on Amazon EMR, the
+AWS Glue Connector, and the Kafka Connector on Amazon MSK move data in bulk.
+Module 4 does not use them. Mention them only if someone asks.
 -->
 
 ---
 
 ## AgentCore Gateway
 
-One managed MCP endpoint in front of several backends.
+The two Lambda functions need an endpoint the agent can call. AgentCore Gateway provides one managed MCP endpoint in front of both.
 
 - **Gateway:** the MCP server. It owns the URL, the protocol, and the authorizer
 - **Target:** one registered backend. It names a Lambda and the tool schema to advertise for it
@@ -197,37 +183,36 @@ name. Do not use a suffix match because it can select the wrong tool.
 
 ---
 
-## The Two Tools
+## Model Context Protocol
 
-| Tool | How it works | For |
-|---|---|---|
-| `search_hotel_passages` | The fixed `HybridCypherRetriever` from Module 2 | Rooms, amenities, policies, services |
-| `query_hotel_records` | `Text2CypherRetriever`, `EXPLAIN`-checked, read plans only | Counts, averages, filters, varied traversals |
+The tools now run in Lambda behind the Gateway. The agent needs a standard way
+to find and call them.
 
-A top-k retriever returns the five best chunks. "What is the average guest rating" needs every matching row, so `query_hotel_records` exists.
+**MCP:** A standard that lets an agent discover a tool's name, inputs, and
+result format at runtime.
 
-Each tool is one Lambda function and one Gateway target.
+- **`tools/list`:** the client asks what exists. Each tool comes back as a name, a description, and a JSON Schema for its input
+- **`tools/call`:** the client sends a tool name and arguments. The server runs it and returns the result
 
-The reservation command stays outside this Gateway. Both tools only read.
+Strands calls these as `list_tools_sync()` and `call_tool_sync()`. The Gateway answers them.
+
+An MCP tool is three things: a name, an input schema, and something callable.
 
 <!--
-These are the same two retrieval capabilities Module 3 taught, exposed here
-under Gateway base names. The "Text2Cypher Needs a Guard" slide covers the
-guard.
+The last line is the one that makes MCP feel small rather than mysterious. A
+local Python function decorated with @tool is exactly those same three things.
+That is why the agent code at the end of this module looks almost identical to
+Module 3's.
 
-Both tools reuse the same implementations in hybrid_retrieval.py. Module 3
-exposes them as `search_hotel_passages` and `query_hotel_records`; Module 4
-keeps those same model-visible base names through Gateway.
-
-The last line is deliberate and worth saying out loud. Nothing about moving
-tools to a Gateway changed the rule that the model does not write.
+Do not detour into the rest of the MCP specification. Two operations is all
+this workshop uses.
 -->
 
 ---
 
 ## The Tool Schema Is the Contract
 
-The schema is committed to the repository, not built at deploy time, so the Gateway advertises the same contract every run.
+`tools/list` returns the schema registered with each target. The schema is committed to the repository, so every run advertises the same contract.
 
 - **The description is model input.** It replaces Module 3's docstring. The model reads it to choose between the two tools
 - **What to write:** State what the tool is for, what question shape it suits, and what it will not do
@@ -250,33 +235,56 @@ reads.
 
 ---
 
-## Text2Cypher Needs a Guard
-
-Model-generated Cypher reaches the database. Test the guard rather than assume it.
+## The Same Agent Loop, Remote Tools
 
 ```python
-# A label no build ever creates, so this statement is a no-op even if it runs.
-WRITE_CYPHER = "MATCH (n:__WorkshopGuardProbe) SET n.tampered = true RETURN count(n) AS n"
+agent = Agent(tools=gateway_mcp.list_tools_sync(), ...)
 ```
 
-- **The real model** follows its prompt and generates reads, so it never trips the guard
-- **A stub model** always returns a write. The test asserts the call raises before execution
-- **The probe targets a label no build creates**, so the data is safe even if the guard fails
+`gateway_mcp` is the signed MCP client for the Gateway. The identity slide shows how it is built.
 
-Two layers run here. The prompt asks and `EXPLAIN` verifies. A read-only database user is the third layer, and production needs it.
+Strands receives local tool specifications in Module 3 and MCP tool specifications here.
+
+> Which Chicago hotel has both a spa and a swimming pool, what is its cancellation policy, and can I submit a booking request for four guests?
+
+Same question and model-driven routing. The selected tools now run in Lambda.
 
 <!--
-The hinge of this deck, and the discipline worth stealing regardless of stack.
+This is the payoff, and it is deliberately anticlimactic. Everything hard in
+this module was deployment and identity. The Strands loop stays the same while
+the tool provider changes.
 
-A guard that has never been triggered is a guard you are assuming works. The
-only way to know is to feed it the input it exists to reject, which means
-building a component whose job is to misbehave.
+That is the point of a protocol. The agent does not know or care that its tool
+is now a Lambda behind a signed HTTPS endpoint.
 
-Note the layering. EXPLAIN is an application control and it sits in the same
-process as the code that could have a bug. A read-only Neo4j user is a separate
-boundary the application cannot talk its way past, and production should have
-both. These Lambdas connect with ordinary workshop credentials, which is a
-workshop simplification, not a recommendation.
+Run the hero question here if you are demonstrating live. The model picks a
+remote tool, answers from the returned context, and records the tool it chose
+in the trace, which is the thing worth showing.
+-->
+
+---
+
+![bg contain](../images/04-agentcore-gateway-architecture.svg)
+
+<!--
+This diagram puts every piece from the earlier slides in one picture. Follow
+one request across it.
+
+The agent runs in the notebook and calls Claude on Bedrock. Its MCP tool call
+crosses into AWS and reaches the Gateway, which checks the SigV4 signature. The
+Gateway invokes the Lambda backing that tool. The Lambda read its Neo4j
+credential from Secrets Manager at cold start. It sends EXPLAIN-checked Cypher
+to Aura.
+
+Note where Aura sits: outside the AWS Cloud boundary, because it is a
+separately managed database.
+
+The next two slides cover security for this flow. The first follows the
+signature across these hops. The second covers the Aura boundary.
+
+Arrow colors: dashed blue is the user talking to the agent, orange is the MCP
+call plus the Lambda invocation plus the secret read, solid blue is the
+retrieval Cypher.
 -->
 
 ---
@@ -304,8 +312,7 @@ gateway_mcp = MCPClient(lambda: aws_iam_streamablehttp_client(
 - **`workshop-hotel-lambda-role`** lets the Lambda read one secret and invoke the embedding model and the chat model
 
 AWS IAM controls access to Gateway, Lambda, and Secrets Manager. The Neo4j
-credential controls database access. Use a read-only Neo4j user for read tools
-in production.
+credential controls database access.
 
 <!--
 Walk the chain as three hops with three different identities. The caller never
@@ -343,63 +350,8 @@ That control lives in the database, and it is a separate thing to configure.
 
 ---
 
-## Negative and Positive Controls
-
-An empty result has two possible causes. Neo4j holds no matching hotel, or the retrieval path is broken.
-
-- **Negative control:** ask about a hotel that does not exist. Expect no match
-- **Positive control:** ask about a hotel that does exist. Expect its exact address or guest rating
-
-Both import their expected values from `workshop.fixtures`.
-
-The notebook runs both controls directly against each Lambda, then repeats the positive controls through the Gateway.
-
-<!--
-A dead index, a wrong index name, a bad credential, and the wrong database all
-return the same empty shape as a genuine miss. One test cannot tell them apart.
-Two can.
-
-Running the pair at both layers is what makes a failure diagnosable. Direct
-invocation proves the Lambda reaches the graph. Through the Gateway proves the
-Gateway invokes the Lambda and returns the same values. If the first passes and
-the second fails, you know exactly which layer to look at.
-
-Related trap worth naming: packaging errors appear at invocation, not at
-deployment. create_function accepts any zip, and a missing dependency shows up
-the first time the function runs.
--->
-
----
-
-## The Same Agent Loop, Remote Tools
-
-```python
-agent = Agent(tools=gateway_mcp.list_tools_sync(), ...)
-```
-
-Strands receives local tool specifications in Module 3 and MCP tool specifications here.
-
-> Which Chicago hotel has both a spa and a swimming pool, what is its cancellation policy, and can I submit a booking request for four guests?
-
-Same question and model-driven routing. The selected tools now run in Lambda.
-
-<!--
-This is the payoff, and it is deliberately anticlimactic. Everything hard in
-this module was deployment and identity. The Strands loop stays the same while
-the tool provider changes.
-
-That is the point of a protocol. The agent does not know or care that its tool
-is now a Lambda behind a signed HTTPS endpoint.
-
-Run the hero question here if you are demonstrating live. The model picks a
-remote tool, answers from the returned context, and records the tool it chose
-in the trace, which is the thing worth showing.
--->
-
----
-
 <style scoped>
-/* Three rows of three-column prose plus framing. */
+/* Two rows of three-column prose plus framing. */
 section { font-size: 25px; }
 </style>
 
@@ -407,7 +359,6 @@ section { font-size: 25px; }
 
 | Stage | Where the tool runs | Who checks the caller | Who holds the credential |
 |---|---|---|---|
-| **Module 3** | The notebook process | Nobody | The notebook process |
 | **Module 4** | An AWS Lambda | IAM, through Gateway SigV4 | The Lambda, from Secrets Manager |
 | **Module 5** | An AgentCore Runtime container | IAM, on `InvokeAgentRuntime` | The container |
 

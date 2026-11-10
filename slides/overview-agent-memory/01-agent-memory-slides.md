@@ -29,6 +29,9 @@ ol > li {
 
 # Agent Memory with Neo4j
 
+**Lab:** Module 6, Notebook 6.1
+`6.1_neo4j_memory.ipynb`
+
 Conversations, durable knowledge, and reasoning carried across sessions
 
 <!--

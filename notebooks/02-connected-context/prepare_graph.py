@@ -108,10 +108,11 @@ def selected_paths(mode: str) -> list[Path]:
 def booking_agent_problems(driver: Driver, *, apply_fixtures: bool) -> list[str]:
     """Return what still stands between this graph and the Module 3.1 agent.
 
-    Step 7 of the notebook seeds the fixture hotel IDs, the three `demo06_*`
-    constraints, and the `max_guests` rule. The script path has to do the same,
-    or a facilitator who builds here hands Module 3.1 a graph that cannot run.
-    The seed is `MERGE` and `SET` throughout, so repeating it changes nothing.
+    The setup block of notebook 3.1 seeds the fixture hotel IDs, the three
+    `demo06_*` constraints, and the `max_guests` rule. The script path has to do
+    the same, or a facilitator who builds here hands Module 3.1 a graph that
+    cannot run. The seed is `MERGE` and `SET` throughout, so repeating it
+    changes nothing.
     """
     database = graph_database()
     manifest = load_manifest()

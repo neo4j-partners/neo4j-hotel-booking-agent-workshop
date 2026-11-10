@@ -29,6 +29,9 @@ ol > li {
 
 # GraphRAG Retrieval
 
+**Lab:** Module 2, Notebook 2.1
+`2.1_connected_context.ipynb`
+
 Eight ways to search the graph, and how to choose one
 
 > Which Chicago hotel has both a spa and a swimming pool, what is its cancellation policy, and can I submit a booking request for four guests?
