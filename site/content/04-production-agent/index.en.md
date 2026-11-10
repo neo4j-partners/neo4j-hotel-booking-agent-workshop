@@ -45,9 +45,10 @@ The diagram follows one request:
   tool, either `search_hotel_passages` or `query_hotel_records`.
 * **The secret:** Each Lambda reads its Neo4j credential from AWS Secrets
   Manager at cold start.
-* **The database:** Each Lambda sends EXPLAIN-checked Cypher to Neo4j Aura.
-  Aura sits outside the AWS Cloud boundary because it is a separately managed
-  database.
+* **The database:** Each Lambda sends read-only Cypher to Neo4j Aura. Only
+  `query_hotel_records` generates its Cypher, and that query is checked with
+  `EXPLAIN` before it runs. Aura sits outside the AWS Cloud boundary because
+  it is a separately managed database.
 * **The arrow colors:** The dashed blue arrow is the guest talking to the agent.
   The orange arrows are the MCP call, the Lambda invocation, and the secret
   read. The solid blue arrow is the retrieval Cypher.
@@ -559,7 +560,7 @@ Module 5 packages a separate version of the agent for AgentCore Runtime. Module
 6 adds cross-session memory by storing each preference in Neo4j and linking it
 to its source message and hotel.
 
-Slides for this module\: [Hotel Search Tools Behind AgentCore Gateway](../slides/overview-mcp-gateway/)
+Slides for this module\: [Hotel Read Tools Behind AgentCore Gateway](../slides/overview-mcp-gateway/)
 
 ## Next
 

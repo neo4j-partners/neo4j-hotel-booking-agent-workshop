@@ -52,7 +52,7 @@
 
   <rect x="425" y="134" width="240" height="56" rx="8" fill="#FFFFFF" stroke="#01A88D" stroke-width="1.5" filter="url(#sh3)"/>
   <text x="545" y="158" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1A1A1A" font-family="'SFMono-Regular', Consolas, monospace">search_hotel_passages</text>
-  <text x="545" y="176" text-anchor="middle" font-size="10.5" fill="#555555">source text + linked hotel facts</text>
+  <text x="545" y="176" text-anchor="middle" font-size="10.5" fill="#555555">hybrid search + fixed traversal</text>
 
   <rect x="425" y="204" width="240" height="56" rx="8" fill="#FFFFFF" stroke="#D69200" stroke-width="1.5" filter="url(#sh3)"/>
   <text x="545" y="228" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1A1A1A" font-family="'SFMono-Regular', Consolas, monospace">query_hotel_records</text>

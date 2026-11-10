@@ -22,6 +22,6 @@
 ** xref:slides/overview-documents-to-graph/index.adoc[3. From Documents to a Knowledge Graph]
 ** xref:slides/overview-graphrag/index.adoc[4. GraphRAG Retrieval]
 ** xref:slides/overview-agent/index.adoc[5. The Grounded Booking Agent]
-** xref:slides/overview-mcp-gateway/index.adoc[6. Hotel Search Tools Behind AgentCore Gateway]
+** xref:slides/overview-mcp-gateway/index.adoc[6. Hotel Read Tools Behind AgentCore Gateway]
 ** xref:slides/overview-agentcore-runtime/index.adoc[7. Deploying to AgentCore Runtime]
 ** xref:slides/overview-agent-memory/index.adoc[8. Agent Memory with Neo4j]

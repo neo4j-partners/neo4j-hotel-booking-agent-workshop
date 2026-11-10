@@ -74,7 +74,7 @@ const DECKS = [
   {
     key: 'overview-mcp-gateway',
     source: '01-mcp-gateway-slides.md',
-    title: 'Hotel Search Tools Behind AgentCore Gateway',
+    title: 'Hotel Read Tools Behind AgentCore Gateway',
     covers: 'Moving the retrieval tools out of the notebook process',
     pairsWith: 'Module 4',
     page: '04-production-agent/index.adoc',

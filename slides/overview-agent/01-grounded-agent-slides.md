@@ -153,18 +153,29 @@ and https://strandsagents.com/docs/user-guide/concepts/multi-agent/multi-agent-p
 
 ---
 
+<style scoped>
+/* Two rows of four-column prose. */
+section { font-size: 24px; }
+</style>
+
 ## Two Read Tools, One Boundary
 
 The model chooses the evidence shape that fits the question.
 
-| Tool | Best fit | Evidence returned |
-|---|---|---|
-| **`search_hotel_passages`** | Amenities, rooms, policies, services, locations, source wording | Up to five passages and linked hotel facts |
-| **`query_hotel_records`** | Counts, averages, rankings, filters, relationships | Generated read-only Cypher and bounded records |
+| Tool | How it reads Neo4j | Best fit | Evidence returned |
+|---|---|---|---|
+| **`search_hotel_passages`** | Hybrid search over the vector and full-text indexes, then a fixed Cypher traversal | Amenities, rooms, policies, services, locations, source wording | Up to five passages and linked hotel facts |
+| **`query_hotel_records`** | Text2Cypher. A model writes read-only Cypher from the question | Counts, averages, rankings, filters, relationships | The generated Cypher and bounded records |
 
-Both take one natural-language `query`. Neither exposes credentials or a write.
+Both take one natural-language `query`. Only `query_hotel_records` is Text2Cypher. Neither exposes credentials or a write.
 
 <!--
+Neo4j runs Cypher for both tools. The difference is who writes it. The passage
+tool embeds the question, searches both indexes, and runs the same reviewed
+traversal on every call. The records tool hands the question to a model that
+writes new Cypher each time, and the retriever refuses it unless the planner
+reports it read-only.
+
 The distinction is question shape, not implementation fashion. Passage search
 preserves source wording. Structured queries let the database calculate across
 the full matching set.
@@ -293,7 +304,7 @@ section { font-size: 22px; }
 | **The model** | Chooses read tools and writes the final response under prompt policy |
 | **Tool specifications** | Describe the routing boundary and one-field input schema |
 | **Read tools** | Validate input and return bounded evidence plus a verdict |
-| **Query guard** | Plans generated Cypher and allows only read plans |
+| **Query guard** | Plans the Cypher that `query_hotel_records` generates and allows only read plans |
 | **The command** | Validates the five inputs and opens the transaction |
 | **Neo4j** | Holds the maximum-guests rule and rejects a duplicate `request_id` |
 

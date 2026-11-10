@@ -27,12 +27,12 @@ ol > li {
 }
 </style>
 
-# Hotel Search Tools Behind AgentCore Gateway
+# Hotel Read Tools Behind AgentCore Gateway
 
 **Lab:** Module 4, Notebook 4.1
 `4.1_agentcore_gateway.ipynb`
 
-Module 4 moves the agent's two hotel search tools from the notebook to AWS Lambda. AgentCore Gateway makes those tools available to the agent.
+Module 4 moves the agent's two read tools from the notebook to AWS Lambda. AgentCore Gateway makes those tools available to the agent.
 
 These slides follow the notebook. They cover what moves, the Lambda tools, the Gateway, how the agent calls the tools through MCP, and how each request is secured.
 
@@ -84,6 +84,11 @@ shows that line of code.
 
 ---
 
+<style scoped>
+/* Four two-line bullets plus a lead and a closing line. */
+section { font-size: 26px; }
+</style>
+
 ## The Two Tools Move to Lambda
 
 Module 3 defined `search_hotel_passages` and `query_hotel_records` as local tools. Module 4 deploys each one as its own Lambda function.
@@ -91,7 +96,7 @@ Module 3 defined `search_hotel_passages` and `query_hotel_records` as local tool
 - **Handler:** Each handler checks the one `query` input, calls the same retrieval code as Module 3, and returns the same grounding response
 - **Credential:** Each Lambda reads the Neo4j connection from Secrets Manager at cold start
 - **Package:** Each zip holds the `workshop` package and the Neo4j driver libraries
-- **Check:** The notebook invokes both functions directly. It asks about a hotel that exists and one that does not, and it confirms that a generated write is rejected
+- **Check:** The notebook invokes both functions directly. It asks about a hotel that exists and one that does not. It confirms that `query_hotel_records`, the Text2Cypher tool, rejects a generated write
 
 The retrieval code does not change. The reservation command does not move. Both Lambda tools only read.
 
@@ -273,8 +278,9 @@ one request across it.
 The agent runs in the notebook and calls Claude on Bedrock. Its MCP tool call
 crosses into AWS and reaches the Gateway, which checks the SigV4 signature. The
 Gateway invokes the Lambda backing that tool. The Lambda read its Neo4j
-credential from Secrets Manager at cold start. It sends EXPLAIN-checked Cypher
-to Aura.
+credential from Secrets Manager at cold start. It sends read-only Cypher to
+Aura. Only `query_hotel_records` generates its Cypher, and that query is
+checked with EXPLAIN before it runs.
 
 Note where Aura sits: outside the AWS Cloud boundary, because it is a
 separately managed database.

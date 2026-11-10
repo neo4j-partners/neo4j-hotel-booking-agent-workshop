@@ -121,5 +121,5 @@
   <line x1="340" y1="604" x2="380" y2="604" stroke="#FF8000" stroke-width="2"/>
   <text x="388" y="608" fill="#333333" font-size="10.5">MCP / invoke / secrets</text>
   <line x1="580" y1="604" x2="620" y2="604" stroke="#4581C3" stroke-width="2"/>
-  <text x="628" y="608" fill="#333333" font-size="10.5">Cypher retrieval (EXPLAIN-checked)</text>
+  <text x="628" y="608" fill="#333333" font-size="10.5">Cypher retrieval</text>
 </svg>
