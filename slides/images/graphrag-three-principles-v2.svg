@@ -63,7 +63,7 @@
 
   <!-- ============ PRINCIPLE 2: MULTI-HOP REASONING ============ -->
   <rect x="354" y="96" width="252" height="330" rx="12" fill="#EEF4FB" stroke="#6E86CF"/>
-  <text x="366" y="146" fill="#1F4E86" font-size="15" font-weight="700">Multi-hop reasoning</text>
+  <text x="366" y="146" fill="#1F4E86" font-size="14" font-weight="700">Multi-hop reasoning</text>
   <line x1="366" y1="168" x2="594" y2="168" stroke="#CBDAF0"/>
 
   <!-- the walk -->
@@ -103,7 +103,7 @@
 
   <!-- ============ PRINCIPLE 3: RIGHT-SIZED CONTEXT ============ -->
   <rect x="644" y="96" width="252" height="330" rx="12" fill="#EEF4FB" stroke="#6E86CF"/>
-  <text x="656" y="146" fill="#1F4E86" font-size="15" font-weight="700">Right-sized context</text>
+  <text x="656" y="146" fill="#1F4E86" font-size="14" font-weight="700">Right-sized context</text>
   <line x1="656" y1="168" x2="884" y2="168" stroke="#CBDAF0"/>
 
   <text x="660" y="177" fill="#5C6470" font-size="7.5" font-weight="700" letter-spacing="0.4">THE WHOLE GRAPH</text>

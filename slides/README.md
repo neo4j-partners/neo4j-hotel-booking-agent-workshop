@@ -8,14 +8,18 @@ the slide holds the fragments and the note holds what you say.
 
 | # | Deck | Covers | Pairs with |
 |---|---|---|---|
-| 1 | `overview-business-story` | Why retrieval alone is not grounding, the hero question, and who owns which control | Opening |
-| 2 | `overview-knowledge-graph` | The property graph model, Cypher, the hotel dataset, and Neo4j Aura | Foundations |
+| 1 | `overview-business-story` | Why vector retrieval alone falls short, the hero question, the six-module roadmap, and the Aura setup briefing | Opening |
+| 2 | `overview-knowledge-graph` | The property graph model, Cypher, and the hotel dataset | Foundations |
 | 3 | `overview-documents-to-graph` | Extraction, schema drift, and the indexes that power search | Module 1 |
 | 4 | `overview-graphrag` | Vector, full-text, hybrid, and graph-enriched retrieval | Module 2 |
 | 5 | `overview-agent` | Strands model-driven routing, grounding evidence, and the write path | Module 3 |
 | 6 | `overview-mcp-gateway` | Moving the read tools out of the notebook process | Module 4 |
 | 7 | `overview-agentcore-runtime` | The container contract, sessions, and observability | Module 5 |
 | 8 | `overview-agent-memory` | Conversation entities, durable memory, and provenance | Module 6 |
+
+Setup starts on the last slide of deck 1. Present deck 2 while the Aura
+instances provision and the restore runs. The room then fills in `CONFIG.txt`
+and runs the environment check before Module 1.
 
 Deck 4 is the longest and deck 1 is the only one that needs a live demo. If you
 fall behind, demonstrate Modules 4 and 5 rather than having the room run them.

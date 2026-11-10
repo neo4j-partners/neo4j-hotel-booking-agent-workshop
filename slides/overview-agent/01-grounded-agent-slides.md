@@ -150,23 +150,6 @@ and https://strandsagents.com/docs/user-guide/concepts/multi-agent/multi-agent-p
 
 ---
 
-![bg contain](../images/strands-agents-graphrag-principles.svg)
-
-<!--
-Strands runs the agent loop. Amazon Bedrock provides the model. The retrieval
-tool gives that agent verified facts and connected context from Neo4j.
-
-Walk the three panels from left to right. Grounded retrieval resolves the
-request to facts in the graph. Connected reasoning follows stored
-relationships. Right-sized context returns only the small graph slice needed
-for this question.
-
-Neo4j complements Strands. It strengthens the context that the Strands agent
-can use. The next slide shows the two read interfaces Module 3 exposes.
--->
-
----
-
 ## Two Read Tools, One Boundary
 
 The model chooses the evidence shape that fits the question.

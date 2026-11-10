@@ -27,22 +27,21 @@ ol > li {
 }
 </style>
 
-# Knowledge Graphs and AuraDB
+# Knowledge Graph Foundations
 
-What a property graph is, and where this one runs
+What a property graph is, and how the hotel graph is modeled
 
 <!--
+The room starts this deck while their Aura instances provision and the restore
+runs. Pause when someone needs help with a setup step.
+
 Open with the question deck 1 named, the one no single passage of text
 answers. The answer lives in the connections between facts, and this deck is
 what those connections actually are.
 
-Two movements. The first runs from "What Is a Graph Database" through "Beyond
-Hotels": nodes, relationships, Cypher, and why the hotel schema looks the way
-it does. The second is "Neo4j Aura" and "Aura Developer Tools": the product,
-the tools you get, and what the Free tier omits.
-
-Announce the split. Attendees who already know graphs can relax through the
-first half, and the ones who do not will not think the whole day is theory.
+The deck runs from nodes and relationships to Cypher, and then to the hotel
+schema the room is restoring. Attendees who already know graphs can relax
+through the first half.
 
 Do not explain retrieval here. Deck 4 owns vectors, hybrid search, and
 retrievers. This deck only has to make the graph feel like a normal database.
@@ -177,27 +176,6 @@ depends on a connected pattern, a path, or provenance.
 The availability row is deliberate. This workshop's graph does not store room
 inventory. The correct system for that question is the reservation system
 that owns the current inventory rows.
--->
-
----
-
-## Graphs and Relational Databases: The Easy Question
-
-"What amenities does the Cairo hotel have?"
-
-Both databases answer this well.
-
-- **Relational:** join the hotel table to the amenity join table to the amenity table
-- **Graph:** `MATCH (h:Hotel)-[:OFFERS_AMENITY]->(a:Amenity)`
-
-Nobody switches databases over this question.
-
-<!--
-Be genuinely fair here. Single-hop lookups with a known key are what relational
-databases are excellent at, and a room full of engineers will stop trusting you
-if you pretend otherwise.
-
-Set up the contrast honestly, then let the next slide do the work.
 -->
 
 ---
@@ -357,107 +335,6 @@ The graph stores the amenity once and makes every connected path available for t
 
 ---
 
-## Why This Schema Design
-
-Typed relationships over one generic `RELATES_TO`:
-
-- **Relationship types are part of the stored structure.** Property values on a generic edge are not
-- **The traversal reads as the question.** `OFFERS_AMENITY` says what the edge means
-- **Extraction gets a smaller target.** A model choosing among four named relationships beats a model inventing them
-
-Cost of the choice: the schema has to be decided before extraction runs.
-
-<!--
-The performance point is concrete. Traversing OFFERS_AMENITY visits only the
-amenity edges out of that hotel. Traversing RELATES_TO and filtering on
-type = 'amenity' visits every edge out of that hotel and then discards most of
-them. The gap grows with the density of the node.
-
-The last line is honest and it sets up Module 1. Pinning the schema is the fix
-for extraction drift, and it means you own the modeling decision up front.
--->
-
----
-
-<style scoped>
-/* Four rows of domain examples. */
-section { font-size: 25px; }
-</style>
-
-## Beyond Hotels
-
-The same shape, three other domains:
-
-| Domain | The hub | One hop away | The question a graph answers |
-|---|---|---|---|
-| **Fraud** | Account | Device, address, phone | Which accounts share a device |
-| **Customer 360** | Customer | Order, ticket, contract | What happened before they churned |
-| **Supply chain** | Part | Supplier, plant, shipment | What breaks if this supplier stops |
-| **Hotels** | Hotel | Amenity, policy, room | Which hotels share this amenity |
-
-Shared entities plus multi-hop questions. That is the pattern worth taking home.
-
-<!--
-This is the transfer slide. Nobody in the room is building a hotel booking
-assistant, so say plainly what generalizes: a hub entity, shared nodes that
-several hubs point at, and questions whose answers span more than one hop.
-
-If a domain in the room does not have those two things, a graph may not be the
-right tool, and saying so buys credibility for the cases where it is.
-
-This closes the concept half of the deck. The rest is product.
--->
-
----
-
-## Neo4j Aura
-
-Neo4j as a managed service, with no server for you to run.
-
-That is the model. This is where your copy of it lives.
-
-- **AuraDB Free:** The tier takes no card, runs no cluster you manage, and gives one database per instance
-- **`neo4j+s://` only:** Every connection is encrypted, and Aura offers no unencrypted alternative
-- **Restore from a dump file:** the workshop graph loads through the console
-- **Everything in this workshop runs on the Free tier**
-
-You create your own instance. It is not shared with anyone else in the room.
-
-<!--
-The last line is the setup slide's argument in advance. A shared database hides
-individual mistakes until the last module. A personal one surfaces them
-immediately.
-
-If someone asks about the paid tiers, the honest short answer is that Aura
-Professional adds sizing, snapshots on demand, and cloud region choice, and
-that none of the day depends on any of it.
--->
-
----
-
-## Aura Developer Tools
-
-- **Query:** Query runs Cypher and shows results as a table or as a rendered graph
-- **Explore:** Explore lets you click through the graph without writing Cypher
-- **Restore:** The Restore tab loads the workshop graph from a dump file
-
-Two Free-tier limits worth knowing now:
-
-- **An idle instance pauses after three days.** A paused instance refuses connections, which reads exactly like a wrong URI
-- **200,000 nodes and 400,000 relationships.** The workshop graph sits far under both
-
-<!--
-Tell the room to open Query at least once during Setup, run the hero-hotel
-check, and look at the rendered graph. Seeing their own restored data as a
-picture does more for intuition than any slide here.
-
-The pause limit is the single most common support question. Say it now, and
-say it again to anyone who comes back from a long break with a connection
-error.
--->
-
----
-
 <style scoped>
 /* Five module bullets, a closing line, and the setup prerequisites. */
 section { font-size: 25px; }
@@ -465,7 +342,7 @@ section { font-size: 25px; }
 
 ## Where the Graph Goes Next
 
-The graph you are about to restore is the one every module reads:
+The graph you are restoring is the one every module reads:
 
 - **Module 1** adds two indexes and five more hotels to it
 - **Module 2** retrieves from it eight different ways
@@ -475,7 +352,7 @@ The graph you are about to restore is the one every module reads:
 
 One database carries all six modules. You never create a second one.
 
-To start you need an Aura instance, an AWS account with Bedrock access in **us-east-1**, a filled-in `CONFIG.txt`, and a passing `environment/verify.py`. Setup has the steps.
+To finish setup you need your restored Aura instance, an AWS account with Bedrock access in **us-east-1**, a filled-in `CONFIG.txt`, and a passing environment check. Setup has the steps.
 
 <!--
 This is the forward pointer. It also answers the question people are holding:
@@ -485,10 +362,14 @@ One Aura instance and one AWS account carry the entire day.
 Do not read the setup line out. It is on the screen so people know what is
 coming, and the setup pages have the actual steps.
 
-verify.py runs eight checks before Module 1: Python version, imports,
-settings, AWS credentials, the hero hotel in the graph, and each of the three
-Bedrock models. Tell the room to read the first failure rather than the last.
+The environment check runs before Module 1. On Vocareum it is the
+`1.0_verify_environment.ipynb` notebook. On an own-account setup it is
+`environment/verify.py`, which runs from a terminal. Both check the installed
+packages, the AWS credentials, the hero hotel in the graph, and each of the
+three Bedrock models. Tell the room to read the first failure rather than the
+last.
 
-Head to Setup. Every path ends in the same place: a terminal, four Neo4j
-settings in CONFIG.txt, AWS credentials in us-east-1, and eight passing checks.
+Go back to Setup and finish it. Every path ends in the same place: four Neo4j
+settings in CONFIG.txt, AWS credentials in us-east-1, and a passing
+environment check.
 -->

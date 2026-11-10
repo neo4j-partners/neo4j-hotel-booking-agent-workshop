@@ -36,7 +36,7 @@ This deck sets up the whole workshop. The argument runs in a fixed order:
 what is at stake, why the model alone fails, why retrieval alone fails, what
 a graph adds, third-party evidence, and then the hero question the rest of
 the day answers. The deck closes on the demo, the platform roles, the
-six-module roadmap, the request flow, and the control-ownership table.
+six-module roadmap, the request flow, and the Aura briefing that starts setup.
 
 Do not explain retrievers here. Deck 4 owns that. This deck only has to make
 the room want the graph.
@@ -153,7 +153,7 @@ The agent answers from evidence the graph can defend.
 
 <!--
 The last bullet is the one that separates this workshop from a generic
-GraphRAG talk, and it comes back on slide 9. In most demos the model decides
+GraphRAG talk, and it comes back in deck 5. In most demos the model decides
 what to fetch. Here the application decides, once, and the model never gets
 that choice.
 -->
@@ -217,32 +217,6 @@ does the same thing to the hotel documents with a pinned schema.
 
 ---
 
-## Grounding Is More Than Retrieval
-
-Graph retrieval decides what the model sees. Grounding decides what it is allowed to do with it.
-
-- **Two bounded read tools:** both tools read only from the graph. The model routes by tool name, description, and input schema
-- **Answer from graph evidence:** the prompt limits hotel answers to facts a read tool returned from the graph
-- **Expose missing facts:** both read tools return the same structured verdict, which names any fact the graph does not hold
-- **Application-owned writes:** the model proposes an action. Application code validates it, and Neo4j enforces the rule inside the write transaction
-
-<!--
-This slide has no equivalent in most GraphRAG decks, and it is the one that
-distinguishes this workshop. Everything after it is an implementation of these
-four rules.
-
-Point out which statements are policy and which are mechanisms. The prompt
-directs answer behavior. Tool input validation, the Text2Cypher read-plan guard,
-and the reservation transaction are enforced in code or the database.
-
-Module 3 demonstrates all four in one notebook: automatic tool selection with a
-trace, structured evidence and verdicts, an unsupported availability case, and
-a rejected fifteen-guest reservation. A plain BedrockModel chooses from the
-registered tool specifications.
--->
-
----
-
 ## The Hero Question
 
 > Which Chicago hotel has both a spa and a swimming pool, what is its cancellation policy, and can I submit a booking request for four guests?
@@ -271,7 +245,7 @@ refuse this one on purpose.
 
 See the finished build answer the hero question live.
 
-Then we look at the six modules that build it, and who owns each control.
+Then we look at what each platform brings and the six modules that build it.
 
 <!--
 Instructor run instructions:
@@ -370,49 +344,60 @@ the vector and full-text indexes, and a reviewed traversal, or a structured
 record query, which adds a model call to generate Cypher and an `EXPLAIN`
 read-plan check. Bounded evidence and a shared verdict come back to the model.
 
-The reservation write is not on this path at all. It runs beside the agent,
-and the next slide is where you say who owns it.
+The reservation write is not on this path at all. It runs beside the agent.
+Application code and Neo4j own it, and deck 5 shows how.
 
 The packaging changes across later modules. Module 3's key lesson is the
 model-driven choice between two local read tools.
+
+The next slide is the Aura briefing. Setup starts there.
 -->
 
 ---
 
 <style scoped>
-/* Six rows of three-column prose. */
-section { font-size: 21px; }
+/* A lead-in, five bullets, and the line that starts setup. */
+section { font-size: 25px; }
 </style>
 
-## The Model Chooses Inside Guarded Boundaries
+## Neo4j Aura: Where Your Graph Runs
 
-| Decision or constraint | Owner |
-|---|---|
-| Which read tool fits the question | The model, from two tool specifications |
-| Passage-search configuration and traversal | Application code, fixed inside `search_hotel_passages` |
-| Whether generated Cypher has a read plan | The `EXPLAIN` guard, backed by a read-only database identity in production |
-| Whether live availability is supported | The shared tool verdict, computed from the question and graph boundary |
-| Rejecting an invalid or duplicate write | Neo4j, inside the reservation transaction |
-| Who can call AWS services | IAM, on the execution role |
+Neo4j as a managed service, with no server for you to run.
 
-The model routes and writes prose. Code and the database own the hard constraints.
+- **AuraDB Free:** The tier takes no card, runs no cluster you manage, and gives one database per instance
+- **Your own instance:** You create it, and it is not shared with anyone else in the room
+- **Restore from a dump file:** The workshop graph loads through the console's Restore tab
+- **Query and Explore:** Query runs Cypher and shows results as a table or as a rendered graph. Explore lets you click through the graph without writing Cypher
+- **Idle pause:** A Free instance pauses after three idle days. A paused instance refuses connections, which reads exactly like a wrong URI
+
+Setup starts now. Create your AuraDB Free instance and restore the workshop graph. The Setup page has the steps.
 
 <!--
-This is the control-ownership correction to emphasize. Module 3 deliberately
-returns one decision to the model: which evidence shape fits the question.
+This slide is the setup briefing. Setup starts when it ends.
 
-The passage tool still owns a fixed retrieval configuration. The structured
-tool does allow a model to generate Cypher, but the query is returned for
-inspection and Neo4j runs it only after the planner reports a read plan. A
-valid read query can still have the wrong meaning. The plan check is a safety
-boundary. Semantic validation remains a separate responsibility.
+A shared database hides individual mistakes until the last module. A personal
+one surfaces them immediately.
 
-The availability verdict is deterministic data from the tool. The final prose
-and whether the agent follows its prompt remain model behavior, which the lab
-observes through traces rather than claiming to enforce.
+Two steps need the room's full attention, so stop talking while people do
+them. Aura shows the generated password once, so everyone downloads the
+credentials file. The instance has to report RUNNING before the restore
+starts, because a restore into an instance that is still provisioning fails.
 
-This table reuses cleanly with a different schema and a different domain, which
-is the takeaway to name out loud.
+Tell the room to open Query once the restore finishes, run the hero-hotel
+check, and look at the rendered graph. Seeing their own restored data as a
+picture does more for intuition than any slide here.
 
-Next is what a knowledge graph actually is. Setup follows that deck.
+The pause limit is the single most common support question. Say it now, and
+say it again to anyone who comes back from a long break with a connection
+error.
+
+Keep these for questions. Every connection uses `neo4j+s://`, which is
+encrypted. The Free tier holds 200,000 nodes and 400,000 relationships, and
+the workshop graph sits far under both. Aura Professional adds sizing,
+snapshots on demand, and cloud region choice, and none of the day depends on
+any of it.
+
+Present the knowledge graph deck while the instances provision and the restore
+runs. The room fills in `CONFIG.txt` and runs the environment check after that
+deck.
 -->

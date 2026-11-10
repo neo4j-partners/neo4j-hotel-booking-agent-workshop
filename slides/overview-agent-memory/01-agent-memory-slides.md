@@ -236,4 +236,7 @@ keeps topic links while preserving a deliberate promotion gate.
 Read the graph as a sentence. This guest said this message about this hotel.
 The confirmed preference came from that message and concerns the same hotel.
 One traversal returns the durable memory and the evidence behind it.
+
+This is the last deck. After Module 6, point the room to the Summary and
+Production Path pages on the workshop site.
 -->
