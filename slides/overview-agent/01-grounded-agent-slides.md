@@ -219,33 +219,6 @@ verdict.
 
 ---
 
-## Two Evidence Shapes, One Verdict
-
-| Read path | Tool-specific evidence |
-|---|---|
-| **Passages** | `passages`, `hotel_ids`, `top_result` |
-| **Records** | `cypher`, `records`, `row_count` |
-
-Both successful paths return `ok: true` and the same `grounding_result`:
-
-`answerable`, `missing_fact`
-
-Empty records are a successful read with zero rows. A query error is a separate error result.
-
-The model receives bounded JSON evidence, never Neo4j credentials.
-
-<!--
-The passage path returns at most five passages, with at most 8,000 characters
-of source text and 12 amenities in each matching record. The structured path
-returns at most 25 list rows, while an aggregate can cover all matches.
-
-The `cypher` field is there for inspection. A read-only query that executes can
-still ask the wrong question, so successful execution is not proof of semantic
-correctness.
--->
-
----
-
 ## A Grounded Answer
 
 > "What amenities and guest rating does AnyCompany Cairo Nile View have?"
