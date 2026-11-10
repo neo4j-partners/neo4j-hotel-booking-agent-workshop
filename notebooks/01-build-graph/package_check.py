@@ -20,11 +20,6 @@ import sys
 from pathlib import Path
 from typing import Callable, NamedTuple
 
-# A requirement line followed by this comment block is for maintainers only,
-# and a participant kernel does not need it. The block ends at the next blank
-# line.
-MAINTENANCE_MARKER = "Needed only by the maintenance notebook runner"
-
 FIX_COMMAND = f"{sys.executable} -m pip install -r notebooks/requirements.txt"
 
 STATUS_OK = "OK"
@@ -87,7 +82,7 @@ def normalize_name(name: str) -> str:
 
 
 def parse_requirements(text: str) -> list[Requirement]:
-    """Parse requirements text, skipping comments, blanks and the maintenance block.
+    """Parse requirements text, skipping comments and blank lines.
 
     Extras such as ``[bedrock]`` are dropped, because the installed
     distribution carries the bare name. A line using any operator other than
@@ -95,17 +90,9 @@ def parse_requirements(text: str) -> list[Requirement]:
     kind of pin cannot quietly go unchecked.
     """
     requirements: list[Requirement] = []
-    in_maintenance_block = False
     for line in text.splitlines():
         stripped = line.strip()
-        if not stripped:
-            in_maintenance_block = False
-            continue
-        if stripped.startswith("#"):
-            if MAINTENANCE_MARKER in stripped:
-                in_maintenance_block = True
-            continue
-        if in_maintenance_block:
+        if not stripped or stripped.startswith("#"):
             continue
         match = _REQUIREMENT.match(stripped)
         if match is None:

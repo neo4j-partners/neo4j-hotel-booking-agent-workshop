@@ -82,22 +82,6 @@ def test_comments_and_blank_lines_are_skipped() -> None:
     ]
 
 
-def test_maintenance_block_is_skipped() -> None:
-    text = (
-        "neo4j==6.2.0\n"
-        "\n"
-        f"# {package_check.MAINTENANCE_MARKER}. Workshop\n"
-        "# participants do not need these.\n"
-        "nbconvert>=7.17.1\n"
-        "nbformat>=5.11.1\n"
-        "ipykernel>=7.3.0\n"
-        "\n"
-        "boto3>=1.39.0\n"
-    )
-    names = [req.name for req in package_check.parse_requirements(text)]
-    assert names == ["neo4j", "boto3"]
-
-
 def test_unsupported_operator_is_refused() -> None:
     with pytest.raises(ValueError, match="only '==' and '>='"):
         package_check.parse_requirements("neo4j~=6.2")
@@ -127,11 +111,12 @@ def test_exact_comparison_rejects_suffixes() -> None:
     assert not package_check.satisfies("6.2.0.post1", "==", "6.2.0")
 
 
-def test_real_requirements_parse_without_the_maintenance_block() -> None:
+def test_real_requirements_leave_maintainer_tools_out() -> None:
     text = (NOTEBOOKS / "requirements.txt").read_text(encoding="utf-8")
     names = {req.name for req in package_check.parse_requirements(text)}
-    assert {"strands-agents", "neo4j", "neo4j-agent-memory", "boto3"} <= names
-    assert not names & {"nbconvert", "nbformat", "ipykernel"}
+    expected = {"strands-agents", "neo4j", "neo4j-agent-memory", "boto3", "ipykernel"}
+    assert expected <= names
+    assert not names & {"nbconvert", "nbformat"}
 
 
 def test_failure_raises_with_the_fix(

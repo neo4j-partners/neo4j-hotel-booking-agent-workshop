@@ -41,8 +41,8 @@ mcp>=1.0.0
 mcp-proxy-for-aws==1.6.4
 python-dotenv>=1.0.0
 
-# Needed only by the maintenance notebook runner. Workshop
-# participants do not need these to run the notebooks themselves.
-nbconvert>=7.17.1
-nbformat>=5.11.1
-ipykernel>=7.3.0
+# The hosted lab image ships its own Jupyter kernel. It is pinned to 6.29.5
+# on purpose. ipykernel 7.3.0 installed into the Vocareum image beside its
+# older pyzmq, traitlets and comm left the second notebook's first cell
+# hanging. 6.29.5 runs there without the hang.
+ipykernel==6.29.5
