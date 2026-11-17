@@ -1,6 +1,8 @@
 [< Back to the workshop README](../../README.md)
 
-# Module 4: Production Agent with AgentCore
+# Module 4 (Optional): Production Agent with AgentCore
+
+This module is optional. Modules 5 and 6 do not depend on it.
 
 Deploy the two read tools to AWS Lambda behind an IAM-authenticated AgentCore Gateway, then call them through MCP.
 

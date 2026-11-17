@@ -49,7 +49,7 @@ hotel ID from passage search before a reservation write.
 ## What AgentCore Runtime Provides
 
 Amazon Bedrock AgentCore is a set of managed services for running agents in
-production. Module 4 used **Gateway** to turn Lambda functions into tools. This
+production. Module 4 uses **Gateway** to turn Lambda functions into tools. This
 module uses **Runtime** to host the agent.
 
 Runtime runs the container and handles the operations work around it.

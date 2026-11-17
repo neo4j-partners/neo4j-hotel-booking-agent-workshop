@@ -223,4 +223,4 @@ Slides for this module\: [The Grounded Booking Agent](../slides/overview-agent/)
 
 ## Next
 
-Head to [Module 4](../04-production-agent/).
+Head to [Module 4](../04-production-agent/). Module 4 is optional. To skip it, go to [Module 5](../05-agentcore-deploy/).

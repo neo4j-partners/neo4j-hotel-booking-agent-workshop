@@ -53,7 +53,7 @@ arrives pre-configured. Setup guides you through creating a free Neo4j database.
 | **Module 1: Build the Graph** | Extract five held-out hotel documents into the graph, define the extraction schema, create both retrieval indexes |
 | **Module 2: From Vector Search to Graph-Enriched Retrieval** | Semantic search, exact-term search, and graph-enriched retrieval |
 | **Module 3: Build a Grounded Booking Agent with Strands and GraphRAG** | Turn two GraphRAG read paths into agent tools, check grounding verdicts, and protect reservation writes |
-| **Module 4: Production Agent with AgentCore** | AgentCore Gateway, IAM-authenticated MCP, and a Strands agent over remote tools |
+| **Module 4 (Optional): Production Agent with AgentCore** | AgentCore Gateway, IAM-authenticated MCP, and a Strands agent over remote tools |
 | **Module 5: Deploy to AgentCore Runtime** | Containerize the agent, launch it on Runtime, correlate one request end to end |
 | **Module 6: Neo4j Graph Memory** | Cross-session graph memory, actor-scoped recall, full provenance, and a conceptual AgentCore comparison |
 | **Summary, Production Path, and Wrap-up** | The argument end to end, the decision tables, the work required for production, and where to take it next |

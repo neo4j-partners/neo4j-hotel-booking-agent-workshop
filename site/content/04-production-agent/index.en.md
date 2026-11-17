@@ -1,7 +1,9 @@
 ---
-title: "Module 4: Production Agent with AgentCore"
+title: "Module 4 (Optional): Production Agent with AgentCore"
 weight: 50
 ---
+
+> **Optional module:** Modules 5 and 6 do not depend on this module. To skip it, go to [Module 5](../05-agentcore-deploy/).
 
 **Purpose:** Move Module 3's two GraphRAG read tools to managed AWS services.
 
