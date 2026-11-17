@@ -2,6 +2,7 @@
 # in here is part of the workshop or its tooling, and nothing outside it should
 # reference a path inside it.
 workfolder/
+cert-issue.md
 
 assets/*
 !assets/README.md
