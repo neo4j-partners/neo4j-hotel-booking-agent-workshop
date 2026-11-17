@@ -111,6 +111,29 @@ def load_environment(notebooks_root: Path, repo_root: Path) -> None:
     load_dotenv(repo_root / "CONFIG.txt")
 
 
+def trust_certifi_bundle() -> None:
+    """Point OpenSSL at certifi's CA bundle unless `SSL_CERT_FILE` is already set.
+
+    The Neo4j driver verifies `neo4j+s://` connections against the operating
+    system's CA store, not certifi. Some lab images ship a `ca-certificates`
+    package too old to hold "SSL.com TLS RSA Root CA 2022", the root that Aura's
+    certificate chains to, and the handshake then fails with
+    `SSLCertVerificationError: self signed certificate in certificate chain`.
+    OpenSSL reads `SSL_CERT_FILE` each time a context loads the default
+    certificates, so setting it here covers every driver the notebook opens.
+
+    certifi is imported here rather than at module scope so this file stays
+    importable before the workshop dependencies are installed.
+    """
+    try:
+        import certifi
+    except ImportError:
+        # Module 1.0 runs before the dependencies are installed. The system
+        # store is still used in that case, which is the driver's default.
+        return
+    os.environ.setdefault("SSL_CERT_FILE", certifi.where())
+
+
 def quiet_third_party_logs() -> None:
     """Hold the noisy SDK loggers at WARNING for the rest of the session."""
     for name in NOISY_LOGGERS:
@@ -168,6 +191,8 @@ def start_module(
 
     if load_env:
         load_environment(notebooks_root, repo_root)
+
+    trust_certifi_bundle()
 
     if quiet_logs:
         quiet_third_party_logs()
